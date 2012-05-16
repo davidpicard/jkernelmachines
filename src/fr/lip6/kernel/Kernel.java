@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.lip6.threading.ThreadedMatrixOperator;
+import fr.lip6.threading.ThreadPoolServer;
 import fr.lip6.type.TrainingSample;
 
 /**
@@ -99,7 +100,9 @@ public abstract class Kernel<T> implements Serializable {
 		};
 		
 		factory.getMatrix(matrix);
-				
+		
+		ThreadPoolServer.shutdownNow();		
+		
 		return matrix;
 	}
 	

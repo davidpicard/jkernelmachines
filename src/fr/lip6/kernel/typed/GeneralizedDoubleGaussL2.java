@@ -23,6 +23,7 @@ import java.util.List;
 
 import fr.lip6.kernel.Kernel;
 import fr.lip6.threading.ThreadedMatrixOperator;
+import fr.lip6.threading.ThreadPoolServer;
 import fr.lip6.type.TrainingSample;
 
 /**
@@ -156,6 +157,7 @@ public class GeneralizedDoubleGaussL2 extends Kernel<double[]> {
 		
 		factory.getMatrix(matrix);
 		
+		ThreadPoolServer.shutdownNow();	
 		return matrix;
 	}
 	

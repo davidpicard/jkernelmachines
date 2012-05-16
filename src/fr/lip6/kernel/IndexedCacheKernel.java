@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import fr.lip6.threading.ThreadedMatrixOperator;
+import fr.lip6.threading.ThreadPoolServer;
 
 /**
  * <p>
@@ -103,6 +104,7 @@ public final class IndexedCacheKernel<S,T> extends Kernel<S> {
 		/* do the actuel computing of the matrix */
 		matrix = factory.getMatrix(matrix);
 				
+		ThreadPoolServer.shutdownNow();	
 	}
 	
 	@Override

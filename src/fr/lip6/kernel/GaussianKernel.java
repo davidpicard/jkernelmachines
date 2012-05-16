@@ -22,6 +22,7 @@ package fr.lip6.kernel;
 import java.util.List;
 
 import fr.lip6.threading.ThreadedMatrixOperator;
+import fr.lip6.threading.ThreadPoolServer;
 import fr.lip6.type.TrainingSample;
 
 /**
@@ -89,6 +90,7 @@ public abstract class GaussianKernel<T> extends Kernel<T> {
 		
 		factory.getMatrix(matrix);
 		
+		ThreadPoolServer.shutdownNow();	
 		return matrix;
 	}
 }

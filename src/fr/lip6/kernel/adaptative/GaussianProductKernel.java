@@ -27,6 +27,7 @@ import java.util.Map;
 import fr.lip6.kernel.GaussianKernel;
 import fr.lip6.kernel.Kernel;
 import fr.lip6.threading.ThreadedMatrixOperator;
+import fr.lip6.threading.ThreadPoolServer;
 import fr.lip6.type.TrainingSample;
 
 /**
@@ -198,6 +199,7 @@ public class GaussianProductKernel<T> extends Kernel<T> {
 			
 			matrix = tmo.getMatrix(matrix);
 		}
+		ThreadPoolServer.shutdownNow();	
 		return matrix;
 	}
 }
