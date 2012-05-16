@@ -1,0 +1,37 @@
+<?xml version="1.0"?> 
+<project name="jkernelmachines" default="all" basedir="."> 
+
+     <property name="src" value="src"/> 
+     <property name="build" value="build"/>
+     <property name="jarfile" value="jkernelmachines.jar"/>
+     <property name="doc" value="doc"/>
+
+     <target name="all" depends="jar" />
+
+     <target name="init">  
+          <mkdir dir="${build}"/>
+          <mkdir dir="${doc}"/>
+     </target>
+
+     <target name="compile" depends="init"> 
+          <!-- Compile the java code -->
+          
+          <javac srcdir="${src}" destdir="${build}" includeantruntime="false"/> 
+     </target>
+
+     <target name="jar" depends="compile">
+          <jar destfile="${jarfile}" basedir="${build}"/>
+     </target>
+
+     <target name="doc" depends="init">
+          <javadoc destdir="${doc}" sourcepath="${src}"/>
+     </target>
+
+     <target name="clean" description="Removes previous build">
+          <delete verbose="true" includeEmptyDirs="true">
+               <fileset dir="${build}"/>
+               <fileset dir="${doc}"/>
+               <fileset file="${jarfile}"/>
+          </delete>
+     </target>
+</project>

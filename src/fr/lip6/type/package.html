@@ -1,0 +1,25 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+<title>Package-level Javadoc</title>
+</head>
+<body>
+Package for different types of vector representations.<br />
+
+<p>
+Since the goal of this library is to provide a generic kernel machines framework, 
+in which kernel are easily adapable, we propose to use Generics for input space representation.
+This package contains differents classes for representing vectors, such that generic kernel
+can be built upon.
+</p>
+
+<p>
+The way it works is very simple : MLVector<T> is a representation of a vector that as the array
+T as backend. For example ByteVector is a MLVector<byte[]>, that is, a vector in which each composant
+is a byte.<br/>
+All classes that extends MLVector have convenient methods for performing operations on vectors : add,
+mult, dot product, etc.
+</p>
+
+</body>
+</html>
