@@ -37,6 +37,21 @@ import fr.lip6.threading.ThreadPoolServer;
 import fr.lip6.threading.ThreadedMatrixOperator;
 import fr.lip6.type.TrainingSample;
 
+/**
+ * <p>
+ * Implementation of the QNPKL solver.<br/>
+ * Original java code
+ * </p>
+ * 
+ * <p>
+ * <b>Learning geometric combinations of Gaussian kernels with alternating Quasi-Newton algorithm </b><br/>
+ * Picard, D. and Thome, N. and Cord, M and Rakotomamonjy, A. <br/>
+ * <i>Proceedings of the 20th ESANN conference, 2012, Bruges, 79-84</i> 
+ * </p>
+ * @author dpicard
+ *
+ * @param <T> Datatype of training samples
+ */
 public class DoubleQNPKL implements Classifier<double[]> {
 
 	List<TrainingSample<double[]>> listOfExamples;
@@ -63,6 +78,9 @@ public class DoubleQNPKL implements Classifier<double[]> {
 		
 	double oldObjective;
 	
+	/**
+	 * Default constructor
+	 */
 	public DoubleQNPKL()
 	{
 		listOfKernelWeights = new ArrayList<Double>();
@@ -165,7 +183,7 @@ public class DoubleQNPKL implements Classifier<double[]> {
 	 * @param kernels
 	 * @param weights
 	 * @param l
-	 * @return
+	 * @return the objective gap
 	 */
 	private double performPKLStep()
 	{
@@ -431,7 +449,7 @@ public class DoubleQNPKL implements Classifier<double[]> {
 	private int VERBOSITY_LEVEL = 0;
 	
 	/**
-	 * set how verbose SimpleMKL shall be. <br />
+	 * set how verbose QNPKL shall be. <br />
 	 * Everything is printed to stderr. <br />
 	 * none : 0 (default), few  : 1, more : 2, all : 3
 	 * @param l
@@ -441,52 +459,70 @@ public class DoubleQNPKL implements Classifier<double[]> {
 		VERBOSITY_LEVEL = l;
 	}
 
+	/** print() for given debug level */
 	public void eprint(int level, String s)
 	{
 		if(VERBOSITY_LEVEL >= level)
 			System.err.print(s);
 	}
 	
+	/** println() for given debug level */
 	public void eprintln(int level, String s)
 	{
 		if(VERBOSITY_LEVEL >= level)
 			System.err.println(s);
 	}
 
+	/**
+	 * Tells the hyperparameter C
+	 */
 	public double getC() {
 		return C;
 	}
 
+	/**
+	 * Sets the hyperparameter C
+	 */
 	public void setC(double c) {
 		C = c;
 	}
 
+	/**
+	 * Sets norm constraint
+	 */
 	public void setPNorm(double p)
 	{
 		p_norm = p;
 	}
 	
+	/** Sets stopping criterion */
 	public void setStopGap(double w)
 	{
 		stopGap = w;
 	}
+	
+	/** Tells numerical cleaning threashold */
 	public double getNum_cleaning() {
 		return num_cleaning;
 	}
 
+	/** Sets numerical threshold */
 	public void setNum_cleaning(double num_cleaning) {
 		this.num_cleaning = num_cleaning;
 	}
 
+	/** Tells weights of training samples */
 	public List<Double> getExampleWeights() {
 		return listOfExampleWeights;
 	}
 	
+	/** Tells weights of kernels */
 	public List<Double> getListOfKernelWeights()
 	{
 		return listOfKernelWeights;
 	}
 
+	/** Tells weights of kernels as array */
 	public double[] getKernelWeights()
 	{
 		double[] w = new double[listOfKernelWeights.size()];
@@ -540,11 +576,13 @@ public class DoubleQNPKL implements Classifier<double[]> {
 		}
 	}
 
-
+	
+	/** Tells if use a norm constraint */
 	public boolean isHasNorm() {
 		return hasNorm;
 	}
 
+	/** Sets use of norm constraint */
 	public void setHasNorm(boolean hasNorm) {
 		this.hasNorm = hasNorm;
 	}
