@@ -1,0 +1,13 @@
+to compile the library, just use the default ant task. Type ant in a terminal:
+
+$ ant
+
+This should produce the jkernelmachines.jar archive.
+
+
+To compile documentation, use the doc task:
+
+$ ant doc
+
+Documentation should be in the doc/ directory.
+
