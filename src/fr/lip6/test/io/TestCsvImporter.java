@@ -23,14 +23,15 @@ import java.io.IOException;
 import java.util.List;
 
 import fr.lip6.classifier.LaSVM;
+import fr.lip6.evaluation.AccuracyEvaluator;
 import fr.lip6.io.CsvImporter;
 import fr.lip6.kernel.typed.DoubleGaussL2;
 import fr.lip6.type.TrainingSample;
 
 /**
- * Train a SVM using LaSVM algorithm on data in the libsvm format<br/>
+ * Train a SVM using LaSVM algorithm on data in the csv format<br/>
  * 
- * usage: TestLibSVM trainfile testfile
+ * usage: TestCsvImporter trainfile testfile
  * @author picard
  *
  */
@@ -75,19 +76,14 @@ public class TestCsvImporter {
 		LaSVM<double[]> svm = new LaSVM<double[]>(kernel);
 		svm.setC(10);
 		svm.setE(5);
+				
+		AccuracyEvaluator<double[]> accev = new AccuracyEvaluator<double[]>();
+		accev.setClassifier(svm);
+		accev.setTrainingSet(trainlist);
+		accev.setTestingSet(testlist);
+		accev.evaluate();
 		
-		svm.train(trainlist);
-		
-		//evaluation
-		double err = 0;
-		for(TrainingSample<double[]> t : testlist) {
-			double v = svm.valueOf(t.sample);
-			if( v * t.label < 0) {
-				err++;
-			}
-		}
-		
-		System.out.println("error rate: "+(err/testlist.size()));
+		System.out.println("accuracy: "+accev.getScore());
 
 	}
 
