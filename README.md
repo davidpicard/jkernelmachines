@@ -1,4 +1,4 @@
-chines: A simple framework for Kernel Machines
+JKernelMachines: A simple framework for Kernel Machines
 -------------------------------------------------------
 
 JKernelMachines is a java library for learning with kernels. It is primary 
