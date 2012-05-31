@@ -34,7 +34,7 @@ import fr.lip6.type.TrainingSample;
  * @author picard
  *
  */
-public class TestLibSVM {
+public class TestLibSVMImporter {
 
 	/**
 	 * @param args
