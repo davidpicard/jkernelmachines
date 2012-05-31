@@ -23,6 +23,7 @@ import java.util.List;
 
 import fr.lip6.classifier.Classifier;
 import fr.lip6.type.TrainingSample;
+import fr.lip6.util.DebugPrinter;
 
 public class AccuracyEvaluator<T> implements Evaluator<T> {
 
@@ -30,6 +31,8 @@ public class AccuracyEvaluator<T> implements Evaluator<T> {
 	List<TrainingSample<T>> trainList;
 	List<TrainingSample<T>> testList;
 	double accuracy;
+	
+	DebugPrinter debug = new DebugPrinter();
 	
 	@Override
 	public void setClassifier(Classifier<T> cls) {
@@ -51,7 +54,7 @@ public class AccuracyEvaluator<T> implements Evaluator<T> {
 		if(trainList != null && testList != null) {
 			long time = System.currentTimeMillis();
 			classifier.train(trainList);
-			System.out.println("trained in "+(System.currentTimeMillis()-time)+"ms.");
+			debug.println(2, "trained in "+(System.currentTimeMillis()-time)+"ms.");
 			time = System.currentTimeMillis();
 			double good = 0;
 			for(TrainingSample<T> t : testList) {
@@ -60,7 +63,7 @@ public class AccuracyEvaluator<T> implements Evaluator<T> {
 					good++;
 			}
 			accuracy = good / (double) testList.size();
-			System.out.println("evaluation done in "+(System.currentTimeMillis()-time)+"ms.");
+			debug.println(2, "evaluation done in "+(System.currentTimeMillis()-time)+"ms.");
 		}
 	}
 
