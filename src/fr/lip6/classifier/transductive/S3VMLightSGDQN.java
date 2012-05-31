@@ -29,6 +29,7 @@ import java.util.TreeSet;
 
 import fr.lip6.classifier.DoubleSGDQN;
 import fr.lip6.type.TrainingSample;
+import fr.lip6.util.DebugPrinter;
 
 /**
  * Fast Linear transductive SVM using a combination of SVMLight and SGDQN algorithms.
@@ -47,6 +48,8 @@ public class S3VMLightSGDQN implements TransductiveClassifier<double[]> {
 	DoubleSGDQN svm;
 	double C = 1.0;
 	double E = 10;
+	
+	DebugPrinter debug = new DebugPrinter();
 	
 	/**
 	 * Default constructor
@@ -76,17 +79,17 @@ public class S3VMLightSGDQN implements TransductiveClassifier<double[]> {
 
 	private void train()
 	{
-		eprintln(2, "training on "+train.size()+" train data and "+test.size()+" test data");
+		debug.println(2, "training on "+train.size()+" train data and "+test.size()+" test data");
 		
 		//first training
-		eprint(3, "first training ");
+		debug.print(3, "first training ");
 		svm = new DoubleSGDQN();
 		DoubleSGDQN.VERBOSE = false;
 		svm.train(train);
-		eprintln(3, " done.");
+		debug.println(3, " done.");
 		
 		//affect numplus highest output to plus class
-		eprintln(3, "affecting 1 to the "+numplus+" highest output");
+		debug.println(3, "affecting 1 to the "+numplus+" highest output");
 		SortedSet<TrainingSample<double[]>> sorted = new TreeSet<TrainingSample<double[]>>(new Comparator<TrainingSample<double[]>>(){
 
 			@Override
@@ -99,7 +102,7 @@ public class S3VMLightSGDQN implements TransductiveClassifier<double[]> {
 			
 		});
 		sorted.addAll(test);
-		eprintln(4, "sorted size : "+sorted.size()+" test size : "+test.size());
+		debug.println(4, "sorted size : "+sorted.size()+" test size : "+test.size());
 		int n = 0;
 		for(TrainingSample<double[]> t : sorted)
 		{
@@ -120,11 +123,11 @@ public class S3VMLightSGDQN implements TransductiveClassifier<double[]> {
 			full.addAll(train);
 			full.addAll(test);
 			
-			eprint(3, "full training ");
+			debug.print(3, "full training ");
 			svm = new DoubleSGDQN();
 			svm.setC((Cminus+Cplus)/2.);
 			svm.train(full);
-			eprintln(3, "done.");
+			debug.println(3, "done.");
 			
 			boolean changed = false;
 			
@@ -138,7 +141,7 @@ public class S3VMLightSGDQN implements TransductiveClassifier<double[]> {
 					double err1 = 1. - t.label * svm.valueOf(t.sample);
 					errorCache.put(t, err1);
 				}
-				eprintln(3, "Error cache done.");
+				debug.println(3, "Error cache done.");
 				
 				// 1 . sort by descending error
 				sorted = new TreeSet<TrainingSample<double[]>>(new Comparator<TrainingSample<double[]>>(){
@@ -157,7 +160,7 @@ public class S3VMLightSGDQN implements TransductiveClassifier<double[]> {
 				sortedList.addAll(sorted);
 				
 				
-				eprintln(3, "sorting done, checking couple");
+				debug.println(3, "sorting done, checking couple");
 				
 				// 2 . test all couple by decreasing error order
 //				for(TrainingSample<T> i1 : sorted)
@@ -170,7 +173,7 @@ public class S3VMLightSGDQN implements TransductiveClassifier<double[]> {
 						TrainingSample<double[]> i2 = sortedList.get(j);
 						if(examine(i1, i2, errorCache))
 						{
-							eprintln(3, "couple found !");
+							debug.println(3, "couple found !");
 							changed = true;
 							break;
 						}
@@ -181,7 +184,7 @@ public class S3VMLightSGDQN implements TransductiveClassifier<double[]> {
 
 				if(changed)
 				{
-					eprintln(3, "re-training");
+					debug.println(3, "re-training");
 					svm = new DoubleSGDQN();
 					svm.setC((Cminus+Cplus)/2.);
 					svm.train(full);
@@ -189,12 +192,12 @@ public class S3VMLightSGDQN implements TransductiveClassifier<double[]> {
 			}
 			while(changed);
 
-			eprintln(3, "increasing C+ : "+Cplus+" and C- : "+Cminus);
+			debug.println(3, "increasing C+ : "+Cplus+" and C- : "+Cminus);
 			Cminus = Math.min(2*Cminus, C);
 			Cplus = Math.min(2 * Cplus, C);
 		}
 		
-		eprintln(2, "training done");
+		debug.println(2, "training done");
 	}
 	
 
@@ -216,7 +219,7 @@ public class S3VMLightSGDQN implements TransductiveClassifier<double[]> {
 		if(err2 <= 0)
 			return false;
 		
-		eprintln(4, "y1 : "+i1.label+" err1 : "+err1+" y2 : "+i2.label+" err2 : "+err2);
+		debug.println(4, "y1 : "+i1.label+" err1 : "+err1+" y2 : "+i2.label+" err2 : "+err2);
 		if(err1 + err2 <= 2)
 			return false;
 		
@@ -248,31 +251,6 @@ public class S3VMLightSGDQN implements TransductiveClassifier<double[]> {
 	 */
 	public void setNumplus(int numplus) {
 		this.numplus = numplus;
-	}
-
-	private int VERBOSITY_LEVEL = 0;
-	
-	/**
-	 * set how verbose SimpleMKL shall be. <br />
-	 * Everything is printed to stderr. <br />
-	 * none : 0 (default), few  : 1, more : 2, all : 3
-	 * @param l
-	 */
-	public void setVerbosityLevel(int l)
-	{
-		VERBOSITY_LEVEL = l;
-	}
-	
-	private void eprint(int level, String s)
-	{
-		if(VERBOSITY_LEVEL >= level)
-			System.err.print(s);
-	}
-	
-	private void eprintln(int level, String s)
-	{
-		if(VERBOSITY_LEVEL >= level)
-			System.err.println(s);
 	}
 
 	/**

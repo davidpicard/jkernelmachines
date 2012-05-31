@@ -39,7 +39,7 @@ public class DebugPrinter {
 	}
 	
 	/**
-	 * Print object to standard error stream iff debug level is 
+	 * Println object to standard error stream iff debug level is 
 	 * more than debug argument
 	 * @param debug level at which to print the message
 	 * @param o the message to print
@@ -49,6 +49,18 @@ public class DebugPrinter {
 			System.err.println(o);
 		}
 	}
+
 	
+	/**
+	 * Print object to standard error stream iff debug level is 
+	 * more than debug argument
+	 * @param debug level at which to print the message
+	 * @param o the message to print
+	 */
+	public void print(int debug, Object o) {
+		if(DEBUG_LEVEL >= debug) {
+			System.err.print(o);
+		}
+	}
 
 }

@@ -28,6 +28,7 @@ import java.util.Random;
 import fr.lip6.density.SMODensity;
 import fr.lip6.kernel.Kernel;
 import fr.lip6.type.TrainingSample;
+import fr.lip6.util.DebugPrinter;
 
 /**
  * <p>
@@ -67,7 +68,7 @@ public class SMOSVM<T> implements Classifier<T>, Serializable, Cloneable {
 	//paramètres du SVM
 	private double C = 1.0e5, b, eps = 1.0e-7, tolerance = 1e-7;
 	
-	
+	DebugPrinter debug = new DebugPrinter();
 	
 	/**
 	 * Constructor using the specified kernel as similarity measure between samples
@@ -162,7 +163,7 @@ public class SMOSVM<T> implements Classifier<T>, Serializable, Cloneable {
 		
 		if(pos > 0 && neg ==0)
 		{
-			eprintln(1, "exemple positifs uniquement, SMODensity choisi");
+			debug.println(1, "exemple positifs uniquement, SMODensity choisi");
 			SMODensity<T> density = new SMODensity<T>(kernel);
 			ArrayList<T> tlist = new ArrayList<T>();
 			for(TrainingSample<T> t: ts)
@@ -174,7 +175,7 @@ public class SMOSVM<T> implements Classifier<T>, Serializable, Cloneable {
 		}
 		else if (pos == 0 && neg > 0)
 		{
-			eprintln(1, "exemple négatifs uniquement, SMODensity choisi");
+			debug.println(1, "exemple négatifs uniquement, SMODensity choisi");
 			SMODensity<T> density = new SMODensity<T>(kernel);
 			ArrayList<T> tlist = new ArrayList<T>();
 			for(TrainingSample<T> t: ts)
@@ -187,10 +188,10 @@ public class SMOSVM<T> implements Classifier<T>, Serializable, Cloneable {
 		}
 		
 		//cache de noyau
-		eprintln(3, "building cache.");
+		debug.println(3, "building cache.");
 		kcache = kernel.getKernelMatrix(ts);
-		eprintln(4, "kcache size : "+kcache.length);
-		eprintln(3, "kcache built.");
+		debug.println(4, "kcache size : "+kcache.length);
+		debug.println(3, "kcache built.");
 		
 		////-----------------------------------------------------------------------------------------
 
@@ -209,7 +210,7 @@ public class SMOSVM<T> implements Classifier<T>, Serializable, Cloneable {
 			}
 			ecache[i] =  (sum - b) - ts.get(i).label;
 		}
-		eprintln(4, "smotrain : ecache="+Arrays.toString(ecache));
+		debug.println(4, "smotrain : ecache="+Arrays.toString(ecache));
 
 		long timeCache = System.currentTimeMillis();
 		
@@ -245,19 +246,19 @@ public class SMOSVM<T> implements Classifier<T>, Serializable, Cloneable {
 			ite++;
 			if (ite > 1000000) 
 			{
-				eprintln(1, "Too many iterations...");
+				debug.println(1, "Too many iterations...");
 				break;
 			}
 			
 			if(ite%10000 == 0)
-				eprintln(1, "iteration : "+ite);
+				debug.println(1, "iteration : "+ite);
 
 		}
 		
 
-		if(VERBOSITY_LEVEL >=4)
+		if(debug.DEBUG_LEVEL >=4)
 		{
-			eprintln(3, "smotrain : after train ecache="+Arrays.toString(ecache));
+			debug.println(3, "smotrain : after train ecache="+Arrays.toString(ecache));
 			double errSum = 0;
 			double alpySum = 0;
 			double alpSum = 0;
@@ -267,7 +268,7 @@ public class SMOSVM<T> implements Classifier<T>, Serializable, Cloneable {
 				alpySum += ts.get(i).label*alpha[i];
 				alpSum += alpha[i];
 			}
-			eprintln(4, "smotrain : after training errSum="+errSum/size+" alpySum="+alpySum+" alpSum="+alpSum);
+			debug.println(4, "smotrain : after training errSum="+errSum/size+" alpySum="+alpySum+" alpSum="+alpSum);
 		}
 		//----------------------------------------------------
 
@@ -277,7 +278,7 @@ public class SMOSVM<T> implements Classifier<T>, Serializable, Cloneable {
 		
 		long timeTrain = System.currentTimeMillis();
 		
-		eprintln(3, "training done in "+ite+" iterations timeCache="+(timeCache - timeStart)+" timeTrain="+(timeTrain-timeCache));
+		debug.println(3, "training done in "+ite+" iterations timeCache="+(timeCache - timeStart)+" timeTrain="+(timeTrain-timeCache));
 		kcache = null; // empty memory
 	}
 	
@@ -447,7 +448,7 @@ public class SMOSVM<T> implements Classifier<T>, Serializable, Cloneable {
 			// To prevent precision problems
 			if (a2nouv > C - eps) {
 				a2nouv = C;
-				eprintln(4, "svm : i1="+i1+" i2="+i2+" a2nouv = C !!! a1nouv="+a1nouv+" a1prec="+a1prec+" a2prec="+a2prec+" eta="+eta+" k12="+k12+" k11="+k11+" k22="+k22+" L="+L+" H="+H+" y1="+y1+" y2="+y2+" s="+s+" E1="+E1+" e2="+E2);
+				debug.println(4, "svm : i1="+i1+" i2="+i2+" a2nouv = C !!! a1nouv="+a1nouv+" a1prec="+a1prec+" a2prec="+a2prec+" eta="+eta+" k12="+k12+" k11="+k11+" k22="+k22+" L="+L+" H="+H+" y1="+y1+" y2="+y2+" s="+s+" E1="+E1+" e2="+E2);
 			} else if (a2nouv <= eps) {
 				a2nouv = 0;
 			}
@@ -458,7 +459,7 @@ public class SMOSVM<T> implements Classifier<T>, Serializable, Cloneable {
 			else if(a1nouv > C - eps)
 			{
 				a1nouv = C;
-				eprintln(4, "svm : i1="+i1+" i2="+i2+" a1nouv = C !!! a2nouv="+a2nouv+" a1prec="+a1prec+" a2prec="+a2prec+" eta="+eta+" k12="+k12+" k11="+k11+" k22="+k22+" L="+L+" H="+H+" y1="+y1+" y2="+y2+" s="+s+" E1="+E1+" e2="+E2);
+				debug.println(4, "svm : i1="+i1+" i2="+i2+" a1nouv = C !!! a2nouv="+a2nouv+" a1prec="+a1prec+" a2prec="+a2prec+" eta="+eta+" k12="+k12+" k11="+k11+" k22="+k22+" L="+L+" H="+H+" y1="+y1+" y2="+y2+" s="+s+" E1="+E1+" e2="+E2);
 			}
 			
 
@@ -617,24 +618,5 @@ public class SMOSVM<T> implements Classifier<T>, Serializable, Cloneable {
 	public Object clone() throws CloneNotSupportedException
 	{
 		return super.clone();
-	}
-
-	private int VERBOSITY_LEVEL = 0;
-	
-	/**
-	 * set how verbose SimpleMKL shall be. <br />
-	 * Everything is printed to stderr. <br />
-	 * none : 0 (default), few  : 1, more : 2, all : 3
-	 * @param l
-	 */
-	public void setVerbosityLevel(int l)
-	{
-		VERBOSITY_LEVEL = l;
-	}
-		
-	private void eprintln(int level, String s)
-	{
-		if(VERBOSITY_LEVEL >= level)
-			System.err.println(s);
 	}
 }

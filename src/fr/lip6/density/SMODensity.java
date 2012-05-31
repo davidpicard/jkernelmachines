@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Logger;
 
 import fr.lip6.kernel.Kernel;
+import fr.lip6.util.DebugPrinter;
 
 /**
  * Density function based on SMO algorithm.
@@ -50,8 +50,7 @@ public class SMODensity<T> implements DensityFunction<T>, Serializable {
 	
 	private int size;
 	
-	static private Logger logger = Logger.getLogger(SMODensity.class.toString()); 
-	
+	DebugPrinter debug = new DebugPrinter();
 
 	//parametres
 	private final double epsilon=0.001;
@@ -145,12 +144,12 @@ public class SMODensity<T> implements DensityFunction<T>, Serializable {
 			ite++;
 			if (ite > 1000000) 
 			{
-				eprintln(1, "Too many iterations...");
+				debug.println(2, "Too many iterations...");
 				break;
 			}
 		}
 		
-		logger.info("trained in "+ite+" iterations.");
+		debug.println(1, "trained in "+ite+" iterations.");
 		
 	}
 	
@@ -325,25 +324,6 @@ public class SMODensity<T> implements DensityFunction<T>, Serializable {
 	 */
 	public void setC(double c) {
 		C = c;
-	}
-	
-	private int VERBOSITY_LEVEL = 0;
-	
-	/**
-	 * set how verbose SimpleMKL shall be. <br />
-	 * Everything is printed to stderr. <br />
-	 * none : 0 (default), few  : 1, more : 2, all : 3
-	 * @param l
-	 */
-	public void setVerbosityLevel(int l)
-	{
-		VERBOSITY_LEVEL = l;
-	}
-		
-	private void eprintln(int level, String s)
-	{
-		if(VERBOSITY_LEVEL >= level)
-			System.err.println(s);
 	}
 
 }

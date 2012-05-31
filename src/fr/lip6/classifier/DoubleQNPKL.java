@@ -36,6 +36,7 @@ import fr.lip6.kernel.typed.GeneralizedDoubleGaussL2;
 import fr.lip6.threading.ThreadPoolServer;
 import fr.lip6.threading.ThreadedMatrixOperator;
 import fr.lip6.type.TrainingSample;
+import fr.lip6.util.DebugPrinter;
 
 /**
  * <p>
@@ -58,6 +59,8 @@ public class DoubleQNPKL implements Classifier<double[]> {
 	List<Double> listOfExampleWeights;
 	List<Double> listOfKernelWeights;
 	int dim = 0;
+	
+	DebugPrinter debug = new DebugPrinter();
 
 	
 	LaSVM<double[]> svm;
@@ -102,7 +105,7 @@ public class DoubleQNPKL implements Classifier<double[]> {
 
 		long tim = System.currentTimeMillis();
 		dim = l.get(0).sample.length;
-		eprintln(2, "training on "+dim+" kernels and "+l.size()+" examples");
+		debug.println(2, "training on "+dim+" kernels and "+l.size()+" examples");
 		
 		//0. init lists
 		listOfExamples = new ArrayList<TrainingSample<double[]>>();
@@ -128,8 +131,8 @@ public class DoubleQNPKL implements Classifier<double[]> {
 		updateLambdaMatrix(a, kernel);
 		//compute old value of objective function
 		oldObjective = computeObj(a);
-		eprintln(2, "+ initial objective : "+oldObjective);
-		eprintln(3, "+ initial weights : "+Arrays.toString(weights));
+		debug.println(2, "+ initial objective : "+oldObjective);
+		debug.println(3, "+ initial weights : "+Arrays.toString(weights));
 		
 		//2. big loop
 		double gap = 0;
@@ -140,13 +143,13 @@ public class DoubleQNPKL implements Classifier<double[]> {
 			
 			if(objEvol < 0)
 			{
-				eprintln(1, "Error, performPKLStep return wrong value");
+				debug.println(1, "Error, performPKLStep return wrong value");
 				System.exit(0);;
 			}
 			gap = 1 - objEvol;
 			
-			eprintln(1, "+ objective_gap : "+(float)gap);
-			eprintln(1, "+");
+			debug.println(1, "+ objective_gap : "+(float)gap);
+			debug.println(1, "+");
 			
 		}
 		while(gap >= stopGap);
@@ -164,7 +167,7 @@ public class DoubleQNPKL implements Classifier<double[]> {
 		
 		//3. compute obj
 		double obj = computeObj(a);
-		eprintln(2, "+ final objective : "+obj);
+		debug.println(2, "+ final objective : "+obj);
 		
 		//4. save examples weights
 		listOfExamples.addAll(l);
@@ -172,8 +175,8 @@ public class DoubleQNPKL implements Classifier<double[]> {
 		for(double d : svm.getAlphas())
 			listOfExampleWeights.add(d);
 
-		eprintln(3, "kernel weights : "+listOfKernelWeights);
-		eprintln(1, "PKL trained in "+(System.currentTimeMillis()-tim)+" milis.");
+		debug.println(3, "kernel weights : "+listOfKernelWeights);
+		debug.println(1, "PKL trained in "+(System.currentTimeMillis()-tim)+" milis.");
 		//stop threads
 		ThreadPoolServer.shutdownNow();
 	}
@@ -238,7 +241,7 @@ public class DoubleQNPKL implements Classifier<double[]> {
 			//4. check for decrease
 			if(obj >= objective)
 			{
-				eprint(3, ".");
+				debug.print(3, ".");
 				lambda /= 10;
 			}
 			else
@@ -248,7 +251,7 @@ public class DoubleQNPKL implements Classifier<double[]> {
 				//store weights
 				weights = wNew;				
 			}			
-			eprintln(3, "");
+			debug.println(3, "");
 		}while(lambda > num_cleaning);
 		
 		//store gradient
@@ -260,7 +263,7 @@ public class DoubleQNPKL implements Classifier<double[]> {
 		for(int x = 0 ; x < weights.length ; x++)
 			diffWeights[x] = weights[x] - oldWeights[x];
 		
-		eprintln(3, "++++++ w : "+Arrays.toString(weights));
+		debug.println(3, "++++++ w : "+Arrays.toString(weights));
 		
 		//store new Objective
 		double gap = objective / oldObjective;
@@ -277,7 +280,7 @@ public class DoubleQNPKL implements Classifier<double[]> {
 	/** calcul du gradient en chaque beta */
 	private double[] computeGrad(GeneralizedDoubleGaussL2 kernel)
 	{
-		eprint(3, "++++++ g : ");
+		debug.print(3, "++++++ g : ");
 		final double grad[] = new double[dim];
 		//l1 regularizer
 //		Arrays.fill(grad, dim);
@@ -331,7 +334,7 @@ public class DoubleQNPKL implements Classifier<double[]> {
 			if(Math.abs(grad[i]) < num_cleaning)
 				grad[i] = 0.0;
 		
-		eprintln(3,Arrays.toString(grad));
+		debug.println(3,Arrays.toString(grad));
 		return grad;
 	}
 	
@@ -350,16 +353,16 @@ public class DoubleQNPKL implements Classifier<double[]> {
 			for(int x = 0 ; x < g.length ; x++)
 			{
 				double b = (gNew[x] - g[x]);
-				eprint(3, " gn-g : "+b+" wn-w : "+diffWeights[x]);
+				debug.print(3, " gn-g : "+b+" wn-w : "+diffWeights[x]);
 				if(b != 0)
 					b = diffWeights[x] / b;
-				eprintln(3, " b : "+b);
+				debug.println(3, " b : "+b);
 				B[x] = Math.max(num_cleaning, b); // positive curvature only
 				//B[x] = Math.min(b, 1.0/d_lambda); // axis cooling only
 			}
 		}
 
-		eprintln(3, "++++++ B : "+Arrays.toString(B));
+		debug.println(3, "++++++ B : "+Arrays.toString(B));
 		return B;
 	}
 	
@@ -386,7 +389,7 @@ public class DoubleQNPKL implements Classifier<double[]> {
 			}
 		}
 		double obj = obj1 - 0.5*obj3; 
-		eprintln(3, "+++ obj : "+obj+"\t(obj1 : "+obj1+" obj3 : "+(-.5*obj3)+")");
+		debug.println(3, "+++ obj : "+obj+"\t(obj1 : "+obj1+" obj3 : "+(-.5*obj3)+")");
 		return obj;
 	}
 	
@@ -396,7 +399,7 @@ public class DoubleQNPKL implements Classifier<double[]> {
 		final double [][] matrix = kernel.getKernelMatrix(listOfExamples);
 		if(lambda_matrix == null)
 			lambda_matrix = new double[matrix.length][matrix.length];
-		eprintln(3, "+ update lambda matrix");
+		debug.println(3, "+ update lambda matrix");
 		
 		ThreadedMatrixOperator factory = new ThreadedMatrixOperator()
 		{
@@ -433,7 +436,7 @@ public class DoubleQNPKL implements Classifier<double[]> {
 		LaSVM<double[]> svm = new LaSVM<double[]>(kernel);
 		svm.setC(C);
 		svm.setE(2);
-		eprintln(3, "+ training svm");
+		debug.println(3, "+ training svm");
 		svm.train(listOfExamples);
 		return svm;
 	}
@@ -445,34 +448,6 @@ public class DoubleQNPKL implements Classifier<double[]> {
 		return svm.valueOf(e);
 	}
 	
-
-	private int VERBOSITY_LEVEL = 0;
-	
-	/**
-	 * set how verbose QNPKL shall be. <br />
-	 * Everything is printed to stderr. <br />
-	 * none : 0 (default), few  : 1, more : 2, all : 3
-	 * @param l
-	 */
-	public void setVerbosityLevel(int l)
-	{
-		VERBOSITY_LEVEL = l;
-	}
-
-	/** print() for given debug level */
-	public void eprint(int level, String s)
-	{
-		if(VERBOSITY_LEVEL >= level)
-			System.err.print(s);
-	}
-	
-	/** println() for given debug level */
-	public void eprintln(int level, String s)
-	{
-		if(VERBOSITY_LEVEL >= level)
-			System.err.println(s);
-	}
-
 	/**
 	 * Tells the hyperparameter C
 	 */

@@ -28,6 +28,7 @@ import fr.lip6.kernel.Kernel;
 import fr.lip6.kernel.SimpleCacheKernel;
 import fr.lip6.kernel.adaptative.ThreadedSumKernel;
 import fr.lip6.type.TrainingSample;
+import fr.lip6.util.DebugPrinter;
 
 /**
  * MKL algorithm using a naive gradient descent.
@@ -49,6 +50,8 @@ public class GradMKL<T> implements Classifier<T> {
 	double num_cleaning = 1e-7;
 	double p_norm = 2;
 	double C = 1e5;
+	
+	DebugPrinter debug = new DebugPrinter();
 	
 	
 	public GradMKL()
@@ -75,7 +78,7 @@ public class GradMKL<T> implements Classifier<T> {
 	public void train(List<TrainingSample<T>> l) {
 
 		long tim = System.currentTimeMillis();
-		eprintln(2, "training on "+listOfKernels.size()+" kernels and "+l.size()+" examples");
+		debug.println(2, "training on "+listOfKernels.size()+" kernels and "+l.size()+" examples");
 		
 		//1. init kernels
 		ArrayList<SimpleCacheKernel<T>> kernels = new ArrayList<SimpleCacheKernel<T>>();
@@ -102,7 +105,7 @@ public class GradMKL<T> implements Classifier<T> {
 			}
 			kernels.add(sck);
 			weights.add(Math.pow(1/(double)listOfKernels.size(), 1/(double)p_norm));
-			eprintln(3, "kernel : "+sck+" weight : "+weights.get(i));
+			debug.println(3, "kernel : "+sck+" weight : "+weights.get(i));
 		}
 		
 		
@@ -112,14 +115,13 @@ public class GradMKL<T> implements Classifier<T> {
 			tsk.addKernel(kernels.get(i), weights.get(i));
 		svm = new SMOSVM<T>(tsk);
 		svm.setC(C);
-		svm.setVerbosityLevel(VERBOSITY_LEVEL);
 		svm.train(l);
 		
 		//2. big loop
 		double gap = 0;
 		do
 		{
-			eprintln(3, "weights : "+weights);
+			debug.println(3, "weights : "+weights);
 			//compute sum kernel
 			tsk = new ThreadedSumKernel<T>();
 			for(int i = 0 ; i < kernels.size(); i++)
@@ -138,7 +140,7 @@ public class GradMKL<T> implements Classifier<T> {
 			
 			if(objEvol < 0)
 			{
-				eprintln(1, "Error, performMKLStep return wrong value");
+				debug.println(1, "Error, performMKLStep return wrong value");
 				System.exit(0);;
 			}
 			gap = 1 - objEvol;
@@ -149,7 +151,7 @@ public class GradMKL<T> implements Classifier<T> {
 				norm += Math.pow(weights.get(i), p_norm);
 			norm = Math.pow(norm, -1/(double)p_norm);
 			
-			eprintln(1, "objective_gap : "+gap+" norm : "+norm);
+			debug.println(1, "objective_gap : "+gap+" norm : "+norm);
 			
 		}
 		while(gap >= stopGap);
@@ -173,19 +175,19 @@ public class GradMKL<T> implements Classifier<T> {
 		for(double d : svm.getAlphas())
 			listOfExampleWeights.add(d);
 
-		eprintln(1, "MKL trained in "+(System.currentTimeMillis()-tim)+" milis.");
+		debug.println(1, "MKL trained in "+(System.currentTimeMillis()-tim)+" milis.");
 	}
 	
 	private double performMKLStep(double suma, double[] grad, ArrayList<SimpleCacheKernel<T>> kernels, ArrayList<Double> weights, List<TrainingSample<T>> l)
 	{
-		eprint(2, ".");
+		debug.print(2, ".");
 		//compute objective function
 		double oldObjective = +suma;
 		for(int i = 0 ; i < grad.length; i++)
 		{
 			oldObjective -= weights.get(i)*grad[i]; 
 		}
-		eprintln(3, "oldObjective : "+oldObjective+" sumAlpha : "+suma);
+		debug.println(3, "oldObjective : "+oldObjective+" sumAlpha : "+suma);
 		
 		//compute optimal step
 		double newBeta[] = new double[grad.length];
@@ -208,7 +210,7 @@ public class GradMKL<T> implements Classifier<T> {
 		norm = Math.pow(norm, -1/(double)p_norm);
 		if(norm < 0)
 		{
-			eprintln(1, "Error normalization, norm < 0");
+			debug.println(1, "Error normalization, norm < 0");
 			return -1;
 		}
 		for(int i = 0 ; i < newBeta.length; i++)
@@ -221,7 +223,7 @@ public class GradMKL<T> implements Classifier<T> {
 		R = Math.sqrt(R/(double)p_norm) * eps_regul;
 		if(R < 0)
 		{
-			eprintln(1, "Error regularization, R < 0");
+			debug.println(1, "Error regularization, R < 0");
 			return -1;
 		}
 		norm = 0;
@@ -235,7 +237,7 @@ public class GradMKL<T> implements Classifier<T> {
 		norm = Math.pow(norm, -1/(double)p_norm);
 		if(norm < 0)
 		{
-			eprintln(1, "Error normalization, norm < 0");
+			debug.println(1, "Error normalization, norm < 0");
 			return -1;
 		}
 		for(int i = 0 ; i < newBeta.length; i++)
@@ -251,7 +253,7 @@ public class GradMKL<T> implements Classifier<T> {
 		{
 			objective -= weights.get(i)*grad[i]; 
 		}
-		eprintln(3, "objective : "+objective+" sumAlpha : "+suma);
+		debug.println(3, "objective : "+objective+" sumAlpha : "+suma);
 		
 		//return objective evolution
 		return objective/oldObjective;
@@ -279,7 +281,7 @@ public class GradMKL<T> implements Classifier<T> {
 			}
 		}
 		
-		eprint(3, "gradDir : "+Arrays.toString(grad));
+		debug.print(3, "gradDir : "+Arrays.toString(grad));
 		
 		return grad;
 	}
@@ -300,32 +302,6 @@ public class GradMKL<T> implements Classifier<T> {
 		return svm.valueOf(e);
 	}
 	
-
-	private int VERBOSITY_LEVEL = 0;
-	
-	/**
-	 * set how verbose SimpleMKL shall be. <br />
-	 * Everything is printed to stderr. <br />
-	 * none : 0 (default), few  : 1, more : 2, all : 3
-	 * @param l
-	 */
-	public void setVerbosityLevel(int l)
-	{
-		VERBOSITY_LEVEL = l;
-	}
-	
-	public void eprint(int level, String s)
-	{
-		if(VERBOSITY_LEVEL >= level)
-			System.err.print(s);
-	}
-	
-	public void eprintln(int level, String s)
-	{
-		if(VERBOSITY_LEVEL >= level)
-			System.err.println(s);
-	}
-
 	public double getC() {
 		return C;
 	}

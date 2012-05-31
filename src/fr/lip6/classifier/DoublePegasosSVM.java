@@ -28,6 +28,7 @@ import java.util.List;
 
 import fr.lip6.kernel.typed.DoubleLinear;
 import fr.lip6.type.TrainingSample;
+import fr.lip6.util.DebugPrinter;
 
 /**
  * <p>
@@ -63,7 +64,7 @@ public class DoublePegasosSVM implements Classifier<double[]>, Serializable{
 	double C = 1;
 	boolean hasC = false;
 	
-
+	DebugPrinter debug = new DebugPrinter();
 	
 	
 	/* (non-Javadoc)
@@ -89,7 +90,7 @@ public class DoublePegasosSVM implements Classifier<double[]>, Serializable{
 		if(hasC)
 			lambda = 1.0 / (C * tList.size());
 		
-		eprintln(1, "begin training");
+		debug.println(1, "begin training");
 		long time = System.currentTimeMillis();
 		List<Integer> intList = new ArrayList<Integer>();
 		long tLsize = tList.size();
@@ -166,16 +167,16 @@ public class DoublePegasosSVM implements Classifier<double[]>, Serializable{
 			else
 				b = 0;
 
-			eprintln(4, "w : "+Arrays.toString(w)+" b : "+b);
+			debug.println(4, "w : "+Arrays.toString(w)+" b : "+b);
 			if(T>20 && i%(T/20) == 0)
-				eprint(2, ".");
+				debug.print(2, ".");
 			
 		}
-		eprintln(2, "");
+		debug.println(2, "");
 	
 		
-		eprintln(1, "done in "+(System.currentTimeMillis()-time)+" ms");
-		eprintln(3, "w : "+Arrays.toString(w)+" b : "+b);
+		debug.println(1, "done in "+(System.currentTimeMillis()-time)+" ms");
+		debug.println(3, "w : "+Arrays.toString(w)+" b : "+b);
 	}
 
 	/* (non-Javadoc)
@@ -305,46 +306,7 @@ public class DoublePegasosSVM implements Classifier<double[]>, Serializable{
 	public void setBias(boolean bias) {
 		this.bias = bias;
 	}
-
-
-
-	/**
-	 * level of verbosity of this classifier
-	 */
-	private int VERBOSITY_LEVEL = 0;
 	
-	/**
-	 * set how verbose this classifier shall be. <br />
-	 * Everything is printed to stderr. <br />
-	 * none : 0 (default), few  : 1, more : 2, all : 3
-	 * @param l
-	 */
-	public void setVerbosityLevel(int l)
-	{
-		VERBOSITY_LEVEL = l;
-	}
-	
-	/**
-	 * print errors on error stream if VERBOSITY_LEVEL is greater than level
-	 * @param level VERBOSITY_LEVEL required for the display
-	 * @param s String to print
-	 */
-	private void eprint(int level, String s)
-	{
-		if(VERBOSITY_LEVEL >= level)
-			System.err.print(s);
-	}
-	
-	/**
-	 * Same as {@eprint} with a line feed.
-	 * @param level
-	 * @param s
-	 */
-	private void eprintln(int level, String s)
-	{
-		if(VERBOSITY_LEVEL >= level)
-			System.err.println(s);
-	}
 
 	/**
 	 * Tells the iteration offset

@@ -31,6 +31,7 @@ import fr.lip6.kernel.Kernel;
 import fr.lip6.threading.ThreadPoolServer;
 import fr.lip6.threading.ThreadedMatrixOperator;
 import fr.lip6.type.TrainingSample;
+import fr.lip6.util.DebugPrinter;
 
 /**
  * <p>
@@ -70,6 +71,8 @@ public final class LaSVM<T> implements Classifier<T> {
 	private static final double tau = 1e-15;
 	
 	private static final int initSampling = 5;
+	
+	DebugPrinter debug = new DebugPrinter();
 	
 	/**
 	 * Constructor with specific kernel
@@ -132,7 +135,7 @@ public final class LaSVM<T> implements Classifier<T> {
 		int iter = 100000;
 		while(optim(-1, -1) && iter-- > 0);
 		if(iter == 0)
-			eprintln("*** lasvm : too much reprocess.");
+			debug.println(2, "*** lasvm : too much reprocess.");
 		reprocess();
 		
 		//clear non sv
@@ -188,7 +191,7 @@ public final class LaSVM<T> implements Classifier<T> {
 		int iter = 100000;
 		while(optim(-1, -1) && iter-- > 0);
 		if(iter == 0)
-			eprintln("*** lasvm : too much reprocess.");
+			debug.println(2, "*** lasvm : too much reprocess.");
 		reprocess();
 		
 
@@ -448,12 +451,6 @@ public final class LaSVM<T> implements Classifier<T> {
 	 */
 	public double getTau() {
 		return tau;
-	}
-
-
-	final private void eprintln(Object o)
-	{
-		System.out.println(o);
 	}
 
 	/**

@@ -33,6 +33,7 @@ import fr.lip6.kernel.adaptative.ThreadedSumKernel;
 import fr.lip6.threading.ThreadPoolServer;
 import fr.lip6.threading.ThreadedMatrixOperator;
 import fr.lip6.type.TrainingSample;
+import fr.lip6.util.DebugPrinter;
 
 /**
  * <p>
@@ -62,6 +63,7 @@ public class SimpleMKL<T> implements Classifier<T> {
 	private LaSVM<T> svm;
 	
 	private DecimalFormat format = new DecimalFormat("#0.0000");
+	DebugPrinter debug = new DebugPrinter();
 
 	public SimpleMKL()
 	{
@@ -113,8 +115,8 @@ public class SimpleMKL<T> implements Classifier<T> {
 		retrainSVM(tsk, l);
 		double oldObj = svmObj(km, dm, l);
 		ArrayList<Double> grad = gradSVM(km, dm, l);
-		eprintln(1, "iter \t | \t obj \t\t | \t dualgap \t | \t KKT");
-		eprintln(1, "init \t | \t "+format.format(oldObj)+" \t | \t "+Double.NaN+" \t\t | \t "+Double.NaN);
+		debug.println(1, "iter \t | \t obj \t\t | \t dualgap \t | \t KKT");
+		debug.println(1, "init \t | \t "+format.format(oldObj)+" \t | \t "+Double.NaN+" \t\t | \t "+Double.NaN);
 		
 		//------------------------------
 		//			START
@@ -147,13 +149,13 @@ public class SimpleMKL<T> implements Classifier<T> {
 				dm.set(i, d/sum);
 			}
 			//verbosity
-			eprintln(3, "loop : dm after cleaning = "+dm);
+			debug.println(3, "loop : dm after cleaning = "+dm);
 			
 			//------------------------------
 			//	approximate KTT condition
 			//------------------------------
 			grad = gradSVM(km, dm, l);
-			eprintln(3, "loop : grad = "+grad);
+			debug.println(3, "loop : grad = "+grad);
 			
 			//searching min and max grad for non nul dm
 			double gMin = Double.POSITIVE_INFINITY, gMax = Double.NEGATIVE_INFINITY;
@@ -170,7 +172,7 @@ public class SimpleMKL<T> implements Classifier<T> {
 				}
 			}
 			double kttConstraint = Math.abs((gMin-gMax)/gMin);
-			eprintln(3, "Condition check : KTT gmin = "+gMin+" gmax = "+gMax);
+			debug.println(3, "Condition check : KTT gmin = "+gMin+" gmax = "+gMax);
 			//searching grad min over zeros dm
 			double gZeroMin = Double.POSITIVE_INFINITY;
 			for(int i = 0 ; i < km.size(); i++)
@@ -210,8 +212,8 @@ public class SimpleMKL<T> implements Classifier<T> {
 			//		Verbosity
 			//--------------------------------
 			
-			eprintln(1, "iter \t | \t obj \t\t | \t dualgap \t | \t KKT");
-			eprintln(1, iteration+" \t | \t "+format.format(newObj)+" \t | \t "+format.format(dualGap)+" \t | \t "+format.format(kttConstraint));
+			debug.println(1, "iter \t | \t obj \t\t | \t dualgap \t | \t KKT");
+			debug.println(1, iteration+" \t | \t "+format.format(newObj)+" \t | \t "+format.format(dualGap)+" \t | \t "+format.format(kttConstraint));
 			
 			
 			
@@ -222,19 +224,19 @@ public class SimpleMKL<T> implements Classifier<T> {
 			//ktt
 			if(kttConstraint < epsKTT && kttZero && checkKTT)
 			{
-				eprintln(1, "KTT conditions met, possible stoping");
+				debug.println(1, "KTT conditions met, possible stoping");
 				stop = true;
 			}
 			//dualgap
 			if(dualGap < epsDG && checkDualGap)
 			{
-				eprintln(1, "DualGap reached, possible stoping");
+				debug.println(1, "DualGap reached, possible stoping");
 				stop = true;
 			}
 			//stagnant gradient
 			if(Math.abs(oldObj - newObj) < numPrec)
 			{
-				eprintln(1, "No improvement during iteration, stoping (old : "+oldObj+" new : "+newObj+")");
+				debug.println(1, "No improvement during iteration, stoping (old : "+oldObj+" new : "+newObj+")");
 				stop = true;
 			}
 			if(stop)
@@ -265,22 +267,22 @@ public class SimpleMKL<T> implements Classifier<T> {
 	private double svmObj(List<SimpleCacheKernel<T>> km,
 			List<Double> dm, final List<TrainingSample<T>> l) {
 
-		eprint(3, "[");
+		debug.print(3, "[");
 		//creating kernel
 		ThreadedSumKernel<T> k = buildKernel(km, dm);
 		SimpleCacheKernel<T> csk = new SimpleCacheKernel<T>(k, l);
 		double kmatrix[][] = csk.getKernelMatrix(l);
 
 		
-		eprint(3, "-");
+		debug.print(3, "-");
 		//updating svm
 		retrainSVM(csk, l);
 		final double alp[] = svm.getAlphas();
-		eprint(3, "-");
+		debug.print(3, "-");
 		
 		//verbosity
-		eprintln(4, "svmObj : alphas = "+Arrays.toString(alp));
-		eprintln(4, "svmObj : b="+svm.getB());
+		debug.println(4, "svmObj : alphas = "+Arrays.toString(alp));
+		debug.println(4, "svmObj : b="+svm.getB());
 				
 		//parallelized
 		final double[] resLine = new double[kmatrix.length];
@@ -315,14 +317,14 @@ public class SimpleMKL<T> implements Classifier<T> {
 		
 		double obj = -0.5 * obj1 + obj2;
 		
-		eprint(3, "]");
+		debug.print(3, "]");
 		
 		if(obj < 0)
 		{
-			eprintln(1, "A fatal error occured, please report to picard@ensea.fr");
-			eprintln(1, "error obj : "+obj+" obj1:"+obj1+" obj2:"+obj2);
-			eprintln(1, "alp : "+Arrays.toString(alp));
-			eprintln(1, "resline : "+Arrays.toString(resLine));
+			debug.println(1, "A fatal error occured, please report to picard@ensea.fr");
+			debug.println(1, "error obj : "+obj+" obj1:"+obj1+" obj2:"+obj2);
+			debug.println(1, "alp : "+Arrays.toString(alp));
+			debug.println(1, "resline : "+Arrays.toString(resLine));
 			System.exit(0);
 			return Double.POSITIVE_INFINITY;
 		}
@@ -440,8 +442,8 @@ public class SimpleMKL<T> implements Classifier<T> {
 		}
 		desc.set(indMax, sum); // NB : grad.get(indMax) == 0
 		//verbosity
-		eprintln(3, "mklupdate : grad = "+grad);
-		eprintln(3, "mklupdate : desc = "+desc);
+		debug.println(3, "mklupdate : grad = "+grad);
+		debug.println(3, "mklupdate : desc = "+desc);
 		
 		//optimal stepsize
 		double stepMax = Double.POSITIVE_INFINITY;
@@ -471,7 +473,7 @@ public class SimpleMKL<T> implements Classifier<T> {
 			}
 			
 			//verbosity
-			eprintln(3, "* descent : dm = "+dmNew);
+			debug.println(3, "* descent : dm = "+dmNew);
 			
 			costMax = svmObj(km, dmNew, l);
 			
@@ -520,12 +522,12 @@ public class SimpleMKL<T> implements Classifier<T> {
 			}
 			
 			//verbosity
-			eprint(2, "*");
-			eprintln(3, " descent : costMin : "+costMin+" costOld : "+costOld+" stepMax : "+stepMax);
+			debug.print(2, "*");
+			debug.println(3, " descent : costMin : "+costMin+" costOld : "+costOld+" stepMax : "+stepMax);
 		}
 
 		//verbosity
-		eprintln(3, "mklupdate : dm after descent = "+dm);
+		debug.println(3, "mklupdate : dm after descent = "+dm);
 		
 		//-------------------------------------
 		//		Golden Search
@@ -596,9 +598,9 @@ public class SimpleMKL<T> implements Classifier<T> {
 				}
 			}
 			
-			eprintln(3, "golden search : cost = ["+costMin+" "+costMedL+" "+costMedR+" "+costMax+"]");
-			eprintln(3, "golden search : step = ["+stepMin+" "+stepMedL+" "+stepMedR+" "+stepMax+"]");
-			eprintln(3, "golden search : costOpt="+cost.get(indMin)+" costOld="+costOld);
+			debug.println(3, "golden search : cost = ["+costMin+" "+costMedL+" "+costMedR+" "+costMax+"]");
+			debug.println(3, "golden search : step = ["+stepMin+" "+stepMedL+" "+stepMedR+" "+stepMax+"]");
+			debug.println(3, "golden search : costOpt="+cost.get(indMin)+" costOld="+costOld);
 			
 			//update search
 			switch(indMin)
@@ -620,16 +622,16 @@ public class SimpleMKL<T> implements Classifier<T> {
 					costMin = costMedR;
 					break;	
 				default:
-					eprintln(1, "Error in golden search.");
+					debug.println(1, "Error in golden search.");
 					return costMin;
 			}
 			
 			//verbosity
-			eprint(2, ".");
+			debug.print(2, ".");
 			
 		}
 		//verbosity
-		eprintln(2, "");
+		debug.println(2, "");
 		
 		//final update
 		double costNew = cost.get(indMin);
@@ -653,7 +655,7 @@ public class SimpleMKL<T> implements Classifier<T> {
 		retrainSVM(tsk, l);
 		
 		//verbosity
-		eprint(3, "mklupdate : dm = "+dmOld);
+		debug.print(3, "mklupdate : dm = "+dmOld);
 		
 		return costNew;
 	}
@@ -666,7 +668,7 @@ public class SimpleMKL<T> implements Classifier<T> {
 			if(dm.get(i) > numPrec)
 				tsk.addKernel(km.get(i), dm.get(i));
 		long stopTime = System.currentTimeMillis() - startTime;
-		eprintln(3, "building kernel : time="+stopTime);
+		debug.println(3, "building kernel : time="+stopTime);
 		return tsk;
 	}
 	
@@ -735,31 +737,6 @@ public class SimpleMKL<T> implements Classifier<T> {
 	 */
 	public void setC(double c) {
 		C = c;
-	}
-
-	private int VERBOSITY_LEVEL = 0;
-	
-	/**
-	 * set how verbose SimpleMKL shall be. <br />
-	 * Everything is printed to stderr. <br />
-	 * none : 0 (default), few  : 1, more : 2, all : 3
-	 * @param l
-	 */
-	public void setVerbosityLevel(int l)
-	{
-		VERBOSITY_LEVEL = l;
-	}
-	
-	private void eprint(int level, String s)
-	{
-		if(VERBOSITY_LEVEL >= level)
-			System.err.print(s);
-	}
-	
-	private void eprintln(int level, String s)
-	{
-		if(VERBOSITY_LEVEL >= level)
-			System.err.println(s);
 	}
 
 	/**
