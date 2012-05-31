@@ -148,7 +148,7 @@ public final class LaSVM<T> implements Classifier<T> {
 		minmax();
 		b = (gmax + gmin) /2;
 		
-		if(tarray == null)
+		if(tarray == null || tarray.length < tlist.size())
 			tarray = (T[]) new Object[tlist.size()];
 		for(int i = 0 ; i < tarray.length ; i++)
 			tarray[i] = tlist.get(i).sample;
