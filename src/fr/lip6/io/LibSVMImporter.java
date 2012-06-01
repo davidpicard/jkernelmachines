@@ -30,6 +30,11 @@ import java.util.StringTokenizer;
 
 import fr.lip6.type.TrainingSample;
 
+/**
+ *  Simple class to import data in libsvm format.
+ * @author picard
+ *
+ */
 public class LibSVMImporter {
 
 	public static List<TrainingSample<double[]>> importFromFile(String filename)

@@ -26,6 +26,11 @@ import fr.lip6.density.ParzenDensity;
 import fr.lip6.density.SMODensity;
 import fr.lip6.kernel.typed.DoubleGaussL2;
 
+/**
+ * Test cases of density estimators using generated data.
+ * @author picard
+ *
+ */
 public class TestDensity {
 
 	/**

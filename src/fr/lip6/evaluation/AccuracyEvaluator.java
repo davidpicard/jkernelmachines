@@ -25,6 +25,11 @@ import fr.lip6.classifier.Classifier;
 import fr.lip6.type.TrainingSample;
 import fr.lip6.util.DebugPrinter;
 
+/**
+ * Simple evaluation class for computing the accuracy on a testing set.
+ *
+ * @param <T> the type of data samples
+ */
 public class AccuracyEvaluator<T> implements Evaluator<T> {
 
 	Classifier<T> classifier;
@@ -34,21 +39,33 @@ public class AccuracyEvaluator<T> implements Evaluator<T> {
 	
 	DebugPrinter debug = new DebugPrinter();
 	
+	/* (non-Javadoc)
+	 * @see fr.lip6.evaluation.Evaluator#setClassifier(fr.lip6.classifier.Classifier)
+	 */
 	@Override
 	public void setClassifier(Classifier<T> cls) {
 		classifier = cls;
 	}
 
+	/* (non-Javadoc)
+	 * @see fr.lip6.evaluation.Evaluator#setTrainingSet(java.util.List)
+	 */
 	@Override
 	public void setTrainingSet(List<TrainingSample<T>> trainlist) {
 		this.trainList = trainlist;
 	}
 
+	/* (non-Javadoc)
+	 * @see fr.lip6.evaluation.Evaluator#setTestingSet(java.util.List)
+	 */
 	@Override
 	public void setTestingSet(List<TrainingSample<T>> testlist) {
 		this.testList = testlist;
 	}
 
+	/* (non-Javadoc)
+	 * @see fr.lip6.evaluation.Evaluator#evaluate()
+	 */
 	@Override
 	public void evaluate() {
 		if(trainList != null && testList != null) {
@@ -67,6 +84,9 @@ public class AccuracyEvaluator<T> implements Evaluator<T> {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see fr.lip6.evaluation.Evaluator#getScore()
+	 */
 	@Override
 	public double getScore() {
 		return accuracy;

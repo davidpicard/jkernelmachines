@@ -20,6 +20,7 @@
 package fr.lip6.util;
 
 /**
+ * Very basic library wide debug utility class.
  * @author picard
  *
  */
