@@ -24,7 +24,7 @@ package fr.lip6.util;
  * @author picard
  *
  */
-public class DebugPrinter {
+public final class DebugPrinter {
 	
 	/**
 	 * level of debug information to print: 0 = none, 1 = some, 2 = more, ...
@@ -45,7 +45,7 @@ public class DebugPrinter {
 	 * @param debug level at which to print the message
 	 * @param o the message to print
 	 */
-	public void println(int debug, Object o) {
+	public final void println(int debug, Object o) {
 		if(DEBUG_LEVEL >= debug) {
 			System.err.println(o);
 		}
