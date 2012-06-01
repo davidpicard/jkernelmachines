@@ -32,6 +32,7 @@ import fr.lip6.evaluation.LeaveOneOutCrossValidation;
 import fr.lip6.evaluation.RandomSplitCrossValidation;
 import fr.lip6.kernel.typed.DoubleGaussL2;
 import fr.lip6.type.TrainingSample;
+import fr.lip6.util.DebugPrinter;
 
 /**
  * Test cases for the cross-validation related classes.
@@ -39,9 +40,11 @@ import fr.lip6.type.TrainingSample;
  *
  */
 public class TestCrossValidation {
+	
+	static DebugPrinter debug = new DebugPrinter();
 
 	/**
-	 * @param args
+	 * @param args ignored
 	 */
 	public static void main(String[] args) {
 
@@ -78,10 +81,19 @@ public class TestCrossValidation {
 		LaSVM<double[]> svm = new LaSVM<double[]>(k);
 		svm.setC(100);
 		
-		if(!testRandomSplitCrossValidation(svm, train))
+		DebugPrinter.setDebugLevel(0);
+		
+		int good = 0;
+		if(testRandomSplitCrossValidation(svm, train))
+			good++;
+		else
 			System.err.println("WARNING: RandomSplitCrossValidation failed!");
-		if(!testLeaveOneOutCrossValidation(svm, train))
+		if(testLeaveOneOutCrossValidation(svm, train))
+			good++;
+		else
 			System.err.println("WARNING: LeaveOneOutCrossValidation failed!");
+		
+		System.out.println("TestCrossvalidation: "+good+"/2 tests validated.");
 
 	}
 
@@ -102,9 +114,9 @@ public class TestCrossValidation {
 		cv.run();
 
 		// 6. get results
-		System.out.println("Accuracy: " + cv.getAverageScore() + " +/- "
+		debug.println(1,"Accuracy: " + cv.getAverageScore() + " +/- "
 				+ cv.getStdDevScore());
-		System.out.println("(scores: " + Arrays.toString(cv.getScores()) + ")");
+		debug.println(1,"(scores: " + Arrays.toString(cv.getScores()) + ")");
 		
 		return (cv.getAverageScore()==1.0);
 	}
@@ -124,9 +136,9 @@ public class TestCrossValidation {
 		cv.run();
 
 		// 6. get results
-		System.out.println("Accuracy: " + cv.getAverageScore() + " +/- "
+		debug.println(1,"Accuracy: " + cv.getAverageScore() + " +/- "
 				+ cv.getStdDevScore());
-		System.out.println("(scores: " + Arrays.toString(cv.getScores()) + ")");
+		debug.println(1,"(scores: " + Arrays.toString(cv.getScores()) + ")");
 		
 		return (cv.getAverageScore()==1.0);
 	}
