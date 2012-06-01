@@ -47,8 +47,6 @@ public class ListKernel<S,T extends ArrayList<S>> extends Kernel<T> implements S
 	
 
 	/**
-	 * @param from starting index of the bags
-	 * @param to end index of the bags
 	 * @param kernel minor kernel
 	 */
 	public ListKernel(Kernel<S> kernel) {

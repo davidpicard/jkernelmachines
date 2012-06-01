@@ -40,8 +40,8 @@ public interface TransductiveClassifier<T> {
 	
 	/**
 	 * prediction output for t.
-	 * @param t
-	 * @return
+	 * @param t sample to evaluate
+	 * @return the output value for this sample
 	 */
 	public double valueOf(T t);
 

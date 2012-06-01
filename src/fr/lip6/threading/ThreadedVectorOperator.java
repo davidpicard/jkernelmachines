@@ -33,9 +33,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 public abstract class ThreadedVectorOperator {
 	
 	/**
-	 * get the parallelized matrix
-	 * @param matrix
-	 * @return
+	 * get the parallelized vector
+	 * @param vector double[] instance on which to do the processing
+	 * @return resulting vector.
 	 */
 	public double[] getVector(final double[] vector)
 	{

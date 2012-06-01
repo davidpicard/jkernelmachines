@@ -43,8 +43,6 @@ public class UnormalizedListKernel<S,T extends List<S>> extends Kernel<T> implem
 	
 
 	/**
-	 * @param from starting index of the bags
-	 * @param to end index of the bags
 	 * @param kernel minor kernel
 	 */
 	public UnormalizedListKernel(Kernel<S> kernel) {

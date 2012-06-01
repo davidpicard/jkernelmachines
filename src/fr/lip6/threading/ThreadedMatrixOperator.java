@@ -41,8 +41,8 @@ public abstract class ThreadedMatrixOperator {
 	
 	/**
 	 * get the parallelized matrix
-	 * @param matrix
-	 * @return
+	 * @param matrix double[][] on which the processing is done
+	 * @return the resulting matrix
 	 */
 	public double[][] getMatrix(final double[][] matrix)
 	{

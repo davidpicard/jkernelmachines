@@ -711,8 +711,8 @@ public class SimpleMKL<T> implements Classifier<T> {
 	}
 
 	/**
-	 * associative table of kernels and their corresponfding weights
-	 * @return
+	 * associative table of kernels and their corresponding weights
+	 * @return a Map indexing pairs of <Kernel, Weight>
 	 */
 	public Map<Kernel<T>, Double> getWeights() {
 		Map<Kernel<T>, Double> hash = new HashMap<Kernel<T>, Double>();

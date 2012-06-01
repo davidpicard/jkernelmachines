@@ -34,7 +34,7 @@ public class ThreadPoolServer {
 	
 	/**
 	 * Tells the system wide ThreadPoolServer (Singleton pattern)
-	 * @return
+	 * @return system wide instance of this class.
 	 */
 	public static ThreadPoolExecutor getThreadPoolExecutor()
 	{

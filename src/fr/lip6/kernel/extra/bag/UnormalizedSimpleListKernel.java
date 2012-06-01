@@ -47,8 +47,6 @@ public class UnormalizedSimpleListKernel<S,T extends List<S>> extends Kernel<T> 
 	
 
 	/**
-	 * @param from starting index of the bags
-	 * @param to end index of the bags
 	 * @param kernel minor kernel
 	 */
 	public UnormalizedSimpleListKernel(Kernel<S> kernel) {

@@ -51,7 +51,6 @@ import fr.lip6.util.DebugPrinter;
  * </p>
  * @author dpicard
  *
- * @param <T> Datatype of training samples
  */
 public class DoubleQNPKL implements Classifier<double[]> {
 

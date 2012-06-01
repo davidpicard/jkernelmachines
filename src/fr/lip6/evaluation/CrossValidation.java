@@ -46,7 +46,7 @@ public interface CrossValidation {
 	
 	/**
 	 * Tells the scores of the tests, in order of evaluation
-	 * @return
+	 * @return an array with the scores in order
 	 */
 	public double[] getScores(); 
 

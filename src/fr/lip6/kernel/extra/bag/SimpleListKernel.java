@@ -47,8 +47,6 @@ public class SimpleListKernel<S,T extends List<S>> extends Kernel<T> implements 
 	
 
 	/**
-	 * @param from starting index of the bags
-	 * @param to end index of the bags
 	 * @param kernel minor kernel
 	 */
 	public SimpleListKernel(Kernel<S> kernel) {

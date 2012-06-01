@@ -266,7 +266,7 @@ public class S3VMLight<T> implements TransductiveClassifier<T> {
 
 	/**
 	 * Tells the number of positive samples (used for transductive label estimation)
-	 * @return
+	 * @return the number of positive samples.
 	 */
 	public int getNumplus() {
 		return numplus;
