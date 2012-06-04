@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 import fr.lip6.classifier.Classifier;
 import fr.lip6.type.TrainingSample;
+import fr.lip6.util.DebugPrinter;
 
 /**
  * <p>
@@ -54,6 +55,15 @@ public class ApEvaluator<T> implements Serializable, Evaluator<T>
 	List<TrainingSample<T>> test;
 	List<Evaluation<TrainingSample<T>>> esResults;
 	
+	DebugPrinter debug = new DebugPrinter();
+	
+	/**
+	 * default constructor
+	 */
+	public ApEvaluator() {
+		
+	}
+	
 	/**
 	 * Constructor using a classifier, train and test lists.
 	 * @param c the classifier
@@ -76,10 +86,10 @@ public class ApEvaluator<T> implements Serializable, Evaluator<T>
 	{
 		long time = System.currentTimeMillis();
 		train();
-		System.out.println("training done in "+(System.currentTimeMillis()-time)+" ms");
+		debug.println(2, "training done in "+(System.currentTimeMillis()-time)+" ms");
 		time = System.currentTimeMillis();
 		esResults = evaluateSet(test);
-		System.out.println("testingset done in "+(System.currentTimeMillis()-time));
+		debug.println(2, "testingset done in "+(System.currentTimeMillis()-time));
 	}
 	
 	
@@ -127,7 +137,7 @@ public class ApEvaluator<T> implements Serializable, Evaluator<T>
 		try {
 			threadPool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS);
 		} catch (InterruptedException e) {
-			System.err.println("Evaluator error - result corrupted");
+			debug.println(1, "Evaluator error - result corrupted");
 			e.printStackTrace();
 		}
 	
