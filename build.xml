@@ -5,8 +5,12 @@
      <property name="build" value="build"/>
      <property name="jarfile" value="jkernelmachines.jar"/>
      <property name="doc" value="doc"/>
+     <property name="docjarfile" value="jkernelmachines-doc.jar"/>
+     <property name="srcjarfile" value="jkernelmachines-src.jar"/>
 
      <target name="all" depends="jar" />
+     
+     <target name="full" depends="jar,docjar,sourcejar,test" />
 
      <target name="init">  
           <mkdir dir="${build}"/>
@@ -15,7 +19,6 @@
 
      <target name="compile" depends="init"> 
           <!-- Compile the java code -->
-          
           <javac srcdir="${src}" destdir="${build}" includeantruntime="false"/> 
      </target>
 
@@ -27,11 +30,21 @@
           <javadoc destdir="${doc}" sourcepath="${src}"/>
      </target>
 
+     <target name="docjar" depends="doc">
+          <jar destfile="${docjarfile}" basedir="${doc}"/>
+     </target>
+
+     <target name="sourcejar">
+          <jar destfile="${srcjarfile}" basedir="${src}"/>
+     </target>
+
      <target name="clean" description="Removes previous build">
           <delete verbose="true" includeEmptyDirs="true">
                <fileset dir="${build}"/>
                <fileset dir="${doc}"/>
                <fileset file="${jarfile}"/>
+               <fileset file="${docjarfile}"/>
+               <fileset file="${srcjarfile}"/>
           </delete>
      </target>
 
