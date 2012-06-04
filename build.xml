@@ -34,4 +34,11 @@
                <fileset file="${jarfile}"/>
           </delete>
      </target>
+
+     <target name="test" description="launch testing utilities" depends="all">
+          <java classname="fr.lip6.test.kernel.TestKernel" classpath="jkernelmachines.jar" />
+          <java classname="fr.lip6.test.classifier.TestClassifier" classpath="jkernelmachines.jar" />
+          <java classname="fr.lip6.test.evaluation.TestEvaluation" classpath="jkernelmachines.jar" />
+          <java classname="fr.lip6.test.evaluation.TestCrossValidation" classpath="jkernelmachines.jar" />
+     </target>
 </project>
