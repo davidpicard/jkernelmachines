@@ -20,26 +20,25 @@
 package fr.lip6.test.evaluation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 import fr.lip6.classifier.Classifier;
 import fr.lip6.classifier.LaSVM;
 import fr.lip6.evaluation.AccuracyEvaluator;
+import fr.lip6.evaluation.ApEvaluator;
 import fr.lip6.evaluation.Evaluator;
-import fr.lip6.evaluation.LeaveOneOutCrossValidation;
-import fr.lip6.evaluation.RandomSplitCrossValidation;
 import fr.lip6.kernel.typed.DoubleGaussL2;
 import fr.lip6.type.TrainingSample;
 import fr.lip6.util.DebugPrinter;
 
 /**
- * Test cases for the cross-validation related classes.
+ * Test cases for the evaluation related classes
  * @author picard
  *
  */
-public class TestCrossValidation {
+public class TestEvaluation {
+
 	
 	static DebugPrinter debug = new DebugPrinter();
 
@@ -84,62 +83,59 @@ public class TestCrossValidation {
 		DebugPrinter.setDebugLevel(0);
 		
 		int good = 0;
-		if(testRandomSplitCrossValidation(svm, train))
+		if(testAccuracyEvaluator(svm, train))
 			good++;
 		else
-			System.err.println("WARNING: RandomSplitCrossValidation failed!");
-		if(testLeaveOneOutCrossValidation(svm, train))
-			good++;
-		else
-			System.err.println("WARNING: LeaveOneOutCrossValidation failed!");
+			System.err.println("WARNING: AccuracyEvaluator failed!");
 		
-		System.out.println("Testing Crossvalidation: "+good+"/2 tests validated.");
+		if(testAveragePrecisionEvaluator(svm, train))
+			good++;
+		else
+			System.err.println("WARNING: ApEvaluator failed!");
+		
+		System.out.println("Testing Evaluation: "+good+"/2 tests validated.");
 
 	}
 
 	/*
-	 * test RandomSplitCrossValidation class
+	 * test AccuracyEvaluator class
 	 */
-	private static boolean testRandomSplitCrossValidation(
+	private static boolean testAccuracyEvaluator(
 			Classifier<double[]> c, List<TrainingSample<double[]>> l) {
 		
 		// 4. CrossValidation
 		Evaluator<double[]> eval = new AccuracyEvaluator<double[]>();
-		RandomSplitCrossValidation<double[]> cv = new RandomSplitCrossValidation<double[]>(
-				c, l, eval);
-		cv.setTrainPercent(0.80);
-		cv.setNbTest(10);
 
 		// 5. perfom tests
-		cv.run();
+		eval.setClassifier(c);
+		eval.setTrainingSet(l);
+		eval.setTestingSet(l);
+		eval.evaluate();
 
 		// 6. get results
-		debug.println(1,"Accuracy: " + cv.getAverageScore() + " +/- "
-				+ cv.getStdDevScore());
-		debug.println(1,"(scores: " + Arrays.toString(cv.getScores()) + ")");
+		debug.println(1,"Accuracy: " + eval.getScore());
 		
-		return (cv.getAverageScore()==1.0);
+		return (eval.getScore()==1.0);
 	}
 
 	/*
-	 * test LeaveOneOutCrossValidation class
+	 * test ApEvaluator class
 	 */
-	private static boolean testLeaveOneOutCrossValidation(
+	private static boolean testAveragePrecisionEvaluator(
 			Classifier<double[]> c, List<TrainingSample<double[]>> l) {
 		
 		// 4. CrossValidation
-		Evaluator<double[]> eval = new AccuracyEvaluator<double[]>();
-		LeaveOneOutCrossValidation<double[]> cv = new LeaveOneOutCrossValidation<double[]>(
-				c, l, eval);
+		Evaluator<double[]> eval = new ApEvaluator<double[]>();
 
 		// 5. perfom tests
-		cv.run();
+		eval.setClassifier(c);
+		eval.setTrainingSet(l);
+		eval.setTestingSet(l);
+		eval.evaluate();
 
 		// 6. get results
-		debug.println(1,"Accuracy: " + cv.getAverageScore() + " +/- "
-				+ cv.getStdDevScore());
-		debug.println(1,"(scores: " + Arrays.toString(cv.getScores()) + ")");
+		debug.println(1,"Average precision: " + eval.getScore());
 		
-		return (cv.getAverageScore()==1.0);
+		return (eval.getScore()>=1.0);
 	}
 }
