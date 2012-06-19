@@ -256,7 +256,7 @@ public class SMOSVM<T> implements Classifier<T>, Serializable, Cloneable {
 		}
 		
 
-		if(debug.DEBUG_LEVEL >=4)
+		if(DebugPrinter.DEBUG_LEVEL >=4)
 		{
 			debug.println(3, "smotrain : after train ecache="+Arrays.toString(ecache));
 			double errSum = 0;
