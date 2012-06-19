@@ -28,6 +28,7 @@ import fr.lip6.classifier.DoubleSGD;
 import fr.lip6.classifier.DoubleSGDQN;
 import fr.lip6.classifier.GradMKL;
 import fr.lip6.classifier.LaSVM;
+import fr.lip6.classifier.LaSVMI;
 import fr.lip6.classifier.SMOSVM;
 import fr.lip6.classifier.SimpleMKL;
 import fr.lip6.kernel.typed.DoubleGaussL2;
@@ -119,42 +120,49 @@ public class TestClassifier {
 		else {
 			debug.println(0, "Warning LaSVM failed");
 		}
-		//7. test SimpleMKL
+		//7. test LaSVM-I
+		if(evaluateLaSVMI(train, test)) {
+			good++;
+		}
+		else {
+			debug.println(0, "Warning LaSVM failed");
+		}
+		//8. test SimpleMKL
 		if(evaluateSimpleMKL(train, test)) {
 			good++;
 		}
 		else {
 			debug.println(0, "Warning SimpleMKL failed");
 		}
-		//8. test GradMKL
+		//9. test GradMKL
 		if(evaluateGradMKL(train, test)) {
 			good++;
 		}
 		else {
 			debug.println(0, "Warning GradMKL failed");
 		}
-		//9. test QNPKL
+		//10. test QNPKL
 		if(evaluateQNPKL(train, test)) {
 			good++;
 		}
 		else {
 			debug.println(0, "Warning QNPKL failed");
 		}
-		//10. test SGD
+		//11. test SGD
 		if(evaluateSGD(train, test)) {
 			good++;
 		}
 		else {
 			debug.println(0, "Warning SGD failed");
 		}
-		//11. test SGDQN
+		//12. test SGDQN
 		if(evaluateSGDQN(train, test)) {
 			good++;
 		}
 		else {
 			debug.println(0, "Warning SGDQN failed");
 		}
-		//12. test Pegasos
+		//13. test Pegasos
 		if(evaluatePegasos(train, test)) {
 			good++;
 		}
@@ -162,7 +170,7 @@ public class TestClassifier {
 			debug.println(0, "Warning Pegasos failed");
 		}
 		
-		debug.println(0, "Testing classifiers: "+good+"/8 tests validated");
+		debug.println(0, "Testing classifiers: "+good+"/9 tests validated");
 
 	}
 
@@ -192,6 +200,25 @@ public class TestClassifier {
 		DoubleGaussL2 k = new DoubleGaussL2();
 		k.setGamma(0.05);
 		LaSVM<double[]> svm = new LaSVM<double[]>(k);
+		svm.setC(10);
+		svm.train(train);
+		
+		for(TrainingSample<double[]> t : test)
+			if(svm.valueOf(t.sample) * t.label <= 0) {
+				debug.println(0, "error with sample "+t+" expected "+t.label+", got "+svm.valueOf(t.sample));
+				return false;
+			}
+		
+		return true;
+	}
+
+	private static boolean evaluateLaSVMI(
+			ArrayList<TrainingSample<double[]>> train,
+			ArrayList<TrainingSample<double[]>> test) {
+		
+		DoubleGaussL2 k = new DoubleGaussL2();
+		k.setGamma(0.05);
+		LaSVMI<double[]> svm = new LaSVMI<double[]>(k);
 		svm.setC(10);
 		svm.train(train);
 		

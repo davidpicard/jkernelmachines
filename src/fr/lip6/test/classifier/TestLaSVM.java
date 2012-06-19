@@ -21,6 +21,7 @@ package fr.lip6.test.classifier;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
 
 import fr.lip6.classifier.LaSVM;
@@ -70,6 +71,7 @@ public class TestLaSVM {
 			train.add(new TrainingSample<double[]>(t, -1));
 		}
 		
+		Collections.shuffle(train);
 		
 		//3. train svm
 		long time = System.currentTimeMillis();
