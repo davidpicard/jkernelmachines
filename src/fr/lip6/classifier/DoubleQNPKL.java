@@ -327,6 +327,7 @@ public class DoubleQNPKL implements Classifier<double[]> {
 				e.printStackTrace();
 			}
 		}
+		threadPool.shutdownNow();
 
 		//numerical cleaning
 		for(int i = 0 ; i < grad.length; i++)
