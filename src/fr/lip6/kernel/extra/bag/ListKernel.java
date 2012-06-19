@@ -20,7 +20,7 @@
 package fr.lip6.kernel.extra.bag;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.List;
 
 import fr.lip6.kernel.Kernel;
 
@@ -32,7 +32,7 @@ import fr.lip6.kernel.Kernel;
  * @param <S>
  * @param <T> type of element in the bag
  */
-public class ListKernel<S,T extends ArrayList<S>> extends Kernel<T> implements Serializable {
+public class ListKernel<S,T extends List<S>> extends Kernel<T> implements Serializable {
 
 	/**
 	 * 
