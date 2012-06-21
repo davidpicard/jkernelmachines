@@ -36,7 +36,8 @@ import fr.lip6.util.DebugPrinter;
  * <p>
  * <b>Nonconvex Online Support Vector Machines</b><br />
  * Seyda Ertekin, Leon Bottou and C. Lee Giles<br />
- * IEEE Transaction on Pattern Analysis and Machine Intelligence, 33(2):368–381, Feb 2011
+ * IEEE Transaction on Pattern Analysis and Machine Intelligence, 33(2):368–381,
+ * Feb 2011
  * </p>
  * 
  * @author picard
@@ -48,6 +49,7 @@ public class LaSVMI<T> implements Classifier<T> {
 
 	List<TrainingSample<T>> train;
 	double[] alpha;
+	double b = 0;
 
 	boolean[] keset;
 	double[] gset;
@@ -56,16 +58,17 @@ public class LaSVMI<T> implements Classifier<T> {
 
 	double C = 1.0;
 	double tau = 1e-15;
-	long E = 2;
-	double m = 100; //max non-sv in expansion
-	double s = -2.0; //ramp loss param
-	
+	long E = 5;
+	int m = 100; // max non-sv in expansion
+	double s = -1.0; // ramp loss param
+
 	DebugPrinter debug = new DebugPrinter();
 	boolean cache = true;
 	double[][] kmatrix;
-	
+
 	/**
 	 * Default constructor provideing the kernel
+	 * 
 	 * @param k
 	 */
 	public LaSVMI(Kernel<T> k) {
@@ -79,7 +82,7 @@ public class LaSVMI<T> implements Classifier<T> {
 	 */
 	@Override
 	public void train(TrainingSample<T> t) {
-		if(train == null)
+		if (train == null)
 			train = new ArrayList<TrainingSample<T>>();
 		train.add(t);
 		train(train);
@@ -105,34 +108,35 @@ public class LaSVMI<T> implements Classifier<T> {
 		Arrays.fill(gset, 0.);
 		A = new double[train.size()];
 		B = new double[train.size()];
-		
-		//max number of non SV in expension
-		m = Math.min(train.size()/4, 100);
-		
-		if(cache)
+
+		// max number of non SV in expansion
+		m = Math.min(train.size() / 100, 100);
+
+		if (cache)
 			kmatrix = kernel.getKernelMatrix(train);
-		
+
 		// 2) online iterations
 		for (int e = 0; e < E; e++)
 			for (int i = 0; i < train.size(); i++) {
 				// early filtering with ramp loss
 				double z = 0;
-				if(cache)
-					for(int n = 0 ; n < train.size(); n++) {
-						if(keset[n])
+				if (cache)
+					for (int n = 0; n < train.size(); n++) {
+						if (keset[n])
 							z += alpha[n] * kmatrix[i][n];
 					}
 				else {
 					T xi = train.get(i).sample;
-					for(int n = 0 ; n < train.size(); n++) {
-						if(keset[n])
-							z += alpha[n] * kernel.valueOf(train.get(n).sample, xi);
+					for (int n = 0; n < train.size(); n++) {
+						if (keset[n])
+							z += alpha[n]
+									* kernel.valueOf(train.get(n).sample, xi);
 					}
 				}
 				z = train.get(i).label * z;
-				if( z > 1 || z < s)
+				if (z > 1 || z < s)
 					continue;
-				
+
 				// compute target gap G
 				double G = computeGapTarget();
 
@@ -143,18 +147,20 @@ public class LaSVMI<T> implements Classifier<T> {
 				process(i);
 
 				// reprocess while gap > G and something to optimize
-				while (computeGap() > threshold) {
-					if(!reprocess())
+				int max = 1000;
+				while (computeGap() > threshold && max > 0) {
+					if (!reprocess())
 						break;
+					max--;
 				}
 
 				// periodically run clean
-				if (i % 100 == 0)
+				if (i % (10*m) == 0)
 					clean();
 			}
 		clean();
-		
-		if(cache)
+
+		if (cache)
 			ThreadPoolServer.shutdownNow();
 
 	}
@@ -164,7 +170,7 @@ public class LaSVMI<T> implements Classifier<T> {
 		int nz = 0;
 		double[] gnsv = new double[train.size()];
 		for (int n = 0; n < train.size(); n++) {
-			if (keset[n] && alpha[n] == 0){
+			if (keset[n] && alpha[n] == 0) {
 				nz++;
 				gnsv[n] = Math.abs(gset[n]);
 			}
@@ -173,7 +179,10 @@ public class LaSVMI<T> implements Classifier<T> {
 		// too many zeros, cleaning
 		if (nz > m) {
 			Arrays.sort(gnsv);
-			double gthreshold = gnsv[train.size() - 100];
+			int i = 0;
+			while(gnsv[i] == 0)
+				i++;
+			double gthreshold = gnsv[i+m];
 			for (int n = 0; n < train.size(); n++) {
 				if (keset[n] && alpha[n] == 0 && Math.abs(gset[n]) > gthreshold) {
 					alpha[n] = 0.;
@@ -184,9 +193,9 @@ public class LaSVMI<T> implements Classifier<T> {
 	}
 
 	private boolean reprocess() {
-		
+
 		debug.println(4, "- reprocess()");
-		
+
 		int i = -1, j = -1;
 		double min = Double.MAX_VALUE, max = Double.MIN_VALUE;
 
@@ -203,13 +212,13 @@ public class LaSVMI<T> implements Classifier<T> {
 				}
 			}
 		}
-		//no extrema
-		if(i == -1 || j == -1)
+		// no extrema
+		if (i == -1 || j == -1)
 			return false;
 
 		// 2. violating pair?
-		if ( (gset[j] - gset[i]) > tau) {
-			
+		if ((gset[i] - gset[j]) > tau) {
+
 			double g = 0;
 			int t = 0;
 
@@ -225,16 +234,14 @@ public class LaSVMI<T> implements Classifier<T> {
 			// 4. step size
 			double lambda = 0;
 			if (g < 0) {
-				if(cache)
-					lambda = Math.max(A[t] - alpha[t],
-							g / kmatrix[t][t]);
+				if (cache)
+					lambda = Math.max(A[t] - alpha[t], g / kmatrix[t][t]);
 				else
 					lambda = Math.max(A[t] - alpha[t],
 							g / kernel.valueOf(xt, xt));
 			} else {
-				if(cache)
-					lambda = Math.min(B[t] - alpha[t],
-							g / kmatrix[t][t]);
+				if (cache)
+					lambda = Math.min(B[t] - alpha[t], g / kmatrix[t][t]);
 				else
 					lambda = Math.min(B[t] - alpha[t],
 							g / kernel.valueOf(xt, xt));
@@ -242,13 +249,14 @@ public class LaSVMI<T> implements Classifier<T> {
 			// 5. update kernel expansion set
 			alpha[t] += lambda;
 			for (int n = 0; n < train.size(); n++) {
-				if(keset[n] && (n != t) )
-					if(cache)
+				if (keset[n] )
+					if (cache)
 						gset[n] -= lambda * kmatrix[t][n];
 					else
-						gset[n] -= lambda * kernel.valueOf(xt, train.get(n).sample);
+						gset[n] -= lambda
+								* kernel.valueOf(xt, train.get(n).sample);
 			}
-			
+
 			return true;
 		}
 		return false;
@@ -256,9 +264,9 @@ public class LaSVMI<T> implements Classifier<T> {
 	}
 
 	private void process(int i) {
-		
+
 		debug.println(4, "+ process()");
-		
+
 		TrainingSample<T> xi = train.get(i);
 
 		// 1.
@@ -269,29 +277,28 @@ public class LaSVMI<T> implements Classifier<T> {
 		double gi = xi.label;
 		for (int n = 0; n < train.size(); n++) {
 			if (keset[n]) {
-				if(cache)
-					gi -= alpha[n] * kernel.valueOf(xi.sample, train.get(n).sample);
+				if (cache)
+					gi -= alpha[n]
+							* kernel.valueOf(xi.sample, train.get(n).sample);
 				else
 					gi -= alpha[n] * kmatrix[i][n];
 			}
 		}
 		gset[i] = gi;
-		A[i] = Math.min(0, C*xi.label);
-		B[i] = Math.max(0, C*xi.label);
+		A[i] = Math.min(0, C * xi.label);
+		B[i] = Math.max(0, C * xi.label);
 
 		// 2. step size
 		double lambda = 0;
 		if (gi < 0) { // max(Ai, gi/Kii)
-			if(cache)
-				lambda = Math.max(A[i] - alpha[i],
-						gi / kmatrix[i][i]);
+			if (cache)
+				lambda = Math.max(A[i] - alpha[i], gi / kmatrix[i][i]);
 			else
 				lambda = Math.max(A[i] - alpha[i],
 						gi / kernel.valueOf(xi.sample, xi.sample));
 		} else { // max(Bi, gi/Kii)
-			if(cache)
-				lambda = Math.min(B[i] - alpha[i],
-						gi / kmatrix[i][i]);
+			if (cache)
+				lambda = Math.min(B[i] - alpha[i], gi / kmatrix[i][i]);
 			else
 				lambda = Math.min(B[i] - alpha[i],
 						gi / kernel.valueOf(xi.sample, xi.sample));
@@ -299,16 +306,15 @@ public class LaSVMI<T> implements Classifier<T> {
 
 		// 3. insertion
 		alpha[i] = alpha[i] + lambda;
-		if(cache)
+		if (cache)
 			for (int n = 0; n < train.size(); n++) {
-				if (keset[n] && (n != i)) {
-					gset[n] -= lambda
-							* kmatrix[i][n];
+				if (keset[n] ) {
+					gset[n] -= lambda * kmatrix[i][n];
 				}
 			}
 		else
 			for (int n = 0; n < train.size(); n++) {
-				if (keset[n] && (n != i)) {
+				if (keset[n] ) {
 					gset[n] -= lambda
 							* kernel.valueOf(xi.sample, train.get(n).sample);
 				}
@@ -318,10 +324,11 @@ public class LaSVMI<T> implements Classifier<T> {
 
 	private double computeGap() {
 		double G = 0;
-		
+
 		for (int n = 0; n < train.size(); n++) {
 			if (keset[n]) {
-				G += (alpha[n] * gset[n] + Math.max(0, C * gset[n]));
+				// G += (alpha[n] * gset[n] + Math.max(0, C * gset[n]));
+				G += Math.abs(gset[n]) * (C - Math.abs(alpha[n]));
 			}
 		}
 		return G;
@@ -338,7 +345,7 @@ public class LaSVMI<T> implements Classifier<T> {
 				l++;
 			}
 		}
-		if(l == 0)
+		if (l == 0)
 			mu = 0;
 		else
 			mu = mu * mu / l;
@@ -369,6 +376,7 @@ public class LaSVMI<T> implements Classifier<T> {
 
 	/**
 	 * Tells the C hyperparameter
+	 * 
 	 * @return
 	 */
 	public double getC() {
@@ -377,6 +385,7 @@ public class LaSVMI<T> implements Classifier<T> {
 
 	/**
 	 * Sets the C hyperparameter (default 1.0)
+	 * 
 	 * @param c
 	 */
 	public void setC(double c) {
@@ -385,6 +394,7 @@ public class LaSVMI<T> implements Classifier<T> {
 
 	/**
 	 * Tells the number of epochs of training (default 2)
+	 * 
 	 * @return
 	 */
 	public long getE() {
@@ -393,6 +403,7 @@ public class LaSVMI<T> implements Classifier<T> {
 
 	/**
 	 * Sets the number of epoch of training (default 2)
+	 * 
 	 * @param e
 	 */
 	public void setE(long e) {
@@ -401,17 +412,19 @@ public class LaSVMI<T> implements Classifier<T> {
 
 	/**
 	 * Tells support vectors coefficients in order of the training list
+	 * 
 	 * @return
 	 */
 	public double[] getAlphas() {
 		double[] a = new double[alpha.length];
-		for(int s = 0 ; s < a.length ; s++)
+		for (int s = 0; s < a.length; s++)
 			a[s] = alpha[s] * train.get(s).label;
 		return a;
 	}
 
 	/**
 	 * Set the kernel to use
+	 * 
 	 * @param kernel
 	 */
 	public void setKernel(Kernel<T> kernel) {
@@ -420,6 +433,7 @@ public class LaSVMI<T> implements Classifier<T> {
 
 	/**
 	 * Tells the parameter s of the ramp loss (default -1)
+	 * 
 	 * @return
 	 */
 	public double getS() {
@@ -428,6 +442,7 @@ public class LaSVMI<T> implements Classifier<T> {
 
 	/**
 	 * Sets the parameter s of the ramp loss (default -1)
+	 * 
 	 * @param s
 	 */
 	public void setS(double s) {
