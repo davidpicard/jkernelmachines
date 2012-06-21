@@ -43,7 +43,7 @@ import fr.lip6.util.DebugPrinter;
  * @author picard
  * 
  */
-public class LaSVMI<T> implements Classifier<T> {
+public class LaSVMI<T> implements KernelSVM<T> {
 
 	Kernel<T> kernel;
 
@@ -110,7 +110,7 @@ public class LaSVMI<T> implements Classifier<T> {
 		B = new double[train.size()];
 
 		// max number of non SV in expansion
-		m = Math.min(train.size() / 100, 100);
+		m = Math.min(1 + train.size() / 100, 100);
 
 		if (cache)
 			kmatrix = kernel.getKernelMatrix(train);

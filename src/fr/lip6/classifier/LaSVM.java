@@ -45,7 +45,7 @@ import fr.lip6.util.DebugPrinter;
  * @author picard
  *
  */
-public final class LaSVM<T> implements Classifier<T> {
+public final class LaSVM<T> implements KernelSVM<T> {
 
 	private Kernel<T> kernel;
 	

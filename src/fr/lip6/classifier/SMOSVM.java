@@ -44,7 +44,7 @@ import fr.lip6.util.DebugPrinter;
  *
  * @param <T> Datatype of training samples
  */
-public class SMOSVM<T> implements Classifier<T>, Serializable, Cloneable {
+public class SMOSVM<T> implements KernelSVM<T>, Serializable, Cloneable {
 	/**
 	 * 
 	 */
@@ -540,11 +540,7 @@ public class SMOSVM<T> implements Classifier<T>, Serializable, Cloneable {
 		return sum - b;
 	}
 	
-	/**
-	 * Tells the weights of training samples
-	 * 
-	 * @return an array of double representing the weights
-	 */
+	@Override
 	public double[] getAlphas()
 	{
 		return alpha;
@@ -559,18 +555,12 @@ public class SMOSVM<T> implements Classifier<T>, Serializable, Cloneable {
 		return b;
 	}
 	
-	/**
-	 * Tells the hyperparameter C
-	 * @return the hyperparameter C
-	 */
+	@Override
 	public double getC() {
 		return C;
 	}
 
-	/**
-	 * Sets the hyperparameter C
-	 * @param c the hyperparameter C
-	 */
+	@Override
 	public void setC(double c) {
 		C = c;
 	}
@@ -584,10 +574,8 @@ public class SMOSVM<T> implements Classifier<T>, Serializable, Cloneable {
 		return ts;
 	}
 	
-	/**
-	 * Sets the kernel to use as similarity measure
-	 * @param k the kernel function
-	 */
+
+	@Override
 	public void setKernel(Kernel<T> k)
 	{
 		kernel = k;
