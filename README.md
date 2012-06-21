@@ -19,14 +19,30 @@ GNU General Public License for more details.
 Copyright David Picard, Nicolas Thome and Matthieu Cord, 2010
 picard@ensea.fr
 
-
-Examples
+Features
 --------
 
-Test examples are in the package fr.lip6.test.*. For instance, a test comparing
-dual and primal SVM algorithms can be runned by the following command:
+    Several learning algorithms (LaSVM, SMO, SimpleMKL, GradMKL, QNPKL, SGDQN, Pegasos, ...)
+    Datatype agnosticism through Java Generics
+    Easy coding of new kernels
+    Several standard and exotic kernels (kernel on bags, combination kernels, ...)
+    Input system (can read libsvm and csv files)
+    Evaluation and Cross Validation packages
+    Stand alone (requires only a working jdk and ant for easy compiling)
 
-java -cp jkernelmachines.jar fr.lip6.test.classifier.TestSimpleSVM
+
+Wiki and Howtos
+---------------
+
+* [Compiling](https://github.com/davidpicard/jkernelmachines/wiki/Compiling)
+* [Basic Example](https://github.com/davidpicard/jkernelmachines/wiki/Basic-Example)
+* [Kernels](https://github.com/davidpicard/jkernelmachines/wiki/Kernel-HowTo)
+* [Classifier Training](https://github.com/davidpicard/jkernelmachines/wiki/Classifier-Training)
+* [Reading data](https://github.com/davidpicard/jkernelmachines/wiki/Reading-Data)
+* [Evaluation](https://github.com/davidpicard/jkernelmachines/wiki/Evaluation)
+* [CrossValidation](https://github.com/davidpicard/jkernelmachines/wiki/CrossValidation)
+* [Standalone programs](https://github.com/davidpicard/jkernelmachines/wiki/Standalone-programs)
+
 
 Acknowledgement
 ---------------
