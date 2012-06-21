@@ -60,7 +60,7 @@ public class SimpleMKL<T> implements Classifier<T> {
 	private double numPrec = 1.e-12, epsKTT = 0.1, epsDG = 0.01, epsGS = 1.e-8, eps = 1.e-8;
 	private boolean checkDualGap = true, checkKTT = false;
 	
-	private LaSVM<T> svm;
+	private KernelSVM<T> svm;
 	
 	private DecimalFormat format = new DecimalFormat("#0.0000");
 	DebugPrinter debug = new DebugPrinter();
@@ -282,7 +282,7 @@ public class SimpleMKL<T> implements Classifier<T> {
 		
 		//verbosity
 		debug.println(4, "svmObj : alphas = "+Arrays.toString(alp));
-		debug.println(4, "svmObj : b="+svm.getB());
+//		debug.println(4, "svmObj : b="+svm.getB());
 				
 		//parallelized
 		final double[] resLine = new double[kmatrix.length];
@@ -679,9 +679,16 @@ public class SimpleMKL<T> implements Classifier<T> {
 	 * @param l
 	 */
 	private void retrainSVM(Kernel<T> k, List<TrainingSample<T>> l) {
-		svm = new LaSVM<T>(k);
+		
+		//default svm algorithm is lasvm
+		if(svm == null) {
+			LaSVM<T> lasvm = new LaSVM<T>(k);
+			lasvm.setE(2);
+			svm = lasvm;
+		}
+		//new settings
+		svm.setKernel(k);		
 		svm.setC(C);
-		svm.setE(2);
 		svm.train(l);
 	}
 
@@ -753,6 +760,14 @@ public class SimpleMKL<T> implements Classifier<T> {
 	 */
 	public void setDualGap(double epsDG) {
 		this.epsDG = epsDG;
+	}
+	
+	/**
+	 * Sets the default training algorithm for the underlying svm calls (default LASVM).
+	 * @param cls the algorithm used to solve the svm problem
+	 */
+	public void setClassifier(KernelSVM<T> cls) {
+		svm = cls;
 	}
 
 }

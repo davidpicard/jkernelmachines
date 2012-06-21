@@ -235,6 +235,7 @@ public class TestClassifier {
 			ArrayList<TrainingSample<double[]>> train,
 			ArrayList<TrainingSample<double[]>> test) {
 		
+		//test default setting
 		SimpleMKL<double[]> svm = new SimpleMKL<double[]>();
 		for(int i = 0 ; i < dimension ; i++){
 			svm.addKernel(new IndexDoubleGaussL2(i));
@@ -244,7 +245,37 @@ public class TestClassifier {
 		
 		for(TrainingSample<double[]> t : test)
 			if(svm.valueOf(t.sample) * t.label <= 0) {
-				debug.println(0, "error with sample "+t+" expected "+t.label+", got "+svm.valueOf(t.sample));
+				debug.println(0, "SimpleMKL(LASVM) error with sample "+t+" expected "+t.label+", got "+svm.valueOf(t.sample));
+				return false;
+			}
+		
+		// test with SMO
+		svm = new SimpleMKL<double[]>();
+		svm.setClassifier(new SMOSVM<double[]>(null));
+		for(int i = 0 ; i < dimension ; i++){
+			svm.addKernel(new IndexDoubleGaussL2(i));
+		}
+		svm.setC(10);
+		svm.train(train);
+		
+		for(TrainingSample<double[]> t : test)
+			if(svm.valueOf(t.sample) * t.label <= 0) {
+				debug.println(0, "SimpleMKL(SMOSVM) error with sample "+t+" expected "+t.label+", got "+svm.valueOf(t.sample));
+				return false;
+			}
+		
+		// test with LaSVM-I
+		svm = new SimpleMKL<double[]>();
+		svm.setClassifier(new LaSVMI<double[]>(null));
+		for(int i = 0 ; i < dimension ; i++){
+			svm.addKernel(new IndexDoubleGaussL2(i));
+		}
+		svm.setC(10);
+		svm.train(train);
+		
+		for(TrainingSample<double[]> t : test)
+			if(svm.valueOf(t.sample) * t.label <= 0) {
+				debug.println(0, "SimpleMKL(LASVMI) error with sample "+t+" expected "+t.label+", got "+svm.valueOf(t.sample));
 				return false;
 			}
 		
