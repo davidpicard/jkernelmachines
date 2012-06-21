@@ -93,7 +93,7 @@ public class CrossValidationExample {
 				else if (args[i].equalsIgnoreCase("-k")) {
 					i++;
 
-					if (args[i].equalsIgnoreCase("gaussl2")) {
+					if (args[i].equalsIgnoreCase("gauss")) {
 						kernel = new DoubleGaussL2();
 					} else {
 						kernel = new DoubleLinear();
