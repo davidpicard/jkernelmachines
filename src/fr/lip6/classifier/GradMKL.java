@@ -43,7 +43,7 @@ public class GradMKL<T> implements Classifier<T> {
 	ArrayList<Kernel<T>> listOfKernels;
 	ArrayList<Double> listOfKernelWeights;
 	
-	SMOSVM<T> svm;
+	KernelSVM<T> svm;
 	
 	double stopGap = 1e-7;
 	double eps_regul = 1e-3;
@@ -113,12 +113,15 @@ public class GradMKL<T> implements Classifier<T> {
 		ThreadedSumKernel<T> tsk = new ThreadedSumKernel<T>();
 		for(int i = 0 ; i < kernels.size(); i++)
 			tsk.addKernel(kernels.get(i), weights.get(i));
-		svm = new SMOSVM<T>(tsk);
+		if(svm == null)
+			svm = new SMOSVM<T>(null);
+		svm.setKernel(tsk);
 		svm.setC(C);
 		svm.train(l);
 		
 		//2. big loop
 		double gap = 0;
+		long max = 100000; // less than 10k iterations
 		do
 		{
 			debug.println(3, "weights : "+weights);
@@ -129,7 +132,7 @@ public class GradMKL<T> implements Classifier<T> {
 		
 			//train svm
 			svm.setKernel(tsk);
-			svm.retrain();
+			svm.train(l);
 			
 			//compute sum of example weights and gradient direction
 			double suma = computeSumAlpha();
@@ -152,9 +155,9 @@ public class GradMKL<T> implements Classifier<T> {
 			norm = Math.pow(norm, -1/(double)p_norm);
 			
 			debug.println(1, "objective_gap : "+gap+" norm : "+norm);
-			
+			max--;			
 		}
-		while(gap >= stopGap);
+		while(gap >= stopGap && max > 0);
 		
 		//3. save weights
 		listOfKernelWeights.clear();
@@ -167,7 +170,7 @@ public class GradMKL<T> implements Classifier<T> {
 			tsk.addKernel(listOfKernels.get(i), listOfKernelWeights.get(i));
 		//train svm
 		svm.setKernel(tsk);
-		svm.retrain();
+		svm.train(l);
 		
 		//5. save examples wxaeights
 		listOfExamples.addAll(l);
@@ -302,33 +305,61 @@ public class GradMKL<T> implements Classifier<T> {
 		return svm.valueOf(e);
 	}
 	
+	/**
+	 * Tells the hyperparameter C
+	 * @return the hyperparameter C
+	 */
 	public double getC() {
 		return C;
 	}
-
+	
+	/**
+	 * Sets the hyperparameter C
+	 * @param c the hyperparameter C
+	 */
 	public void setC(double c) {
 		C = c;
 	}
 
+	/**
+	 * Sets the norm used for kernel weights (real)
+	 * @param p value of the norm
+	 */
 	public void setMKLNorm(double p)
 	{
 		p_norm = p;
 	}
 	
+	/**
+	 * Sets stopping criterion threshold
+	 * @param w
+	 */
 	public void setStopGap(double w)
 	{
 		stopGap = w;
 	}
 	
+	/**
+	 * Tells the weights on examples
+	 * @return the list of example weights
+	 */
 	public ArrayList<Double> getExampleWeights() {
 		return listOfExampleWeights;
 	}
 	
+	/**
+	 * Tells the weights on kernels
+	 * @return the list of kernel weights
+	 */
 	public ArrayList<Double> getKernelWeights()
 	{
 		return listOfKernelWeights;
 	}
 	
+	/**
+	 * Tells training samples and associated weights
+	 * @return a map with training samples as keys and weights as values 
+	 */
 	public Hashtable<Kernel<T>, Double> getWeights()
 	{
 		Hashtable<Kernel<T>, Double> map = new Hashtable<Kernel<T>, Double>();
@@ -336,5 +367,12 @@ public class GradMKL<T> implements Classifier<T> {
 			map.put(listOfKernels.get(i), listOfKernelWeights.get(i));
 		return map;
 	}
-
+	
+	/**
+	 * Sets the default training algorithm for the underlying svm calls (default LASVM).
+	 * @param cls the algorithm used to solve the svm problem
+	 */
+	public void setClassifier(KernelSVM<T> cls) {
+		svm = cls;
+	}
 }
