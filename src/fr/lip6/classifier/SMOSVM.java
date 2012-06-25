@@ -66,7 +66,7 @@ public class SMOSVM<T> implements KernelSVM<T>, Serializable, Cloneable {
 	private Random ran;
 	
 	//paramètres du SVM
-	private double C = 1.0e5, b, eps = 1.0e-7, tolerance = 1e-7;
+	private double C = 1.0, b, eps = 1.0e-15, tolerance = 1e-15;
 	
 	DebugPrinter debug = new DebugPrinter();
 	
