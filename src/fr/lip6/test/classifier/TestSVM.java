@@ -34,7 +34,8 @@ import fr.lip6.type.TrainingSample;
  * @author picard
  *
  */
-public class TestSimpleSVM {
+@Deprecated
+public class TestSVM {
 
 	public static void main(String[] args)
 	{
