@@ -375,4 +375,14 @@ public class GradMKL<T> implements Classifier<T> {
 	public void setClassifier(KernelSVM<T> cls) {
 		svm = cls;
 	}
+	
+
+	/**
+	 * Creates and returns a copy of this object.
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public GradMKL clone() throws CloneNotSupportedException {
+		return (GradMKL) super.clone();
+	}
 }

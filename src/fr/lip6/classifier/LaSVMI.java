@@ -449,4 +449,14 @@ public class LaSVMI<T> implements KernelSVM<T> {
 		this.s = s;
 	}
 
+	/**
+	 * Creates and returns a copy of this object.
+	 * @see java.lang.Object#clone()
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public LaSVMI<T> clone() throws CloneNotSupportedException {
+		return (LaSVMI<T>) super.clone();
+	}
+
 }

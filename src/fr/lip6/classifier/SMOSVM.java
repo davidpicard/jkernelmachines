@@ -599,12 +599,14 @@ public class SMOSVM<T> implements KernelSVM<T>, Serializable, Cloneable {
 		ts = new ArrayList<TrainingSample<T>>(t);
 	}
 
+
 	/**
-	 * Returns a copy of this classifier (usefull for saving objects)
-	 * @return a copy of this classifier
+	 * Creates and returns a copy of this object.
+	 * @see java.lang.Object#clone()
 	 */
-	public Object clone() throws CloneNotSupportedException
-	{
-		return super.clone();
+	@SuppressWarnings("unchecked")
+	@Override
+	public SMOSVM<T> clone() throws CloneNotSupportedException {
+		return (SMOSVM<T>) super.clone();
 	}
 }

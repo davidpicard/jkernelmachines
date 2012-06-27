@@ -88,4 +88,15 @@ public class ParzenClassifier<T> implements Classifier<T>, Serializable {
 		return sum;
 	}
 	
+
+	/**
+	 * Creates and returns a copy of this object.
+	 * @see java.lang.Object#clone()
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public ParzenClassifier<T> clone() throws CloneNotSupportedException {
+		return (ParzenClassifier<T>) super.clone();
+	}
+	
 }

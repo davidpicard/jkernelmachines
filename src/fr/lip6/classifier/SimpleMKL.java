@@ -769,5 +769,16 @@ public class SimpleMKL<T> implements Classifier<T> {
 	public void setClassifier(KernelSVM<T> cls) {
 		svm = cls;
 	}
+	
+
+	/**
+	 * Creates and returns a copy of this object.
+	 * @see java.lang.Object#clone()
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public SimpleMKL<T> clone() throws CloneNotSupportedException {
+		return (SimpleMKL<T>) super.clone();
+	}
 
 }

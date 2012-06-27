@@ -29,7 +29,7 @@ import fr.lip6.type.TrainingSample;
  *
  * @param <T>
  */
-public interface Classifier<T> {
+public interface Classifier<T> extends Cloneable {
 
 	/**
 	 * Add a single example to the current training set and train the classifier

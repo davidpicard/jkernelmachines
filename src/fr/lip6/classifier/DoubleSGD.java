@@ -256,4 +256,13 @@ public class DoubleSGD implements Classifier<double[]> {
 	public void setShuffle(boolean shuffle) {
 		this.shuffle = shuffle;
 	}
+
+	/**
+	 * Creates and returns a copy of this object.
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public DoubleSGD clone() throws CloneNotSupportedException {
+		return (DoubleSGD) super.clone();
+	}
 }

@@ -561,5 +561,13 @@ public class DoubleQNPKL implements Classifier<double[]> {
 	public void setHasNorm(boolean hasNorm) {
 		this.hasNorm = hasNorm;
 	}
-
+	
+	/**
+	 * Creates and returns a copy of this object.
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public DoubleQNPKL clone() throws CloneNotSupportedException {
+		return (DoubleQNPKL) super.clone();
+	}
 }

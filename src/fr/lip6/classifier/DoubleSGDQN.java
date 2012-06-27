@@ -536,4 +536,12 @@ public class DoubleSGDQN implements Classifier<double[]> {
 		hasC = true;
 	}
 
+	/**
+	 * Creates and returns a copy of this object.
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public DoubleSGDQN clone() throws CloneNotSupportedException {
+		return (DoubleSGDQN) super.clone();
+	}
 }

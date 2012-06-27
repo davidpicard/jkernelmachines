@@ -500,4 +500,13 @@ public final class LaSVM<T> implements KernelSVM<T> {
 		this.kernel = kernel;
 	}
 
+	/**
+	 * Creates and returns a copy of this object.
+	 * @see java.lang.Object#clone()
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public LaSVM<T> clone() throws CloneNotSupportedException {
+		return (LaSVM<T>) super.clone();
+	}
 }

@@ -333,4 +333,13 @@ public class DoublePegasosSVM implements Classifier<double[]>, Serializable{
 		hasC = true;
 		C = c;
 	}
+	
+	/**
+	 * Creates and returns a copy of this object.
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public DoublePegasosSVM clone() throws CloneNotSupportedException {
+		return (DoublePegasosSVM) super.clone();
+	}
 }
