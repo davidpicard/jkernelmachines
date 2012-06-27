@@ -339,7 +339,7 @@ public class DoublePegasosSVM implements Classifier<double[]>, Serializable{
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public DoublePegasosSVM clone() throws CloneNotSupportedException {
+	public DoublePegasosSVM copy() throws CloneNotSupportedException {
 		return (DoublePegasosSVM) super.clone();
 	}
 }

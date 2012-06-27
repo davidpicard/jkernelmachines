@@ -54,5 +54,5 @@ public interface Classifier<T> extends Cloneable {
 	 * Creates and returns a copy of this object.
 	 * @see java.lang.Object#clone()
 	 */
-	public Classifier<T> clone() throws CloneNotSupportedException;
+	public Classifier<T> copy() throws CloneNotSupportedException;
 }

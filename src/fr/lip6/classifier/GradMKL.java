@@ -381,8 +381,9 @@ public class GradMKL<T> implements Classifier<T> {
 	 * Creates and returns a copy of this object.
 	 * @see java.lang.Object#clone()
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public GradMKL clone() throws CloneNotSupportedException {
-		return (GradMKL) super.clone();
+	public GradMKL<T> copy() throws CloneNotSupportedException {
+		return (GradMKL<T>) super.clone();
 	}
 }

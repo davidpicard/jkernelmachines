@@ -777,7 +777,7 @@ public class SimpleMKL<T> implements Classifier<T> {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public SimpleMKL<T> clone() throws CloneNotSupportedException {
+	public SimpleMKL<T> copy() throws CloneNotSupportedException {
 		return (SimpleMKL<T>) super.clone();
 	}
 

@@ -567,7 +567,7 @@ public class DoubleQNPKL implements Classifier<double[]> {
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public DoubleQNPKL clone() throws CloneNotSupportedException {
+	public DoubleQNPKL copy() throws CloneNotSupportedException {
 		return (DoubleQNPKL) super.clone();
 	}
 }

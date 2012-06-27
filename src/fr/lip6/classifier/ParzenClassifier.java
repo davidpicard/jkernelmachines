@@ -95,7 +95,7 @@ public class ParzenClassifier<T> implements Classifier<T>, Serializable {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public ParzenClassifier<T> clone() throws CloneNotSupportedException {
+	public ParzenClassifier<T> copy() throws CloneNotSupportedException {
 		return (ParzenClassifier<T>) super.clone();
 	}
 	

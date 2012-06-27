@@ -541,7 +541,7 @@ public class DoubleSGDQN implements Classifier<double[]> {
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public DoubleSGDQN clone() throws CloneNotSupportedException {
+	public DoubleSGDQN copy() throws CloneNotSupportedException {
 		return (DoubleSGDQN) super.clone();
 	}
 }

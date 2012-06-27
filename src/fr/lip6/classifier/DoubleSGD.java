@@ -262,7 +262,7 @@ public class DoubleSGD implements Classifier<double[]> {
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public DoubleSGD clone() throws CloneNotSupportedException {
+	public DoubleSGD copy() throws CloneNotSupportedException {
 		return (DoubleSGD) super.clone();
 	}
 }

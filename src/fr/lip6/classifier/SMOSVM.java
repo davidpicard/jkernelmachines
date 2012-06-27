@@ -606,7 +606,7 @@ public class SMOSVM<T> implements KernelSVM<T>, Serializable, Cloneable {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public SMOSVM<T> clone() throws CloneNotSupportedException {
+	public SMOSVM<T> copy() throws CloneNotSupportedException {
 		return (SMOSVM<T>) super.clone();
 	}
 }

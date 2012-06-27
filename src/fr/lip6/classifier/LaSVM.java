@@ -506,7 +506,7 @@ public final class LaSVM<T> implements KernelSVM<T> {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public LaSVM<T> clone() throws CloneNotSupportedException {
+	public LaSVM<T> copy() throws CloneNotSupportedException {
 		return (LaSVM<T>) super.clone();
 	}
 }
