@@ -207,7 +207,11 @@ public final class LaSVM<T> implements KernelSVM<T> {
 		alphas = new double[tlist.size()];
 		y = new int[tlist.size()];
 		g = new double[tlist.size()];
-		kmaxmin = new double[S.length];
+		kmaxmin = new double[tlist.size()];
+		
+		imin = -1;
+		imax = -1;
+		minmaxFlag = false;
 		
 		//set minmax
 		Cmin = new double[tlist.size()];
