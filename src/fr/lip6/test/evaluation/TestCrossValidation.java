@@ -21,6 +21,7 @@ package fr.lip6.test.evaluation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -29,6 +30,7 @@ import fr.lip6.classifier.LaSVM;
 import fr.lip6.evaluation.AccuracyEvaluator;
 import fr.lip6.evaluation.Evaluator;
 import fr.lip6.evaluation.LeaveOneOutCrossValidation;
+import fr.lip6.evaluation.NFoldCrossValidation;
 import fr.lip6.evaluation.RandomSplitCrossValidation;
 import fr.lip6.kernel.typed.DoubleGaussL2;
 import fr.lip6.type.TrainingSample;
@@ -74,6 +76,9 @@ public class TestCrossValidation {
 
 			train.add(new TrainingSample<double[]>(t, -1));
 		}
+		
+		// 2.1 shuffle list to avoid weird behavior
+		Collections.shuffle(train, ran);
 
 		// 3. instanciate classifier
 		DoubleGaussL2 k = new DoubleGaussL2();
@@ -92,8 +97,12 @@ public class TestCrossValidation {
 			good++;
 		else
 			System.err.println("WARNING: LeaveOneOutCrossValidation failed!");
+		if(testNFoldCrossValidation(svm, train))
+			good++;
+		else
+			System.err.println("WARNING: NFoldCrossValidation failed!");
 		
-		System.out.println("Testing Crossvalidation: "+good+"/2 tests validated.");
+		System.out.println("Testing Crossvalidation: "+good+"/3 tests validated.");
 
 	}
 
@@ -131,6 +140,28 @@ public class TestCrossValidation {
 		Evaluator<double[]> eval = new AccuracyEvaluator<double[]>();
 		LeaveOneOutCrossValidation<double[]> cv = new LeaveOneOutCrossValidation<double[]>(
 				c, l, eval);
+
+		// 5. perfom tests
+		cv.run();
+
+		// 6. get results
+		debug.println(1,"Accuracy: " + cv.getAverageScore() + " +/- "
+				+ cv.getStdDevScore());
+		debug.println(1,"(scores: " + Arrays.toString(cv.getScores()) + ")");
+		
+		return (cv.getAverageScore()==1.0);
+	}
+	
+	/*
+	 * test NFoldCrossValidation class
+	 */
+	private static boolean testNFoldCrossValidation(
+			Classifier<double[]> c, List<TrainingSample<double[]>> l) {
+		
+		// 4. CrossValidation
+		Evaluator<double[]> eval = new AccuracyEvaluator<double[]>();
+		NFoldCrossValidation<double[]> cv = new NFoldCrossValidation<double[]>(
+				5, c, l, eval);
 
 		// 5. perfom tests
 		cv.run();
