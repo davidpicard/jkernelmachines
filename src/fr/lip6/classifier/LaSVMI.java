@@ -155,7 +155,7 @@ public class LaSVMI<T> implements KernelSVM<T> {
 				}
 
 				// periodically run clean
-				if (i % (10*m) == 0)
+				if (i % (10 * m) == 0)
 					clean();
 			}
 		clean();
@@ -180,13 +180,16 @@ public class LaSVMI<T> implements KernelSVM<T> {
 		if (nz > m) {
 			Arrays.sort(gnsv);
 			int i = 0;
-			while((i+m) < gnsv.length && gnsv[i] == 0)
+			while ((i + m) < gnsv.length && gnsv[i] == 0)
 				i++;
-			double gthreshold = gnsv[i+m];
-			for (int n = 0; n < train.size(); n++) {
-				if (keset[n] && alpha[n] == 0 && Math.abs(gset[n]) > gthreshold) {
-					alpha[n] = 0.;
-					keset[n] = false;
+			if (i + m < gnsv.length) {
+				double gthreshold = gnsv[i + m];
+				for (int n = 0; n < train.size(); n++) {
+					if (keset[n] && alpha[n] == 0
+							&& Math.abs(gset[n]) > gthreshold) {
+						alpha[n] = 0.;
+						keset[n] = false;
+					}
 				}
 			}
 		}
@@ -249,7 +252,7 @@ public class LaSVMI<T> implements KernelSVM<T> {
 			// 5. update kernel expansion set
 			alpha[t] += lambda;
 			for (int n = 0; n < train.size(); n++) {
-				if (keset[n] )
+				if (keset[n])
 					if (cache)
 						gset[n] -= lambda * kmatrix[t][n];
 					else
@@ -308,13 +311,13 @@ public class LaSVMI<T> implements KernelSVM<T> {
 		alpha[i] = alpha[i] + lambda;
 		if (cache)
 			for (int n = 0; n < train.size(); n++) {
-				if (keset[n] ) {
+				if (keset[n]) {
 					gset[n] -= lambda * kmatrix[i][n];
 				}
 			}
 		else
 			for (int n = 0; n < train.size(); n++) {
-				if (keset[n] ) {
+				if (keset[n]) {
 					gset[n] -= lambda
 							* kernel.valueOf(xi.sample, train.get(n).sample);
 				}
@@ -451,6 +454,7 @@ public class LaSVMI<T> implements KernelSVM<T> {
 
 	/**
 	 * Creates and returns a copy of this object.
+	 * 
 	 * @see java.lang.Object#clone()
 	 */
 	@SuppressWarnings("unchecked")
