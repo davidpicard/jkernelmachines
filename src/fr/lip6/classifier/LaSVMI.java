@@ -180,7 +180,7 @@ public class LaSVMI<T> implements KernelSVM<T> {
 		if (nz > m) {
 			Arrays.sort(gnsv);
 			int i = 0;
-			while(gnsv[i] == 0)
+			while(i < gnsv.length && gnsv[i] == 0)
 				i++;
 			double gthreshold = gnsv[i+m];
 			for (int n = 0; n < train.size(); n++) {
