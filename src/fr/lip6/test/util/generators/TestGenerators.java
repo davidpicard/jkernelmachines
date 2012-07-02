@@ -52,7 +52,7 @@ public class TestGenerators {
 			debug.println(0,  "Warning: MultiClassGaussianGenerator Failed");
 		}
 
-		debug.println(0, "Testing generators: " + good + "/2 test validated.");
+		debug.println(0, "Testing generators: " + good + "/2 tests validated.");
 
 	}
 
