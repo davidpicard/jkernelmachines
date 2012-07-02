@@ -83,9 +83,9 @@ public class MultiClassGaussianGenerator {
 
 				for (int x = 0; x < nbclasses; x++) {
 					if (c == x)
-						d[x] = p + ran.nextGaussian();
+						d[x] = p + ran.nextGaussian()*sigma;
 					else
-						d[x] = ran.nextGaussian();
+						d[x] = ran.nextGaussian()*sigma;
 				}
 
 				list.add(new TrainingSample<double[]>(d, c));
