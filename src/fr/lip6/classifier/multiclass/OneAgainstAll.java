@@ -36,7 +36,7 @@ import fr.lip6.util.DebugPrinter;
  * @author picard
  *
  */
-public class OneAgainstAll<T> implements Classifier<T> {
+public class OneAgainstAll<T> implements MulticlassClassifier<T> {
 	
 	Classifier<T> baseClassifier;
 

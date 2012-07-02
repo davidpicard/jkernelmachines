@@ -16,7 +16,7 @@
 
     Copyright David Picard - 2012
 
-*/
+ */
 package fr.lip6.test.evaluation;
 
 import java.util.ArrayList;
@@ -25,25 +25,29 @@ import java.util.Random;
 
 import fr.lip6.classifier.Classifier;
 import fr.lip6.classifier.LaSVM;
+import fr.lip6.classifier.multiclass.MulticlassClassifier;
+import fr.lip6.classifier.multiclass.OneAgainstAll;
 import fr.lip6.evaluation.AccuracyEvaluator;
 import fr.lip6.evaluation.ApEvaluator;
 import fr.lip6.evaluation.Evaluator;
+import fr.lip6.evaluation.MulticlassAccuracyEvaluator;
 import fr.lip6.kernel.typed.DoubleGaussL2;
 import fr.lip6.type.TrainingSample;
 import fr.lip6.util.DebugPrinter;
 
 /**
  * Test cases for the evaluation related classes
+ * 
  * @author picard
- *
+ * 
  */
 public class TestEvaluation {
 
-	
 	static DebugPrinter debug = new DebugPrinter();
 
 	/**
-	 * @param args ignored
+	 * @param args
+	 *            ignored
 	 */
 	public static void main(String[] args) {
 
@@ -79,30 +83,37 @@ public class TestEvaluation {
 		k.setGamma(1.0);
 		LaSVM<double[]> svm = new LaSVM<double[]>(k);
 		svm.setC(100);
-		
+
 		DebugPrinter.setDebugLevel(0);
-		
+
 		int good = 0;
-		if(testAccuracyEvaluator(svm, train))
+		if (testAccuracyEvaluator(svm, train))
 			good++;
 		else
 			System.err.println("WARNING: AccuracyEvaluator failed!");
-		
-		if(testAveragePrecisionEvaluator(svm, train))
+
+		if (testAveragePrecisionEvaluator(svm, train))
 			good++;
 		else
 			System.err.println("WARNING: ApEvaluator failed!");
-		
-		System.out.println("Testing Evaluation: "+good+"/2 tests validated.");
+
+		OneAgainstAll<double[]> mcsvm = new OneAgainstAll<double[]>(svm);
+		if (testMulticlassAccuracy(mcsvm, train)) {
+			good++;
+		} else
+			System.err.println("WARNING: MulticlassAccuracyEvaluator failed!");
+
+		System.out.println("Testing Evaluation: " + good
+				+ "/3 tests validated.");
 
 	}
 
 	/*
 	 * test AccuracyEvaluator class
 	 */
-	private static boolean testAccuracyEvaluator(
-			Classifier<double[]> c, List<TrainingSample<double[]>> l) {
-		
+	private static boolean testAccuracyEvaluator(Classifier<double[]> c,
+			List<TrainingSample<double[]>> l) {
+
 		// 4. CrossValidation
 		Evaluator<double[]> eval = new AccuracyEvaluator<double[]>();
 
@@ -113,9 +124,9 @@ public class TestEvaluation {
 		eval.evaluate();
 
 		// 6. get results
-		debug.println(1,"Accuracy: " + eval.getScore());
-		
-		return (eval.getScore()==1.0);
+		debug.println(1, "Accuracy: " + eval.getScore());
+
+		return (eval.getScore() == 1.0);
 	}
 
 	/*
@@ -123,7 +134,7 @@ public class TestEvaluation {
 	 */
 	private static boolean testAveragePrecisionEvaluator(
 			Classifier<double[]> c, List<TrainingSample<double[]>> l) {
-		
+
 		// 4. CrossValidation
 		Evaluator<double[]> eval = new ApEvaluator<double[]>();
 
@@ -134,8 +145,23 @@ public class TestEvaluation {
 		eval.evaluate();
 
 		// 6. get results
-		debug.println(1,"Average precision: " + eval.getScore());
+		debug.println(1, "Average precision: " + eval.getScore());
+
+		return (eval.getScore() >= 1.0);
+	}
+
+	private static boolean testMulticlassAccuracy(
+			MulticlassClassifier<double[]> c, List<TrainingSample<double[]>> l) {
+
+		MulticlassAccuracyEvaluator<double[]> mcae = new MulticlassAccuracyEvaluator<double[]>();
+		mcae.setClassifier(c);
+		mcae.setTrainingSet(l);
+		mcae.setTestingSet(l);
+		mcae.evaluate();
 		
-		return (eval.getScore()>=1.0);
+		// results
+		debug.println(1, "Multiclass accuracy: "+mcae.getScore());
+		
+		return (mcae.getScore()>= 1.0);
 	}
 }
