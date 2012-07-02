@@ -24,6 +24,7 @@ import java.util.List;
 import fr.lip6.type.TrainingSample;
 import fr.lip6.util.DebugPrinter;
 import fr.lip6.util.generators.GaussianGenerator;
+import fr.lip6.util.generators.MultiClassGaussianGenerator;
 
 /**
  * Test cases for generator classes
@@ -43,10 +44,15 @@ public class TestGenerators {
 		if (testGaussianGenerator()) {
 			good++;
 		} else {
-			debug.println(0, "Warning: GaussIanGenerator failed.");
+			debug.println(0, "Warning: GaussianGenerator failed.");
+		}
+		if (testMultiClassGaussianGenerator()) {
+			good++;
+		} else {
+			debug.println(0,  "Warning: MultiClassGaussianGenerator Failed");
 		}
 
-		debug.println(0, "Testing generators: " + good + "/1 test validated.");
+		debug.println(0, "Testing generators: " + good + "/2 test validated.");
 
 	}
 
@@ -88,6 +94,29 @@ public class TestGenerators {
 		if (p != 10 || n != 90)
 			return false;
 
+		return true;
+	}
+	
+	private static boolean testMultiClassGaussianGenerator() {
+		
+		MultiClassGaussianGenerator mg = new MultiClassGaussianGenerator();
+		
+		List<TrainingSample<double[]>> list = mg.generateList(20);
+		
+		//test size
+		if(list.size() != 100) {
+			return false;
+		}
+		
+		// test all classes
+		int[] cls = new int[mg.getNbclasses()];
+		for(TrainingSample<double[]> t : list)
+			cls[t.label]++;
+		for(int c : cls) {
+			if(c != 20)
+				return false;
+		}
+		
 		return true;
 	}
 }
