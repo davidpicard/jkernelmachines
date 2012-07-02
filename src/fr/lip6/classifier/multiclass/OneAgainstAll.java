@@ -143,7 +143,7 @@ public class OneAgainstAll<T> implements MulticlassClassifier<T> {
 		
 		// find max output
 		int imax = -1;
-		double max = Double.MIN_VALUE;
+		double max = - Double.MAX_VALUE;
 		for(int i = 0 ; i < listOfClassifiers.size(); i++) {
 			double v = listOfClassifiers.get(i).valueOf(e);
 			if(v > max) {

@@ -256,7 +256,7 @@ public final class LaSVM<T> implements KernelSVM<T> {
 		imin = -1;
 		imax = -1;
 		gmin = Double.MAX_VALUE;
-		gmax = Double.MIN_VALUE;
+		gmax = -Double.MAX_VALUE;
 		for(int s =0 ; s < S.length ; s++)
 		{
 			if(!S[s])

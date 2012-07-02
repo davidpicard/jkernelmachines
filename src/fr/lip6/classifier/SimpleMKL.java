@@ -191,7 +191,7 @@ public class SimpleMKL<T> implements Classifier<T> {
 			//-------------------------------
 			
 			//searching -grad max
-			double max = Double.MIN_VALUE;
+			double max = -Double.MAX_VALUE;
 			for(int i = 0 ; i < dm.size(); i++)
 			{
 				double g = -grad.get(i);
@@ -415,7 +415,7 @@ public class SimpleMKL<T> implements Classifier<T> {
 		}
 		
 		//finding max dm
-		double max = Double.MIN_VALUE;
+		double max = -Double.MAX_VALUE;
 		int indMax = 0;
 		for(int i = 0 ; i < dm.size(); i++)
 		{
