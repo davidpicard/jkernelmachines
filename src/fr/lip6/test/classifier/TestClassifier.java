@@ -31,6 +31,7 @@ import fr.lip6.classifier.LaSVM;
 import fr.lip6.classifier.LaSVMI;
 import fr.lip6.classifier.SMOSVM;
 import fr.lip6.classifier.SimpleMKL;
+import fr.lip6.classifier.TSMKL;
 import fr.lip6.kernel.typed.DoubleGaussL2;
 import fr.lip6.kernel.typed.index.IndexDoubleGaussL2;
 import fr.lip6.type.TrainingSample;
@@ -106,63 +107,70 @@ public class TestClassifier {
 		DebugPrinter.setDebugLevel(0);
 		
 		int good = 0;
-		//5. test SMO
+		//1. test SMO
 		if(evaluateSMO(train, test)) {
 			good++;
 		}
 		else {
 			debug.println(0, "Warning SMO failed");
 		}
-		//6. test LaSVM
+		//2. test LaSVM
 		if(evaluateLaSVM(train, test)) {
 			good++;
 		}
 		else {
 			debug.println(0, "Warning LaSVM failed");
 		}
-		//7. test LaSVM-I
+		//3. test LaSVM-I
 		if(evaluateLaSVMI(train, test)) {
 			good++;
 		}
 		else {
 			debug.println(0, "Warning LaSVM failed");
 		}
-		//8. test SimpleMKL
+		//4. test SimpleMKL
 		if(evaluateSimpleMKL(train, test)) {
 			good++;
 		}
 		else {
 			debug.println(0, "Warning SimpleMKL failed");
 		}
-		//9. test GradMKL
+		//5. test GradMKL
 		if(evaluateGradMKL(train, test)) {
 			good++;
 		}
 		else {
 			debug.println(0, "Warning GradMKL failed");
 		}
-		//10. test QNPKL
+		//6. Test TSMKL
+		if(evaluateTSMKL(train, test)) {
+			good++;
+		}
+		else {
+			debug.println(0,  "Warning TSMKL failed");
+		}
+		//7. test QNPKL
 		if(evaluateQNPKL(train, test)) {
 			good++;
 		}
 		else {
 			debug.println(0, "Warning QNPKL failed");
 		}
-		//11. test SGD
+		//8. test SGD
 		if(evaluateSGD(train, test)) {
 			good++;
 		}
 		else {
 			debug.println(0, "Warning SGD failed");
 		}
-		//12. test SGDQN
+		//9. test SGDQN
 		if(evaluateSGDQN(train, test)) {
 			good++;
 		}
 		else {
 			debug.println(0, "Warning SGDQN failed");
 		}
-		//13. test Pegasos
+		//10. test Pegasos
 		if(evaluatePegasos(train, test)) {
 			good++;
 		}
@@ -170,7 +178,7 @@ public class TestClassifier {
 			debug.println(0, "Warning Pegasos failed");
 		}
 		
-		debug.println(0, "Testing classifiers: "+good+"/9 tests validated");
+		debug.println(0, "Testing classifiers: "+good+"/10 tests validated");
 
 	}
 
@@ -327,6 +335,28 @@ public class TestClassifier {
 		for(TrainingSample<double[]> t : test)
 			if(svm.valueOf(t.sample) * t.label <= 0) {
 				debug.println(0, "GradMKL(LASVMI) error with sample "+t+" expected "+t.label+", got "+svm.valueOf(t.sample));
+				return false;
+			}
+		
+		return true;
+	}
+	
+	private static boolean evaluateTSMKL(
+			ArrayList<TrainingSample<double[]>> train,
+			ArrayList<TrainingSample<double[]>> test) {
+		
+		//LaSVM
+		TSMKL<double[]> svm = new TSMKL<double[]>();
+		//svm.setClassifier(new LaSVM<double[]>(null));
+		for(int i = 0 ; i < dimension ; i++){
+			svm.addKernel(new IndexDoubleGaussL2(i));
+		}
+		svm.setC(10);
+		svm.train(train);
+		
+		for(TrainingSample<double[]> t : test)
+			if(svm.valueOf(t.sample) * t.label <= 0) {
+				debug.println(0, "TSMKL(LASVM) error with sample "+t+" expected "+t.label+", got "+svm.valueOf(t.sample));
 				return false;
 			}
 		
