@@ -20,13 +20,16 @@
 package fr.lip6.test.io;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import fr.lip6.classifier.LaSVM;
 import fr.lip6.evaluation.AccuracyEvaluator;
+import fr.lip6.evaluation.NFoldCrossValidation;
 import fr.lip6.io.CsvImporter;
 import fr.lip6.kernel.typed.DoubleGaussL2;
 import fr.lip6.type.TrainingSample;
+import fr.lip6.util.DataPreProcessing;
 
 /**
  * Train a SVM using LaSVM algorithm on data in the csv format<br/>
@@ -48,7 +51,6 @@ public class TestCsvImporter {
 		}
 		
 		List<TrainingSample<double[]>> trainlist = null;
-		List<TrainingSample<double[]>> testlist = null;
 		
 		//parsing
 		try {
@@ -59,16 +61,12 @@ public class TestCsvImporter {
 			return;
 		}
 		System.out.println(trainlist.size()+" training data");
-		
-		try {
-			testlist = CsvImporter.importFromFile(args[1]);
-		}
-		catch (IOException e) {
-			System.out.println("Error parsing file "+args[1]);
-			return;
-		}
-		System.out.println(testlist.size()+" testing data");
 		System.out.println("dimension of samples: "+trainlist.get(0).sample.length);
+		
+		Collections.shuffle(trainlist);
+		DataPreProcessing.centerList(trainlist);
+		DataPreProcessing.reduceList(trainlist);
+		DataPreProcessing.normalizeList(trainlist);
 		
 		//learning
 		DoubleGaussL2 kernel = new DoubleGaussL2();
@@ -78,12 +76,11 @@ public class TestCsvImporter {
 		svm.setE(5);
 				
 		AccuracyEvaluator<double[]> accev = new AccuracyEvaluator<double[]>();
-		accev.setClassifier(svm);
-		accev.setTrainingSet(trainlist);
-		accev.setTestingSet(testlist);
-		accev.evaluate();
+		NFoldCrossValidation<double[]> cv = new NFoldCrossValidation<double[]>(5, svm, trainlist, accev);
 		
-		System.out.println("accuracy: "+accev.getScore());
+		cv.run();
+		
+		System.out.println("accuracy: "+cv.getAverageScore()+" +/- "+cv.getStdDevScore());
 
 	}
 
