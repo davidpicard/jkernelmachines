@@ -90,6 +90,7 @@ public class LibSVMImporter {
 			list.add(t);
 		}
 
+		lin.close();
 		return list;
 
 	}
