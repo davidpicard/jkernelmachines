@@ -1,0 +1,99 @@
+<?xml version="1.0"?> 
+<project name="jkernelmachines" default="all" basedir="."> 
+
+     <property name="src" value="src"/> 
+     <property name="build" value="build"/>
+     <property name="jarfile" value="../jkernelmachines-test.jar"/>
+     <property name="doc" value="doc"/>
+     <property name="docjarfile" value="../jkernelmachines-test-doc.jar"/>
+     <property name="srcjarfile" value="../jkernelmachines-test-src.jar"/>
+
+     <path id="test-classpath">
+          <pathelement path="../jkernelmachines.jar" />
+          <pathelement path="${jarfile}" />
+     </path>
+
+     <target name="all" depends="jar" />
+     
+     <target name="full" depends="jar,docjar,sourcejar,test" />
+
+     <target name="init">  
+          <mkdir dir="${build}"/>
+          <mkdir dir="${doc}"/>
+     </target>
+
+     <target name="compile" depends="init"> 
+          <!-- Compile the java code -->
+          <javac srcdir="${src}" destdir="${build}" includeantruntime="false"> 
+	       <classpath>
+		    <pathelement path="../jkernelmachines.jar" />
+		    <pathelement path="${jarfile}" />
+               </classpath>
+          </javac>
+     </target>
+
+     <target name="jar" depends="compile">
+          <jar destfile="${jarfile}" basedir="${build}"/>
+     </target>
+
+     <target name="doc" depends="init">
+          <javadoc destdir="${doc}" sourcepath="${src}"/>
+     </target>
+
+     <target name="docjar" depends="doc">
+          <jar destfile="${docjarfile}" basedir="${doc}"/>
+     </target>
+
+     <target name="sourcejar">
+          <jar destfile="${srcjarfile}" basedir="${src}"/>
+     </target>
+
+     <target name="clean" description="Removes previous build">
+          <delete verbose="true" includeEmptyDirs="true">
+               <fileset dir="${build}"/>
+               <fileset dir="${doc}"/>
+               <fileset file="${jarfile}"/>
+               <fileset file="${docjarfile}"/>
+               <fileset file="${srcjarfile}"/>
+          </delete>
+     </target>
+
+     <target name="test" description="launch testing utilities" depends="all">
+          <java classname="fr.lip6.jkernelmachines.test.kernel.TestKernel">
+	       <classpath>
+		    <pathelement path="../jkernelmachines.jar" />
+		    <pathelement path="${jarfile}" />
+               </classpath>
+          </java>
+          <java classname="fr.lip6.jkernelmachines.test.util.generators.TestGenerators">
+	       <classpath>
+		    <pathelement path="../jkernelmachines.jar" />
+		    <pathelement path="${jarfile}" />
+               </classpath>
+          </java>
+          <java classname="fr.lip6.jkernelmachines.test.classifier.TestClassifier">
+	       <classpath>
+		    <pathelement path="../jkernelmachines.jar" />
+		    <pathelement path="${jarfile}" />
+               </classpath>
+          </java>
+          <java classname="fr.lip6.jkernelmachines.test.classifier.TestMulticlassClassifiers">
+	       <classpath>
+		    <pathelement path="../jkernelmachines.jar" />
+		    <pathelement path="${jarfile}" />
+               </classpath>
+          </java>
+          <java classname="fr.lip6.jkernelmachines.test.evaluation.TestEvaluation">
+	       <classpath>
+		    <pathelement path="../jkernelmachines.jar" />
+		    <pathelement path="${jarfile}" />
+               </classpath>
+          </java>
+          <java classname="fr.lip6.jkernelmachines.test.evaluation.TestCrossValidation">
+	       <classpath>
+		    <pathelement path="../jkernelmachines.jar" />
+		    <pathelement path="${jarfile}" />
+               </classpath>
+          </java>
+     </target>
+</project>
