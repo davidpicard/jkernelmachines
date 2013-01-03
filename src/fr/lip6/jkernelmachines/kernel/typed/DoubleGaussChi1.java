@@ -37,6 +37,21 @@ public class DoubleGaussChi1 extends GaussianKernel<double[]> {
 	private double gamma = 0.1;
 	private double eps = 10e-8;
 	
+	/**
+	 * Constructor with gamma argument
+	 * @param gamma Gaussian parameter
+	 */
+	public DoubleGaussChi1(double gamma) {
+		this.gamma = gamma;
+	}
+
+	/**
+	 * Default constructor, gamma = 0.1.
+	 */
+	public DoubleGaussChi1() {
+
+	}
+
 	@Override
 	public double valueOf(double[] t1, double[] t2) {
 		double sum = 0.;
