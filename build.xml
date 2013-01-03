@@ -10,7 +10,7 @@
 
      <target name="all" depends="jar" />
      
-     <target name="full" depends="jar,docjar,sourcejar,test" />
+     <target name="full" depends="jar,docjar,sourcejar" />
 
      <target name="init">  
           <mkdir dir="${build}"/>
@@ -45,11 +45,54 @@
                <fileset file="${jarfile}"/>
                <fileset file="${docjarfile}"/>
                <fileset file="${srcjarfile}"/>
+               <fileset dir="${test-build}"/>
+               <fileset file="${test-jarfile}"/>
           </delete>
-          <ant antfile="build.xml" dir="test" target="clean" />
+     </target>
+     
+     <!--
+     *******************************************************************
+								UNIT TEST
+	 *******************************************************************     
+     -->
+     
+     <property name="test-src" value="test/src"/> 
+     <property name="test-build" value="test/build"/>
+     <property name="test-jarfile" value="jkernelmachines-test.jar"/>
+     
+     <target name="test-init">  
+          <mkdir dir="${test-build}"/>
+     </target>
+     
+      <target name="test-compile" depends="test-init,jar"> 
+          <!-- Compile the java code -->
+          <javac srcdir="${test-src}" destdir="${test-build}" includeantruntime="true"> 
+			<classpath>
+				<pathelement location="${jarfile}"/>
+			</classpath>
+          </javac>
      </target>
 
-     <target name="test" description="launch testing utilities" depends="all">
-          <ant antfile="build.xml" dir="test" target="test" inheritAll="false"/>
+     <target name="test-jar" depends="test-compile">
+          <jar destfile="${test-jarfile}" basedir="${test-build}"/>
      </target>
+
+     <target name="junit" depends="test-jar">
+		<junit printsummary="yes" haltonfailure="yes" fork="yes">
+ 	      <classpath>
+               <pathelement path="${jarfile}"/>
+               <pathelement path="${test-jarfile}"/>
+               <pathelement path="${ant.library.dir}/junit4.jar"/>
+               <pathelement path="${ant.library.dir}/ant-junit4.jar"/>
+          </classpath>
+		  <formatter type="xml"/>
+		  <batchtest todir="tmp-report/">
+	        <fileset dir="${test-src}">
+			  <include name="**/Double*Test*.java"/>
+	        </fileset>
+     	  </batchtest>
+		</junit>
+     </target>
+
+     
 </project>
