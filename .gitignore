@@ -1,0 +1,6 @@
+*.zip
+*.jar
+build/
+test/build/
+junit-report/
+
