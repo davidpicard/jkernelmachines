@@ -43,7 +43,7 @@ public class DoubleGaussChi1Test {
 	}
 
 	/**
-	 * Test method for {@link fr.lip6.jkernelmachines.kernel.typed.DoubleGaussChi2#setGamma(double)}.
+	 * Test method for {@link fr.lip6.jkernelmachines.kernel.typed.DoubleGaussChi1#setGamma(double)}.
 	 */
 	@Test
 	public final void testSetGamma() {
@@ -52,7 +52,7 @@ public class DoubleGaussChi1Test {
 	}
 
 	/**
-	 * Test method for {@link fr.lip6.jkernelmachines.kernel.typed.DoubleGaussChi2#DoubleGaussChi2(double)}.
+	 * Test method for {@link fr.lip6.jkernelmachines.kernel.typed.DoubleGaussChi1#DoubleGaussChi2(double)}.
 	 */
 	@Test
 	public final void testDoubleGaussChi2Double() {
@@ -61,7 +61,7 @@ public class DoubleGaussChi1Test {
 	}
 
 	/**
-	 * Test method for {@link fr.lip6.jkernelmachines.kernel.typed.DoubleGaussChi2#valueOf(double[], double[])}.
+	 * Test method for {@link fr.lip6.jkernelmachines.kernel.typed.DoubleGaussChi1#valueOf(double[], double[])}.
 	 */
 	@Test
 	public final void testValueOfDoubleArrayDoubleArray() {
@@ -74,7 +74,7 @@ public class DoubleGaussChi1Test {
 	}
 
 	/**
-	 * Test method for {@link fr.lip6.jkernelmachines.kernel.typed.DoubleGaussChi2#valueOf(double[])}.
+	 * Test method for {@link fr.lip6.jkernelmachines.kernel.typed.DoubleGaussChi1#valueOf(double[])}.
 	 */
 	@Test
 	public final void testValueOfDoubleArray() {
@@ -83,7 +83,7 @@ public class DoubleGaussChi1Test {
 	}
 
 	/**
-	 * Test method for {@link fr.lip6.jkernelmachines.kernel.typed.DoubleGaussChi2#distanceValueOf(double[], double[])}.
+	 * Test method for {@link fr.lip6.jkernelmachines.kernel.typed.DoubleGaussChi1#distanceValueOf(double[], double[])}.
 	 */
 	@Test
 	public final void testDistanceValueOfDoubleArrayDoubleArray() {
