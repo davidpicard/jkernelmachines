@@ -92,7 +92,7 @@
 		  <formatter type="xml"/>
 		  <batchtest todir="${test-report}">
 	        <fileset dir="${test-src}">
-			  <include name="**/Double*Test*.java"/>
+			  <include name="**/*Tests.java"/>
 	        </fileset>
      	  </batchtest>
 		</junit>
