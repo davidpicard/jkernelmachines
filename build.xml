@@ -7,6 +7,7 @@
      <property name="doc" value="doc"/>
      <property name="docjarfile" value="jkernelmachines-doc.jar"/>
      <property name="srcjarfile" value="jkernelmachines-src.jar"/>
+     <property file="config.properties" />
 
      <target name="all" depends="jar" />
      
@@ -59,15 +60,18 @@
      <property name="test-src" value="test/src"/> 
      <property name="test-build" value="test/build"/>
      <property name="test-jarfile" value="jkernelmachines-test.jar"/>
+     <property name="test-report" value="junit-report" />
      
      <target name="test-init">  
           <mkdir dir="${test-build}"/>
+          <mkdir dir="${test-report}" />
      </target>
      
       <target name="test-compile" depends="test-init,jar"> 
           <!-- Compile the java code -->
           <javac srcdir="${test-src}" destdir="${test-build}" includeantruntime="true"> 
 			<classpath>
+				<pathelement location="${junit.library.dir}/junit4.jar" />
 				<pathelement location="${jarfile}"/>
 			</classpath>
           </javac>
@@ -82,11 +86,11 @@
  	      <classpath>
                <pathelement path="${jarfile}"/>
                <pathelement path="${test-jarfile}"/>
-               <pathelement path="${ant.library.dir}/junit4.jar"/>
-               <pathelement path="${ant.library.dir}/ant-junit4.jar"/>
+               <pathelement path="${junit.library.dir}/junit4.jar"/>
+               <pathelement path="${junit.library.dir}/ant-junit4.jar"/>
           </classpath>
 		  <formatter type="xml"/>
-		  <batchtest todir="tmp-report/">
+		  <batchtest todir="${test-report}">
 	        <fileset dir="${test-src}">
 			  <include name="**/Double*Test*.java"/>
 	        </fileset>
