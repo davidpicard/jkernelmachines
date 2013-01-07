@@ -342,4 +342,14 @@ public class DoublePegasosSVM implements Classifier<double[]>, Serializable{
 	public DoublePegasosSVM copy() throws CloneNotSupportedException {
 		return (DoublePegasosSVM) super.clone();
 	}
+
+	/**
+	 * Tells the C hyperparameter, if set, else return 0
+	 * @return the hyperparameter C
+	 */
+	public double getC() {
+		if(hasC)
+			return C;
+		return 0.;
+	}
 }
