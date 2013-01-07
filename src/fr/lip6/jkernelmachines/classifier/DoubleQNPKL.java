@@ -570,4 +570,20 @@ public class DoubleQNPKL implements Classifier<double[]> {
 	public DoubleQNPKL copy() throws CloneNotSupportedException {
 		return (DoubleQNPKL) super.clone();
 	}
+
+	/**
+	 * Returns the p_norm parameters
+	 * @return p_norm
+	 */
+	public double getPNorm() {
+		return p_norm;
+	}
+
+	/**
+	 * Returns the stopping criterion
+	 * @return stopGap
+	 */
+	public double getStopGap() {
+		return stopGap;
+	}
 }
