@@ -267,5 +267,13 @@ public class TSMKL<T> implements KernelSVM<T> {
 		return beta;
 	}
 
+	/**
+	 * Return the list of kernels used by this MKL algorithm
+	 * @return kernels
+	 */
+	public List<Kernel<T>> getKernels() {
+		return kernels;
+	}
+
 	
 }
