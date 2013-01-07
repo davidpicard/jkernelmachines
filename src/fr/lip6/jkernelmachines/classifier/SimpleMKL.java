@@ -781,4 +781,20 @@ public class SimpleMKL<T> implements Classifier<T> {
 		return (SimpleMKL<T>) super.clone();
 	}
 
+	/**
+	 * Returns the list of kernels
+	 * @return kernels
+	 */
+	public List<Kernel<T>> getKernels() {
+		return kernels;
+	}
+
+	/**
+	 * Returns the classifier used by this MKL algorithm
+	 * @return svm
+	 */
+	public KernelSVM<T> getClassifier() {
+		return svm;
+	}
+
 }
