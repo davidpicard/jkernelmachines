@@ -386,4 +386,36 @@ public class GradMKL<T> implements Classifier<T> {
 	public GradMKL<T> copy() throws CloneNotSupportedException {
 		return (GradMKL<T>) super.clone();
 	}
+
+	/**
+	 * Returns the list of kernels
+	 * @return listOfKernels
+	 */
+	public List<Kernel<T>> getKernels() {
+		return listOfKernels;
+	}
+
+	/**
+	 * Return the norm used for the regularization on the kernels
+	 * @return p_norm
+	 */
+	public double getMKLNorm() {
+		return p_norm;
+	}
+
+	/**
+	 * Returns the stopping criterion
+	 * @return stopGap
+	 */
+	public double getStopGap() {
+		return stopGap;
+	}
+
+	/**
+	 * Returns the classifier used by this MKL algorithm
+	 * @return svm
+	 */
+	public KernelSVM<T> getClassifier() {
+		return svm;
+	}
 }
