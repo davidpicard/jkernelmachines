@@ -106,6 +106,9 @@ public class DoubleSGD implements Classifier<double[]> {
 	 * @param l the training list
 	 */
 	public void trainOnce(List<TrainingSample<double[]>> l) {
+		if(w == null)
+			return;
+		
 		int imax = l.size();
 		if(shuffle) {
 			Collections.shuffle(l);
@@ -264,5 +267,13 @@ public class DoubleSGD implements Classifier<double[]> {
 	@Override
 	public DoubleSGD copy() throws CloneNotSupportedException {
 		return (DoubleSGD) super.clone();
+	}
+
+	/**
+	 * Returns the hyper-parameter lambda
+	 * @return lambda
+	 */
+	public double getLambda() {
+		return lambda;
 	}
 }
