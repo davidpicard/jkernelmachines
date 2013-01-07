@@ -609,4 +609,12 @@ public class SMOSVM<T> implements KernelSVM<T>, Serializable, Cloneable {
 	public SMOSVM<T> copy() throws CloneNotSupportedException {
 		return (SMOSVM<T>) super.clone();
 	}
+
+	/**
+	 * Returns the kernel used by this SVM
+	 * @return the kernel
+	 */
+	public Object getKernel() {
+		return kernel;
+	}
 }
