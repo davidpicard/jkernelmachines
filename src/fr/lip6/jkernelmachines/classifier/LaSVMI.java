@@ -463,4 +463,12 @@ public class LaSVMI<T> implements KernelSVM<T> {
 		return (LaSVMI<T>) super.clone();
 	}
 
+	/**
+	 * Returns the kernel used by this classifier
+	 * @return kernel
+	 */
+	public Kernel<T> getKernel() {
+		return kernel;
+	}
+
 }
