@@ -78,7 +78,10 @@
      </target>
 
      <target name="test-jar" depends="test-compile">
-          <jar destfile="${test-jarfile}" basedir="${test-build}"/>
+          <jar destfile="${test-jarfile}">
+			<fileset dir="${test-build}"/>
+			<fileset dir="${test-src}"/>
+          </jar>
      </target>
 
      <target name="junit" depends="test-jar">
