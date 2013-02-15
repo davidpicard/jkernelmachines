@@ -45,6 +45,7 @@ public class LibSVMImporter {
 		LineNumberReader lin = new LineNumberReader(new FileReader(filename));
 		String line = null;
 		int max_attr = 0;
+		int line_index = 0;
 		do {
 			line = lin.readLine();
 			if(line == null)
@@ -52,6 +53,8 @@ public class LibSVMImporter {
 
 			StringTokenizer tokenizer = new StringTokenizer(line, "[ ]+");
 			Map<Integer, Double> map = new HashMap<Integer, Double>();
+			//make sure every vector is different by adding the line number
+			map.put(-1, (double)++line_index);
 
 			// class attribute
 			int y = Integer.parseInt(tokenizer.nextToken());
@@ -83,6 +86,8 @@ public class LibSVMImporter {
 
 			double[] f = new double[max_attr];
 			for (int x : m.keySet()) {
+				if(x < 1)
+					continue;
 				f[x-1] = m.get(x);
 			}
 
