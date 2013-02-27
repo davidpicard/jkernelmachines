@@ -33,6 +33,7 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
  * @author picard
  *
  */
+@Deprecated
 public class TestLinearTransductiveSVM {
 
 	public static void main(String[] args)
