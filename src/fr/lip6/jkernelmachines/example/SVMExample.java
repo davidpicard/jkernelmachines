@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.List;
 
 import fr.lip6.jkernelmachines.classifier.LaSVM;
+import fr.lip6.jkernelmachines.evaluation.ApEvaluator;
 import fr.lip6.jkernelmachines.io.LibSVMImporter;
 import fr.lip6.jkernelmachines.kernel.typed.DoubleGaussL2;
 import fr.lip6.jkernelmachines.type.TrainingSample;
@@ -46,20 +47,27 @@ public class SVMExample {
 		
 		//checking arguments
 		if(args.length < 1) {
-			System.out.println("Usage: SVMExample datafile");
+			System.out.println("Usage: SVMExample trainfile testfile");
 			return;
 		}
 		
 		//parsing samples from a file using libsvm format
-		List<TrainingSample<double[]>> list = null;
+		List<TrainingSample<double[]>> train = null;
+		List<TrainingSample<double[]>> test = null;
 		try {
-			list = LibSVMImporter.importFromFile(args[0]);
+			train = LibSVMImporter.importFromFile(args[0]);
 		}
 		catch (IOException e) {
 			System.out.println("Error parsing file "+args[0]);
 			return;
 		}
-		
+		try {
+			test = LibSVMImporter.importFromFile(args[1]);
+		}
+		catch (IOException e) {
+			System.out.println("Error parsing file "+args[1]);
+			return;
+		}
 		
 		//setting kernel
 		DoubleGaussL2 kernel = new DoubleGaussL2();
@@ -68,26 +76,16 @@ public class SVMExample {
 		//setting SVM parameters
 		LaSVM<double[]> svm = new LaSVM<double[]>(kernel);
 		svm.setC(10); //C hyperparameter
+				
+		//evaluation on testing set using evaluator
+		ApEvaluator<double[]> ape = new ApEvaluator<double[]>();
+		ape.setClassifier(svm);
+		ape.setTrainingSet(train);
+		ape.setTestingSet(test);
+		ape.evaluate(); // training and evaluating at the same time
 		
-		//splitting list into training and testing sets using half the samples
-		List<TrainingSample<double[]>> train = list.subList(0, list.size()/2);
-		List<TrainingSample<double[]>> test = list.subList(list.size()/2, list.size());
-		
-		//training the classifier
-		svm.train(train);
-		
-		//evaluation on testing set
-		double err = 0;
-		for(TrainingSample<double[]> t : test) {
-			//using valueOf() method to get the output for one sample
-			double v = svm.valueOf(t.sample);
-			if( v * t.label < 0) {
-				err++;
-			}
-		}
-		
-		// printing error rate
-		System.out.println("error rate: "+(err/test.size()));
+		// printing average precision obtained
+		System.out.println("Average Precision: "+ape.getScore());
 	}
 
 }
