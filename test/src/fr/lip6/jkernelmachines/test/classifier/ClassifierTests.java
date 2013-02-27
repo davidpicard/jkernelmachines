@@ -31,7 +31,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ DoublePegasosSVMTest.class, DoubleQNPKLTest.class,
 		DoubleSGDQNTest.class, DoubleSGDTest.class, GradMKLTest.class,
 		LaSVMITest.class, LaSVMTest.class, SimpleMKLTest.class,
-		SMOSVMTest.class, TSMKLTest.class })
+		SMOSVMTest.class, TSMKLTest.class, MulticlassLaSVMTest.class })
 public class ClassifierTests {
 
 }
