@@ -1,5 +1,6 @@
 *.zip
 *.jar
+*.class
 build/
 test/build/
 junit-report/
