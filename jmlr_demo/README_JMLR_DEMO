@@ -1,0 +1,49 @@
+This is a small archive to reproduce the results comparing JKernelMachines 
+to weka. Weka is included in the archive. The test for weka is a very simple
+java class that emulates the behavior of fr.lip6.example.CrossValidationExample
+from JKernelMachines.
+
+All parameters are set to the same values.
+
+This has been tested under Linux only, but it should be easy to extrapolate
+to other OSes.
+Just launch run.sh in shell to run all the tests. Warning, 'german-number' 
+using the SMO algorithm from JKernelMachines can take some times (less than 
+ten minutes on a recent computer).
+
+You should expect an output similar to this one:
+
+Weka:
+=====
+
+ionosphere mean accuracy : 85.07042253521126 +/- 3.403674922139316
+heart mean accuracy : 83.98148148148148 +/- 3.807571332398536
+breast cancer mean accuracy : 97.29927007299271 +/- 1.327985795522648
+german number mean accuracy : 74.075 +/- 3.4288299753706073
+
+
+JKernelMachines:
+================
+
+LaSVM
+-----
+ionosphere Accuracy: 0.9142857142857144 +/- 0.022587697572631283
+heart Accuracy: 0.8194444444444444 +/- 0.037895151721631715
+breast cancer Accuracy: 0.9688888888888888 +/- 0.00982703641586783
+german number Accuracy: 0.7605 +/- 0.028279851484758554
+
+SMO
+---
+ionosphere Accuracy: 0.9385714285714284 +/- 0.02263282788250696
+heart Accuracy: 0.8305555555555555 +/- 0.042743292176236264
+breast cancer Accuracy: 0.9703703703703705 +/- 0.0148148148148148
+german number Accuracy: 0.7595 +/- 0.02654712790491658
+
+LaSVM-I
+-------
+ionosphere Accuracy: 0.8914285714285717 +/- 0.03790428331834743
+heart Accuracy: 0.8435185185185183 +/- 0.050196800623814056
+breast cancer Accuracy: 0.9740740740740741 +/- 0.015270761576361688
+german number Accuracy: 0.75175 +/- 0.02670557057993709
+
+
