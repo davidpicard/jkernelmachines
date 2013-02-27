@@ -31,6 +31,7 @@ import fr.lip6.jkernelmachines.kernel.typed.DoubleGaussL2;
  * @author picard
  *
  */
+@Deprecated
 public class TestDensity {
 
 	/**
