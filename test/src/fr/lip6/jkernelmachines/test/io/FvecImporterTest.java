@@ -19,16 +19,38 @@
 */
 package fr.lip6.jkernelmachines.test.io;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.Test;
+
+import fr.lip6.jkernelmachines.io.FvecImporter;
 
 /**
  * @author picard
  *
  */
-@RunWith(Suite.class)
-@SuiteClasses({ LibSvmImporterTest.class, FvecImporterTest.class })
-public class ImporterTests {
+public class FvecImporterTest {
+
+	/**
+	 * Test method for {@link fr.lip6.jkernelmachines.io.FvecImporter#readFile(java.lang.String)}.
+	 */
+	@Test
+	public final void testReadFile() {
+		try {
+			FvecImporter fvecimp = new FvecImporter();
+			List<double[]> l = fvecimp.readFile("resources/dict.fvec");
+			assertEquals(32, l.size());
+			assertEquals(40, l.get(0).length);
+		}
+		catch(IOException e) {
+
+			fail("Exception thrown: "+e.getMessage());
+		}
+	}
 
 }
