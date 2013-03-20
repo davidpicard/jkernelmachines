@@ -24,6 +24,8 @@ import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +78,27 @@ public class FvecImporter {
 		return list;
 	}
 	
+	/**
+	 * Writes a list of features (double arrays) to a file in fvec (INRIA) format.
+	 * @param filename the name of the file to be written
+	 * @param list the list of features
+	 * @throws IOException 
+	 */
+	public void writeFile(String filename, List<double[]> list) throws IOException {
+		buf = new byte[4];
+		
+		File f = new File(filename);
+		output = new DataOutputStream(new FileOutputStream(f));
+		
+		for(double[] d : list) {
+			writeInt(d.length);
+			for(int x = 0 ; x < d.length ; x++){
+				writeFloat((float) d[x]);
+			}				
+		}
+		
+	}
+	
 	/* little endian */
 	private int readInt() throws IOException {
 		int r = 0;
@@ -94,9 +117,31 @@ public class FvecImporter {
 		return r;
 	}
 	
+	/* write int in little endian */
+	private void writeInt(int i) throws IOException {
+		if(buf == null) {
+			throw new NullPointerException("buf is null");
+		}
+		if(output == null) {
+			throw new NullPointerException("output is not set");
+		}
+		
+		buf[0] = (byte) (i & 0xFF);
+		buf[1] = (byte) ((i >> 8) & 0xFF);
+		buf[2] = (byte) ((i >> 16) & 0xFF);
+		buf[3] = (byte) (i >> 24);
+		
+		output.write(buf);		
+			
+	}
+	
 	/* little endian, thus using readInt() */
 	private float readFloat() throws IOException {
 		return Float.intBitsToFloat(readInt());
+	}
+	
+	private void writeFloat(float f) throws IOException {
+		writeInt(Float.floatToIntBits(f));
 	}
 
 }

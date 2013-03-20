@@ -22,8 +22,9 @@ package fr.lip6.jkernelmachines.test.io;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
@@ -46,6 +47,40 @@ public class FvecImporterTest {
 			List<double[]> l = fvecimp.readFile("resources/dict.fvec");
 			assertEquals(32, l.size());
 			assertEquals(40, l.get(0).length);
+		}
+		catch(IOException e) {
+
+			fail("Exception thrown: "+e.getMessage());
+		}
+	}
+	
+	/**
+	 * Test method for {@link fr.lip6.jkernelmachines.io.FvecImporter#writeFile(java.lang.String, java.util.List<double[]>)}.
+	 */
+	@Test
+	public final void testWriteFile() {
+		try {
+			FvecImporter fvecimp = new FvecImporter();
+			
+			List<double[]> l = new ArrayList<double[]>();
+			double[] d = new double[10];
+			for(int i = 0 ; i < 10 ; i++)
+				d[i] = i;
+			l.add(d);
+			
+			fvecimp.writeFile("resources/testwrite.fvec", l);
+			
+			File f = new File("resources/testwrite.fvec");
+			
+			assertEquals(4+4*10, f.length());
+			
+			
+			l = fvecimp.readFile("resources/testwrite.fvec");
+			assertEquals(10, l.get(0).length);
+			for(int i = 0 ; i < 10 ; i++)
+				assertEquals(i, l.get(0)[i], 1e-7);
+			
+			f.delete();
 		}
 		catch(IOException e) {
 
