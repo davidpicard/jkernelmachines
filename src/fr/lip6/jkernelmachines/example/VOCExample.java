@@ -78,6 +78,7 @@ public class VOCExample {
 			System.out.println("Error while parsing trainfile.voc : "+args[0]);
 			return;
 		}
+		System.out.println("Train features loaded.");
 		
 		// load test features
 		try {
@@ -107,6 +108,7 @@ public class VOCExample {
 			System.out.println("Error while parsing trainfile.voc : "+args[2]);
 			return;
 		}
+		System.out.println("Test features loaded.");
 		
 		//classifier
 		DoubleSGD svm = new DoubleSGD();
@@ -114,6 +116,7 @@ public class VOCExample {
 		
 		// AP evaluation
 		ApEvaluator<double[]> ape = new ApEvaluator<double[]>(svm, train, test);
+		System.out.println("training...");
 		ape.evaluate();
 		System.out.println("AP: "+ape.getScore());
 	}
