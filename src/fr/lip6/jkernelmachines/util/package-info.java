@@ -1,4 +1,4 @@
 /**
- * Provides library wide utilities (currently logging classes).
+ * Provides library wide utilities.
  */
 package fr.lip6.jkernelmachines.util;
