@@ -85,7 +85,7 @@ public class DoublePCA {
 		//coefficients are the square root of the eigenvalues
 		whitening_coeff = new double[dim];
 		for(int d = 0 ; d < dim ; d++) {
-			if(eig[1][d][d] != 0) {
+			if(eig[1][d][d] > 0) {
 				whitening_coeff[d] = 1./Math.sqrt(eig[1][d][d]);
 			}
 			else {
