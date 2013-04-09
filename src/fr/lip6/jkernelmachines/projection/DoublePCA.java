@@ -21,7 +21,9 @@ package fr.lip6.jkernelmachines.projection;
 
 import static fr.lip6.jkernelmachines.util.algebra.MatrixOperations.eig;
 import static fr.lip6.jkernelmachines.util.algebra.MatrixOperations.transi;
+import static fr.lip6.jkernelmachines.util.algebra.VectorOperations.add;
 import static fr.lip6.jkernelmachines.util.algebra.VectorOperations.dot;
+import static fr.lip6.jkernelmachines.util.algebra.VectorOperations.mul;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +39,7 @@ public class DoublePCA {
 	
 	double[][] projectors;
 	double[] whitening_coeff;
+	double[] mean;
 	
 	/**
 	 * Train the projectors on a given data-set.
@@ -45,6 +48,12 @@ public class DoublePCA {
 	public void train(final List<TrainingSample<double[]>> list) {
 		
 		int dim = list.get(0).sample.length;
+		
+		mean  = new double[dim];
+		for(TrainingSample<double[]> t : list) {
+			mean = add(mean, 1, t.sample);
+		}
+		mean = mul(mean, 1./list.size());
 		
 		// compute covariance matrix;
 		double[][] cov = new double[dim][dim];
@@ -57,9 +66,9 @@ public class DoublePCA {
 					for(int j = 0 ; j < matrix.length ; j++) {
 						double sum = 0;
 						for(TrainingSample<double[]> t : list) {
-							sum += t.sample[i] * t.sample[j];
+							sum += (t.sample[i]-mean[i]) * (t.sample[j]-mean[j]);
 						}
-						matrix[i][j] = sum;
+						matrix[i][j] = sum/list.size();
 					}
 				}				
 			}
@@ -94,7 +103,7 @@ public class DoublePCA {
 		double[] px = new double[projectors.length];
 		
 		for(int i = 0 ; i < projectors.length ; i++) {
-			px[i] = dot(projectors[i], s.sample);
+			px[i] = dot(projectors[i], add(s.sample, -1, mean));
 		}
 		
 		return new TrainingSample<double[]>(px, s.label);
@@ -111,9 +120,10 @@ public class DoublePCA {
 		double[] px = new double[projectors.length];
 		
 		for(int i = 0 ; i < projectors.length ; i++) {
-			px[i] = dot(projectors[i], s.sample);
-			if(whitening)
+			px[i] = dot(projectors[i], add(s.sample, -1, mean));
+			if(whitening) {
 				px[i] *= whitening_coeff[i];
+			}
 		}
 		
 		return new TrainingSample<double[]>(px, s.label);

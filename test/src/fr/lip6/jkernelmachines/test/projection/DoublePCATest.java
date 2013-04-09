@@ -42,7 +42,8 @@ public class DoublePCATest {
 	private List<TrainingSample<double[]>> list;
 	private DoublePCA pca;
 	
-	private int nbSamples = 100;
+	private int nbSamples = 20;
+	private int dim = 5;
 
 	/**
 	 * @throws java.lang.Exception
@@ -53,8 +54,8 @@ public class DoublePCATest {
 		list = new ArrayList<TrainingSample<double[]>>();
 		
 		for(int i = 0 ; i < nbSamples ; i++) {
-			double[] x = new double[20];
-			for(int d = 0 ; d < 20 ; d++) {
+			double[] x = new double[dim];
+			for(int d = 0 ; d < dim ; d++) {
 				x[d] = Math.random();
 			}
 			
@@ -75,14 +76,16 @@ public class DoublePCATest {
 		List<TrainingSample<double[]>> proj = pca.projectList(list);
 		
 		// compute cov
-		double[][] cov = new double[20][20];
-		for(int i = 0 ; i < 20 ; i++) {
-			for(int j = 0 ; j < 20 ; j++) {
+		double[][] cov = new double[dim][dim];
+		for(int i = 0 ; i < dim ; i++) {
+			for(int j = 0 ; j < dim ; j++) {
 				for(TrainingSample<double[]> t : proj) {
 					cov[i][j] += t.sample[i] * t.sample[j];
 				}
+				
+				cov[i][j] /= list.size();
 				if(i!=j) {
-					assertEquals(0, cov[i][j], 1e-10);
+					assertEquals(0, cov[i][j], 1e-8);
 				}
 			}
 		}
@@ -98,20 +101,20 @@ public class DoublePCATest {
 		List<TrainingSample<double[]>> proj = pca.projectList(list, true);
 		
 		// compute cov
-		double[][] cov = new double[20][20];
-		for(int i = 0 ; i < 20 ; i++) {
-			for(int j = 0 ; j < 20 ; j++) {
+		double[][] cov = new double[dim][dim];
+		for(int i = 0 ; i < dim ; i++) {
+			for(int j = 0 ; j < dim ; j++) {
 				for(TrainingSample<double[]> t : proj) {
 					cov[i][j] += t.sample[i] * t.sample[j];
 				}
+				cov[i][j] /= list.size();
 				if(i!=j) {
-					assertEquals(0, cov[i][j], 1e-10);
+					assertEquals(0, cov[i][j], 1e-8);
 				}
 				else {
-					assertEquals(1, cov[i][j], 1e-10);
+					assertEquals(1, cov[i][j], 1e-8);
 				}
 			}
-			System.out.println(Arrays.toString(cov[i]));
 		}
 	}
 
