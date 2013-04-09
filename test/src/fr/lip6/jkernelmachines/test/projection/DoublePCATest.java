@@ -22,7 +22,6 @@ package fr.lip6.jkernelmachines.test.projection;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
