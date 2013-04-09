@@ -31,6 +31,7 @@ import fr.lip6.jkernelmachines.io.LibSVMImporter;
 import fr.lip6.jkernelmachines.kernel.Kernel;
 import fr.lip6.jkernelmachines.kernel.typed.DoubleGaussL2;
 import fr.lip6.jkernelmachines.kernel.typed.DoubleLinear;
+import fr.lip6.jkernelmachines.projection.DoublePCA;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 import fr.lip6.jkernelmachines.util.DebugPrinter;
 
@@ -44,13 +45,14 @@ import fr.lip6.jkernelmachines.util.DebugPrinter;
  * Optional parameters include the number of test to perform, the percentage of data to keep from training, the type of kernel, and the svm algorithm.
  * Launch without argument to get the following help:<br/>
  * <br />
- * CrossValidationExample -f file [-p percent] [-n nbtests] [-k kernel] [-a algorithm] [-vvv]
+ * CrossValidationExample -f file [-p percent] [-n nbtests] [-k kernel] [-a algorithm] [-pca type] [-vvv]
  * <ul>
  *	<li>-f file: the data file in libsvm format</li>
  *	<li>-p percent: the percent of data to keep for training</li>
  *	<li>-n nbtests: the number of test to perform during crossvalidation</li>
  *	<li>-k kernel: the type of kernel (linear or gauss, default gauss)</li>
  *	<li>-a algorithm: type of SVM algorithm(lasvm, lasvmi, smo, default lasvm)</li>
+ *  <li>-pca type: perform a PCA as preprocessing (no, yes, white, default no)</li>
  *	<li>-v: verbose (v few, vv lot, vvv insane, default none)</li>
  * </ul>
  * </p>
@@ -70,6 +72,7 @@ public class CrossValidationExample {
 		int nbtest = 10;
 		Kernel<double[]> kernel = null;
 		Classifier<double[]> svm = null;
+		int hasPCA = 0;
 
 		// parsing options
 		try {
@@ -110,6 +113,15 @@ public class CrossValidationExample {
 						svm = new LaSVM<double[]>(kernel);
 					}
 				}
+				else if (args[i].equalsIgnoreCase("-pca")) {
+					i++;
+					if(args[i].equalsIgnoreCase("yes")) {
+						hasPCA = 1;
+					}
+					else if(args[i].equalsIgnoreCase("white")) {
+						hasPCA = 2;
+					}
+				}
 				// verbose
 				else if (args[i].equalsIgnoreCase("-v")) {
 					DebugPrinter.DEBUG_LEVEL = 2;
@@ -145,6 +157,17 @@ public class CrossValidationExample {
 			printHelp();
 			System.exit(-1);
 		}
+		// perform PCA
+		if(hasPCA == 1) {
+			DoublePCA pca = new DoublePCA();
+			pca.train(list);
+			list = pca.projectList(list);
+		}
+		else if(hasPCA == 2) {
+			DoublePCA pca = new DoublePCA();
+			pca.train(list);
+			list = pca.projectList(list, true);
+		}
 
 		// initialize CV
 		AccuracyEvaluator<double[]> ev = new AccuracyEvaluator<double[]>();
@@ -173,6 +196,8 @@ public class CrossValidationExample {
 				.println("\t-k kernel: the type of kernel (linear or gauss, default gauss)");
 		System.out
 				.println("\t-a algorithm: type of SVM algorithm(lasvm, lasvmi, smo, default lasvm)");
+		System.out
+				.println("\t-pca type: perform a PCA as preprocessing(no, yes, white, default no");
 		System.out
 				.println("\t-v: verbose (v few, vv lot, vvv insane, default none)");
 	}
