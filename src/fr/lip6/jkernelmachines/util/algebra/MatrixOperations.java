@@ -22,6 +22,7 @@ package fr.lip6.jkernelmachines.util.algebra;
 
 
 
+
 /**
  * This class provides basic linear algebra operations on matrices.
  * @author picard
@@ -288,7 +289,12 @@ public class MatrixOperations {
 			}
 			double p = VectorOperations.n2(e);
 			R[k][k] = p;
-			VectorOperations.muli(Q[k], e, 1./p);
+			if(p != 0) {
+				VectorOperations.muli(Q[k], e, 1./p);
+			}
+			else {
+				VectorOperations.muli(Q[k], e, 0.);
+			}
 		}		
 		
 		// transpose to have column vectors in Q
