@@ -21,7 +21,6 @@ package fr.lip6.jkernelmachines.test.projection;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -29,6 +28,7 @@ import org.junit.Test;
 
 import fr.lip6.jkernelmachines.projection.DoublePCA;
 import fr.lip6.jkernelmachines.type.TrainingSample;
+import fr.lip6.jkernelmachines.util.generators.GaussianGenerator;
 
 /**
  * Test methods for PCA
@@ -50,16 +50,10 @@ public class DoublePCATest {
 	@Before
 	public void setUp() throws Exception {
 		
-		list = new ArrayList<TrainingSample<double[]>>();
+
+		GaussianGenerator gen = new GaussianGenerator(dim);
+		list = gen.generateList(nbSamples);
 		
-		for(int i = 0 ; i < nbSamples ; i++) {
-			double[] x = new double[dim];
-			for(int d = 0 ; d < dim ; d++) {
-				x[d] = Math.random();
-			}
-			
-			list.add(new TrainingSample<double[]>(x, 1));
-		}
 		
 		pca = new DoublePCA();
 		pca.train(list);
