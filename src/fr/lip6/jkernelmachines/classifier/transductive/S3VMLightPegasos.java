@@ -40,7 +40,7 @@ import fr.lip6.jkernelmachines.util.DebugPrinter;
 public class S3VMLightPegasos implements TransductiveClassifier<double[]> {
 
 	
-	int numplus = 0;
+	int numplus = 1;
 	
 	ArrayList<TrainingSample<double[]>> train;
 	ArrayList<TrainingSample<double[]>> test;
@@ -69,6 +69,13 @@ public class S3VMLightPegasos implements TransductiveClassifier<double[]> {
 	
 		train = new ArrayList<TrainingSample<double[]>>();
 		train.addAll(trainList);
+		// counting numplus
+		numplus = 0;
+		for(TrainingSample<double[]> t : train) {
+			if(t.label > 0) {
+				numplus++;
+			}
+		}
 		
 		test = new ArrayList<TrainingSample<double[]>>();
 		//copy test samples
@@ -77,6 +84,8 @@ public class S3VMLightPegasos implements TransductiveClassifier<double[]> {
 			TrainingSample<double[]> t = new TrainingSample<double[]>(tm.sample, 0);
 			test.add(t);
 		}
+		
+		numplus = (numplus * test.size()) / train.size();
 		
 		train();
 
@@ -110,11 +119,11 @@ public class S3VMLightPegasos implements TransductiveClassifier<double[]> {
 			
 		});
 		sorted.addAll(test);
-		debug.println(4, "sorted size : "+sorted.size()+" test size : "+test.size());
+		debug.println(3, "sorted size : "+sorted.size()+" test size : "+test.size());
 		int n = 0;
 		for(TrainingSample<double[]> t : sorted)
 		{
-			if(n < numplus)
+			if(n <= numplus)
 				t.label = 1;
 			else
 				t.label = -1;

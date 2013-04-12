@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import fr.lip6.jkernelmachines.classifier.SMOSVM;
+import fr.lip6.jkernelmachines.classifier.LaSVM;
 import fr.lip6.jkernelmachines.kernel.Kernel;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 import fr.lip6.jkernelmachines.util.DebugPrinter;
@@ -52,12 +52,12 @@ public class S3VMLight<T> implements TransductiveClassifier<T> {
 	Kernel<T> k;
 	
 	double C = 1e2;
-	int numplus = 0;
+	int numplus = 1;
 	
 	ArrayList<TrainingSample<T>> train;
 	ArrayList<TrainingSample<T>> test;
 	
-	SMOSVM<T> svm;
+	LaSVM<T> svm;
 	
 	DebugPrinter debug = new DebugPrinter();
 	
@@ -76,6 +76,13 @@ public class S3VMLight<T> implements TransductiveClassifier<T> {
 	
 		train = new ArrayList<TrainingSample<T>>();
 		train.addAll(trainList);
+		// counting numplus
+		numplus = 0;
+		for(TrainingSample<T> t : train) {
+			if(t.label > 0) {
+				numplus++;
+			}
+		}
 		
 		test = new ArrayList<TrainingSample<T>>();
 		//copy test samples
@@ -84,6 +91,8 @@ public class S3VMLight<T> implements TransductiveClassifier<T> {
 			TrainingSample<T> t = new TrainingSample<T>(tm.sample, 0);
 			test.add(t);
 		}
+		
+		numplus = (numplus * test.size()) / train.size();
 		
 		train();
 
@@ -95,7 +104,8 @@ public class S3VMLight<T> implements TransductiveClassifier<T> {
 		
 		//first training
 		debug.print(3, "first training ");
-		svm = new SMOSVM<T>(k);
+		svm = new LaSVM<T>(k);
+		svm.setE(10);
 		svm.train(train);
 		debug.println(3, " done.");
 		
@@ -123,7 +133,7 @@ public class S3VMLight<T> implements TransductiveClassifier<T> {
 				t.label = -1;
 			n++;
 		}
-		
+		debug.println(3, "numplus = "+numplus);
 		double Cminus = 1e-5;
 		double Cplus = 1e-5 * numplus/(test.size() - numplus);
 		
@@ -135,7 +145,8 @@ public class S3VMLight<T> implements TransductiveClassifier<T> {
 			full.addAll(test);
 			
 			debug.print(3, "full training ");
-			svm = new SMOSVM<T>(k);
+			svm = new LaSVM<T>(k);
+			svm.setE(10);
 			svm.setC((Cminus+Cplus)/2.);
 			svm.train(full);
 			debug.println(3, "done.");
@@ -196,7 +207,8 @@ public class S3VMLight<T> implements TransductiveClassifier<T> {
 				if(changed)
 				{
 					debug.println(3, "re-training");
-					svm = new SMOSVM<T>(k);
+					svm = new LaSVM<T>(k);
+					svm.setE(10);
 					svm.setC((Cminus+Cplus)/2.);
 					svm.train(full);
 				}

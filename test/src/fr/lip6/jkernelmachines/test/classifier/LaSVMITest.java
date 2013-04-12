@@ -21,14 +21,12 @@ package fr.lip6.jkernelmachines.test.classifier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import fr.lip6.jkernelmachines.classifier.LaSVM;
 import fr.lip6.jkernelmachines.classifier.LaSVMI;
 import fr.lip6.jkernelmachines.kernel.typed.DoubleGaussL2;
 import fr.lip6.jkernelmachines.type.TrainingSample;
