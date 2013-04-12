@@ -22,14 +22,15 @@ picard@ensea.fr
 Features
 --------
 
-    Several learning algorithms (LaSVM, SMO, SimpleMKL, GradMKL, QNPKL, SGDQN, Pegasos, ...)
-    Datatype agnosticism through Java Generics
-    Easy coding of new kernels
-    Several standard and exotic kernels (kernel on bags, combination kernels, ...)
-    Input system (can read libsvm and csv files)
-    Evaluation and Cross Validation packages
-    Stand alone (requires only a working jdk and ant for easy compiling)
-
+* Several learning algorithms (LaSVM, LaSVM-I, SMO, SimpleMKL, GradMKL, QNPKL, SGDQN, Pegasos, ...)
+* Multiclass classification through generic classifiers.
+* Datatype agnosticism through Java Generics
+* Easy coding of new kernels
+* Several standard and exotic kernels (kernel on bags, combination kernels, ...)
+* Input system (can read libsvm and csv files)
+* Toys generator for artificial data
+* Evaluation and Cross Validation packages
+* Stand alone (requires only a working jdk and ant for easy compiling)
 
 Wiki and Howtos
 ---------------
@@ -38,11 +39,13 @@ Wiki and Howtos
 * [Basic Example](https://github.com/davidpicard/jkernelmachines/wiki/Basic-Example)
 * [Kernels](https://github.com/davidpicard/jkernelmachines/wiki/Kernel-HowTo)
 * [Classifier Training](https://github.com/davidpicard/jkernelmachines/wiki/Classifier-Training)
+* [Transductive classifiers](https://github.com/davidpicard/jkernelmachines/wiki/Transductive-Classifiers)
+* [Multiclass Training](https://github.com/davidpicard/jkernelmachines/wiki/Multiclass)
 * [Reading data](https://github.com/davidpicard/jkernelmachines/wiki/Reading-Data)
+* [Data generators](https://github.com/davidpicard/jkernelmachines/wiki/Data-Generators)
 * [Evaluation](https://github.com/davidpicard/jkernelmachines/wiki/Evaluation)
 * [CrossValidation](https://github.com/davidpicard/jkernelmachines/wiki/CrossValidation)
 * [Standalone programs](https://github.com/davidpicard/jkernelmachines/wiki/Standalone-programs)
-
 
 Acknowledgement
 ---------------
