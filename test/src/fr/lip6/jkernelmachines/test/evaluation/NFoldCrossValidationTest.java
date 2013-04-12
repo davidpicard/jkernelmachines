@@ -19,7 +19,7 @@
 */
 package fr.lip6.jkernelmachines.test.evaluation;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
@@ -29,7 +29,6 @@ import org.junit.Test;
 import fr.lip6.jkernelmachines.classifier.LaSVM;
 import fr.lip6.jkernelmachines.evaluation.AccuracyEvaluator;
 import fr.lip6.jkernelmachines.evaluation.NFoldCrossValidation;
-import fr.lip6.jkernelmachines.evaluation.RandomSplitCrossValidation;
 import fr.lip6.jkernelmachines.kernel.typed.DoubleGaussL2;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 import fr.lip6.jkernelmachines.util.generators.GaussianGenerator;
