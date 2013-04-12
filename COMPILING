@@ -20,13 +20,12 @@ $ ant sourcejar
 
 A very simple and naive unit testing procedure is available with the test target:
 
-$ ant test
+$ ant junit
 
 It should not output any warning. If it does and you didn't touch the code at all,
-please report it. It is currently very rough and should only be considered as a 
-level 0 sanity check for your modifications to the code.
+please report it. 
 
-To generate all jars and testing, the full task is available:
+To generate all jars, the full task is available:
 
 $ ant full
 
