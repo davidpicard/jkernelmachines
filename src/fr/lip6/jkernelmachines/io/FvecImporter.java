@@ -64,7 +64,7 @@ public class FvecImporter {
 		List<double[]> list = new ArrayList<double[]>();
 		list.add(d);
 		
-		long nb_samples = (size-4)/(4*dim);
+		long nb_samples = (size)/(4*dim+4);
 		for(long i = 1 ; i < nb_samples; i++) {
 			readInt();
 			d = new double[dim];
