@@ -19,7 +19,9 @@
  */
 package fr.lip6.jkernelmachines.classifier;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import fr.lip6.jkernelmachines.type.TrainingSample;
@@ -129,10 +131,17 @@ public class DoubleSAG implements Classifier<double[]> {
 		}
 
 		// other epochs
+		List<Integer> indices = new ArrayList<Integer>(n);
+		for(int i = 0 ; i < n ; i++)
+			indices.add(i);
+		
 		for (int e = 0; e < E; e++) {
 			debug.println(3, "epoch " + e);
+			// randomizing indices to avoid perfect cycles (see Shalev-Schwartz 2013)
+			Collections.shuffle(indices);
 
-			for (int i = 0; i < l.size(); i++) {
+			for (int ind = 0; ind < l.size(); ind++) {
+				int i = indices.get(ind);
 				double[] x = l.get(i).sample;
 				int y = l.get(i).label;
 
@@ -143,7 +152,7 @@ public class DoubleSAG implements Classifier<double[]> {
 					d[k] = d[k] - yi[i]*x[k]*y;
 				}
 				
-				// compte new derivative
+				// compute new derivative
 				yi[i] = dloss(y * (VectorOperations.dot(w, x)+b));
 				
 				// add new gradient
@@ -214,14 +223,23 @@ public class DoubleSAG implements Classifier<double[]> {
 		}
 	}
 
+	/** Tells the loss function the classifier is currently using
+	 * 
+	 * @return an integer specifying the loss function (HINGELOSS, SQUAREDHINGELOSS, etc)
+	 */
 	public int getLoss() {
 		return loss;
 	}
 
+	/**
+	 * Sets the loss function to use for next training
+	 * @param loss an integer specifying the loss to use (HINGELOSS, SQUAREDHINGELOSS, etc)
+	 */
 	public void setLoss(int loss) {
 		this.loss = loss;
 	}
 
+	
 	public double[] getW() {
 		return w;
 	}
