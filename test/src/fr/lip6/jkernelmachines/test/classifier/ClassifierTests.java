@@ -16,7 +16,7 @@
 
     Copyright David Picard - 2013
 
-*/
+ */
 package fr.lip6.jkernelmachines.test.classifier;
 
 import org.junit.runner.RunWith;
@@ -25,13 +25,14 @@ import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * @author picard
- *
+ * 
  */
 @RunWith(Suite.class)
 @SuiteClasses({ DoublePegasosSVMTest.class, DoubleQNPKLTest.class,
-		DoubleSGDQNTest.class, DoubleSGDTest.class, GradMKLTest.class,
-		LaSVMITest.class, LaSVMTest.class, SimpleMKLTest.class,
-		SMOSVMTest.class, TSMKLTest.class, MulticlassLaSVMTest.class })
+		DoubleSGDQNTest.class, DoubleSGDTest.class, DoubleSAGTest.class,
+		GradMKLTest.class, LaSVMITest.class, LaSVMTest.class,
+		SimpleMKLTest.class, SMOSVMTest.class, TSMKLTest.class,
+		MulticlassLaSVMTest.class })
 public class ClassifierTests {
 
 }

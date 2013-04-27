@@ -31,7 +31,7 @@ import fr.lip6.jkernelmachines.util.algebra.VectorOperations;
 /**
  * Linear SVM using the SAG algorithm:<br/>
  * 
- * "A Stochastic Gradient Method with an Exponential Convergence Rate for 
+ * "A Stochastic Gradient Method with an Exponential Convergence Rate for
  * Strongly-Convex Optimization with Finite Training Sets", <br>
  * Nicolas Le Roux, Mark Schmidt and Francis Bach.
  * 
@@ -54,13 +54,23 @@ public class DoubleSAG implements Classifier<double[]> {
 
 	// used loss function
 	private int loss = HINGELOSS;
+	// randomize indices to avoid perfect cycles (see Shalev-Schwartz 2013)
+	private boolean cyclic = true;
 
 	double[] w;
 	double b = 0;
 	double lambda = 1e-4;
-	long E = 2;
+	long E = 4;
 
 	DebugPrinter debug = new DebugPrinter();
+
+	// tmp variables
+	private double alpha;
+	private double[] yi;
+	private double db;
+	private double[] d;
+	private int dim;
+	private int n;
 
 	/*
 	 * (non-Javadoc)
@@ -82,11 +92,10 @@ public class DoubleSAG implements Classifier<double[]> {
 	 */
 	@Override
 	public void train(List<TrainingSample<double[]>> l) {
-		int dim = l.get(0).sample.length;
-		int n = l.size();
-		
+		dim = l.get(0).sample.length;
+		n = l.size();
 
-		double[] yi = new double[l.size()];
+		yi = new double[l.size()];
 		w = new double[dim];
 		b = 0;
 
@@ -97,10 +106,10 @@ public class DoubleSAG implements Classifier<double[]> {
 			if (norm > L)
 				L = norm;
 		}
-		double alpha = 1/(2*L);
+		alpha = 1 / (2 * L);
 
-		double[] d = new double[dim];
-		double db = 0;
+		d = new double[dim];
+		db = 0;
 
 		// first epoch
 		debug.println(3, "First epoch");
@@ -108,69 +117,70 @@ public class DoubleSAG implements Classifier<double[]> {
 			double[] x = l.get(i).sample;
 			int y = l.get(i).label;
 
-
 			// remove old gradient
-			for(int k = 0 ; k < dim ; k++){
-				d[k] = d[k] - yi[i]*x[k]*y;
-			}
-			db = db - yi[i]*y;
-			
-			// compte new derivative
-			yi[i] = dloss(y * (VectorOperations.dot(w, x)+b));
-			
-			// add new gradient
-			for(int k = 0 ; k < dim ; k++) {
-				d[k] = d[k] + yi[i]*x[k]*y;
-			}
-			db = db + yi[i]*y;
+			VectorOperations.addi(d, d, -yi[i] * y, x);
+			db = db - yi[i] * y;
 
-			for (int k = 0; k < w.length; k++) {
-				w[k] = (1 - alpha * lambda) * w[k] + alpha * d[k] / (i+1);
-			}
-			b = (1 - alpha * lambda) * b + alpha * db / (i+1);
+			// compute new derivative
+			yi[i] = dloss(y * (VectorOperations.dot(w, x) + b));
+
+			// add new gradient
+			VectorOperations.addi(d, d, yi[i] * y, x);
+			db = db + yi[i] * y;
+
+			VectorOperations.muli(w, w, 1 - alpha * lambda);
+			VectorOperations.addi(w, w, alpha / (i + 1), d);
+			b = (1 - alpha * lambda) * b + alpha * db / (i + 1);
 		}
 
 		// other epochs
 		List<Integer> indices = new ArrayList<Integer>(n);
-		for(int i = 0 ; i < n ; i++)
+		for (int i = 0; i < n; i++)
 			indices.add(i);
-		
+
 		for (int e = 0; e < E; e++) {
 			debug.println(3, "epoch " + e);
-			// randomizing indices to avoid perfect cycles (see Shalev-Schwartz 2013)
-			Collections.shuffle(indices);
+			// randomizing indices to avoid perfect cycles (see Shalev-Schwartz
+			// 2013)
+			if (!cyclic)
+				Collections.shuffle(indices);
 
 			for (int ind = 0; ind < l.size(); ind++) {
-				int i = indices.get(ind);
+
+				int i = ind;
+				if (!cyclic)
+					i = indices.get(ind);
+
 				double[] x = l.get(i).sample;
 				int y = l.get(i).label;
 
-
-				// remove old gradient
-				db = db - yi[i]*y;
-				for(int k = 0 ; k < dim ; k++){
-					d[k] = d[k] - yi[i]*x[k]*y;
-				}
-				
-				// compute new derivative
-				yi[i] = dloss(y * (VectorOperations.dot(w, x)+b));
-				
-				// add new gradient
-				for(int k = 0 ; k < dim ; k++) {
-					d[k] = d[k] + yi[i]*x[k]*y;
-				}
-				db = db + yi[i]*y;
-				
-				for (int k = 0; k < w.length; k++) {
-					w[k] = (1 - alpha * lambda) * w[k] + alpha * d[k] / n;
-				}
-				b = (1 - alpha * lambda) * b + alpha * db / n;
+				update(i, x, y);
 			}
 		}
-		
-		debug.println(3, "w: "+Arrays.toString(w));
-		debug.println(3, "b: "+b);
 
+		debug.println(3, "w: " + Arrays.toString(w));
+		debug.println(3, "b: " + b);
+
+	}
+
+	/**
+	 * perform the single average gradient update on sample i (x, y)
+	 */
+	final private void update(int i, double[] x, int y) {
+		// remove old gradient
+		VectorOperations.addi(d, d, -yi[i] * y, x);
+		db = db - yi[i] * y;
+
+		// compute new derivative
+		yi[i] = dloss(y * (VectorOperations.dot(w, x) + b));
+
+		// add new gradient
+		VectorOperations.addi(d, d, yi[i] * y, x);
+		db = db + yi[i] * y;
+
+		VectorOperations.muli(w, w, 1 - alpha * lambda);
+		VectorOperations.addi(w, w, alpha / n, d);
+		b = (1 - alpha * lambda) * b + alpha * db / n;
 	}
 
 	/*
@@ -181,7 +191,7 @@ public class DoubleSAG implements Classifier<double[]> {
 	 */
 	@Override
 	public double valueOf(double[] e) {
-		return VectorOperations.dot(w, e)+b;
+		return VectorOperations.dot(w, e) + b;
 	}
 
 	/*
@@ -223,9 +233,11 @@ public class DoubleSAG implements Classifier<double[]> {
 		}
 	}
 
-	/** Tells the loss function the classifier is currently using
+	/**
+	 * Tells the loss function the classifier is currently using
 	 * 
-	 * @return an integer specifying the loss function (HINGELOSS, SQUAREDHINGELOSS, etc)
+	 * @return an integer specifying the loss function (HINGELOSS,
+	 *         SQUAREDHINGELOSS, etc)
 	 */
 	public int getLoss() {
 		return loss;
@@ -233,43 +245,110 @@ public class DoubleSAG implements Classifier<double[]> {
 
 	/**
 	 * Sets the loss function to use for next training
-	 * @param loss an integer specifying the loss to use (HINGELOSS, SQUAREDHINGELOSS, etc)
+	 * 
+	 * @param loss
+	 *            an integer specifying the loss to use (HINGELOSS,
+	 *            SQUAREDHINGELOSS, etc)
 	 */
 	public void setLoss(int loss) {
 		this.loss = loss;
 	}
 
-	
+	/**
+	 * Get the normal to the separating hyperplane
+	 * 
+	 * @return w, the hyperplane normal vector
+	 */
 	public double[] getW() {
 		return w;
 	}
 
+	/**
+	 * Set the normal to the hyperplane
+	 * 
+	 * @param w
+	 *            the normal vector
+	 */
 	public void setW(double[] w) {
 		this.w = w;
 	}
 
+	/**
+	 * Get the bias of the classifier
+	 * 
+	 * @return the bias b
+	 */
 	public double getB() {
 		return b;
 	}
 
+	/**
+	 * Set the bias of the classifier
+	 * 
+	 * @param b
+	 *            the bias
+	 */
 	public void setB(double b) {
 		this.b = b;
 	}
 
+	/**
+	 * Get the regularization parameter lambda
+	 * 
+	 * @return lambda the regularization parameter
+	 */
 	public double getLambda() {
 		return lambda;
 	}
 
+	/**
+	 * Set the regularization parameter lambda
+	 * 
+	 * @param lambda
+	 *            the regularization parameter
+	 */
 	public void setLambda(double lambda) {
 		this.lambda = lambda;
 	}
 
+	/**
+	 * Get the number of epochs (one pass through the entire data-set)
+	 * 
+	 * @return E number of epoch
+	 */
 	public long getE() {
 		return E;
 	}
 
+	/**
+	 * Set the number of epochs (one pass through the entire data-set)
+	 * 
+	 * @param e
+	 *            the number of epoch
+	 */
 	public void setE(long e) {
 		E = e;
+	}
+
+	/**
+	 * Is the algorithm doing epoch of ordered samples
+	 * 
+	 * @return true if all epochs are through ordered samples, false if the
+	 *         sample order is randomized at each epoch
+	 */
+	public boolean isCyclic() {
+		return cyclic;
+	}
+
+	/**
+	 * Set the order of the sample at each epoch
+	 * 
+	 * @param cyclic
+	 *            true is the order remains the same through all epochs, false
+	 *            is the order is randomized at each epoch
+	 */
+	public void setCyclic(boolean cyclic) {
+		this.cyclic = cyclic;
 	}
 
 }
