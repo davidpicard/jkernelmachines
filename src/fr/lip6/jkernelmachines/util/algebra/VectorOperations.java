@@ -37,9 +37,7 @@ public class VectorOperations {
 	public static double[] add(final double[] A, final double lambda, final double[] B) {
 		double[] out = new double[A.length];
 		
-		for(int l = 0 ; l < A.length ; l++) {
-			out[l] = A[l] + lambda*B[l];
-		}
+		addi(out, A, lambda, B);
 		
 		return out;
 	}
@@ -53,11 +51,18 @@ public class VectorOperations {
 	 * @param B second vector
 	 * @return C
 	 */
-	public static double[] addi(double[] C, final double[] A, final double lambda, final double[] B) {		
-		for(int l = 0 ; l < A.length ; l++) {
+	public static double[] addi(double[] C, final double[] A, final double lambda, final double[] B) {	
+		int packed = 2 * (A.length / 2);
+		int l = 0;
+		// packed operations
+		for(l = 0 ; l < packed ; l += 2) {
+			C[l] = A[l] + lambda*B[l];
+			C[l+1] = A[l+1] + lambda*B[l+1];
+		}
+		// remaining operations
+		for(; l < A.length ; l++) {
 			C[l] = A[l] + lambda*B[l];
 		}
-		
 		return C;
 	}
 	
@@ -71,9 +76,7 @@ public class VectorOperations {
 	public static double[] mul(final double[] A, final double lambda) {
 		double[] out = new double[A.length];
 		
-		for(int l = 0 ; l < A.length ; l++) {
-			out[l] = A[l]*lambda;
-		}
+		muli(out, A, lambda);
 		
 		return out;
 	}
@@ -86,7 +89,15 @@ public class VectorOperations {
 	 * @return a new array containing the result
 	 */
 	public static double[] muli(double[] C, final double[] A, final double lambda) {
-		for(int l = 0 ; l < A.length ; l++) {
+		int packed = 2 * (A.length / 2);
+		int l = 0;
+		// packed operations
+		for(l = 0 ; l < packed ; l += 2) {
+			C[l] = A[l]*lambda;
+			C[l+1] = A[l+1]*lambda;
+		}
+		// remaining operations
+		for(; l < A.length ; l++) {
 			C[l] = A[l]*lambda;
 		}
 		
@@ -102,9 +113,16 @@ public class VectorOperations {
 	public static double dot(final double[] A, final double[] B) {
 		
 		double sum = 0;
-		
-		for(int k = 0 ; k < A.length ; k++)
+		int packed = 2 * (A.length / 2);
+		int k = 0;
+		//packed operations
+		for(k = 0 ; k < packed ; k+=2) {
+			sum += A[k]*B[k] + A[k+1]*B[k+1];
+		}
+		// remaining operations
+		for(; k < A.length; k++) {
 			sum += A[k]*B[k];
+		}
 		
 		return sum;
 	}
