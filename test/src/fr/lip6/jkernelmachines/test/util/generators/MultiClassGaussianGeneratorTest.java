@@ -20,7 +20,6 @@
 package fr.lip6.jkernelmachines.test.util.generators;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.util.List;
 
