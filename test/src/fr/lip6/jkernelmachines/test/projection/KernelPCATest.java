@@ -73,7 +73,7 @@ public class KernelPCATest {
 		
 		for(int i = 0 ; i < m1.length ; i++) {
 			for(int j = i ; j < m1[0].length ; j++) {
-				assertEquals(m1[i][j], m2[i][j], 1e-7);
+				assertEquals(m1[i][j], m2[i][j]+pca.getMean(), 1e-7);
 			}
 		}
 		

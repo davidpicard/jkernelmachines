@@ -19,13 +19,14 @@
 */
 package fr.lip6.jkernelmachines.projection;
 
+import static fr.lip6.jkernelmachines.util.algebra.MatrixOperations.eig;
+import static fr.lip6.jkernelmachines.util.algebra.MatrixOperations.transi;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import fr.lip6.jkernelmachines.kernel.Kernel;
 import fr.lip6.jkernelmachines.type.TrainingSample;
-import static fr.lip6.jkernelmachines.util.algebra.MatrixOperations.eig;
-import static fr.lip6.jkernelmachines.util.algebra.MatrixOperations.transi;
 
 /**
  * @author picard
@@ -34,6 +35,7 @@ import static fr.lip6.jkernelmachines.util.algebra.MatrixOperations.transi;
 public class KernelPCA<T> {
 	
 	private Kernel<T> kernel;
+	private double mean = 0;
 	private double[][] projectors;
 	private double[] whiteningCoefficients;
 	private List<TrainingSample<T>> list;
@@ -48,6 +50,23 @@ public class KernelPCA<T> {
 		
 		// SVD of kernel matrix
 		double[][] K = kernel.getKernelMatrix(list);
+		for(int i = 0 ; i < K.length ; i++) {
+			for(int j = i ; j < K.length ; j++) {
+				if(i == j) {
+					mean += K[i][j];
+				}
+				else {
+					mean += 2*K[i][j];
+				}
+			}
+		}
+		mean /= (K.length * K.length);
+		for(int i = 0 ; i < K.length ; i++) {
+			for(int j = i ; j < K.length ; j++) {
+				K[i][j] -= mean;
+				K[j][i] = K[i][j];
+			}
+		}
 		double[][][] eig = eig(K);
 		dim = eig[0].length;
 		
@@ -58,7 +77,7 @@ public class KernelPCA<T> {
 		whiteningCoefficients = new double[dim];
 		for(int d = 0 ; d < dim ; d++) {
 			double p = eig[1][d][d];
-			if(p > 0) {
+			if(p > 1e-10) {
 				whiteningCoefficients[d] = 1./Math.sqrt(p);
 			}
 		}
@@ -69,7 +88,7 @@ public class KernelPCA<T> {
 		
 		for(int d = 0 ; d < dim ; d++){
 			for(int i = 0 ; i < list.size() ; i++) {
-				proj[d] += projectors[d][i] * kernel.valueOf(list.get(i).sample, t.sample);
+				proj[d] += projectors[d][i] * (kernel.valueOf(list.get(i).sample, t.sample)-mean);
 			}
 			proj[d] *= whiteningCoefficients[d];
 			if(whitening) {
@@ -113,6 +132,46 @@ public class KernelPCA<T> {
 		}
 		
 		return out;
+	}
+
+	/**
+	 * Get the kernel use in the KernelPCA
+	 * @return the current kernel
+	 */
+	public Kernel<T> getKernel() {
+		return kernel;
+	}
+
+	/**
+	 * Set the current Kernel
+	 * @param kernel the kernel
+	 */
+	public void setKernel(Kernel<T> kernel) {
+		this.kernel = kernel;
+	}
+
+	/**
+	 * Get the mean of the current Kernel
+	 * @return the mean of the kernel over the training set
+	 */
+	public double getMean() {
+		return mean;
+	}
+
+	/**
+	 * Get the projector coefficients obtained after learning
+	 * @return the kernel expansion coefficients
+	 */
+	public double[][] getProjectors() {
+		return projectors;
+	}
+
+	/**
+	 * Get the whitening coefficient
+	 * @return the whitening coefficients
+	 */
+	public double[] getWhiteningCoefficients() {
+		return whiteningCoefficients;
 	}
 
 }
