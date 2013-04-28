@@ -24,6 +24,7 @@ import java.util.List;
 import fr.lip6.jkernelmachines.classifier.Classifier;
 import fr.lip6.jkernelmachines.classifier.LaSVM;
 import fr.lip6.jkernelmachines.classifier.LaSVMI;
+import fr.lip6.jkernelmachines.classifier.SDCA;
 import fr.lip6.jkernelmachines.classifier.SMOSVM;
 import fr.lip6.jkernelmachines.evaluation.AccuracyEvaluator;
 import fr.lip6.jkernelmachines.evaluation.RandomSplitCrossValidation;
@@ -107,6 +108,8 @@ public class CrossValidationExample {
 					i++;
 					if (args[i].equalsIgnoreCase("lasvmi")) {
 						svm = new LaSVMI<double[]>(kernel);
+					} else if (args[i].equalsIgnoreCase("sdca")) {
+						svm = new SDCA<double[]>(kernel);
 					} else if (args[i].equalsIgnoreCase("smo")) {
 						svm = new SMOSVM<double[]>(kernel);
 					} else { // default lasvm
