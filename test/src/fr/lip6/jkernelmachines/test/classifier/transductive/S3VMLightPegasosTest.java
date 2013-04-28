@@ -37,7 +37,6 @@ import fr.lip6.jkernelmachines.util.generators.GaussianGenerator;
 public class S3VMLightPegasosTest {
 
 	List<TrainingSample<double[]>> train;
-	List<TrainingSample<double[]>> test;
 	S3VMLightPegasos svm;
 	
 	/**
@@ -47,7 +46,6 @@ public class S3VMLightPegasosTest {
 	public void setUp() throws Exception {
 		GaussianGenerator g = new GaussianGenerator(2, 10.0f, 1.0);
 		train = g.generateList(10);
-		test = g.generateList(10);
 
 		svm = new S3VMLightPegasos();
 	}
@@ -57,13 +55,8 @@ public class S3VMLightPegasosTest {
 	 */
 	@Test
 	public final void testTrain() {
-		svm.train(train, test);
+		svm.train(train, train);
 		for (TrainingSample<double[]> t : train) {
-			double v = svm.valueOf(t.sample);
-			assertTrue(t.label * v > 0);
-		}
-
-		for (TrainingSample<double[]> t : test) {
 			double v = svm.valueOf(t.sample);
 			assertTrue(t.label * v > 0);
 		}
