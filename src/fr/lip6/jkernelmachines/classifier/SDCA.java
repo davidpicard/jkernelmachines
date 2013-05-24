@@ -35,10 +35,12 @@ import fr.lip6.jkernelmachines.util.algebra.VectorOperations;
  * SDCA svm algorithm from Shalev-Shwartz.
  * </p>
  * <p>
- * Stochastic Dual Coordinate Ascent Methods for Regularized Loss Minimization, <br/>
+ * Stochastic Dual Coordinate Ascent Methods for Regularized Loss Minimization,
+ * <br/>
  * Shai Shalev-Shwartz, Tong Zhang<br/>
  * JMLR, 2013.
  * </p>
+ * 
  * @author picard
  * 
  */
@@ -49,7 +51,7 @@ public class SDCA<T> implements KernelSVM<T> {
 	int[] labels;
 	double[] alphas;
 
-	double C = 1.;
+	double C = 1.0;
 	int E = 5;
 
 	List<TrainingSample<T>> train;
@@ -90,28 +92,28 @@ public class SDCA<T> implements KernelSVM<T> {
 		n = l.size();
 		train = new ArrayList<TrainingSample<T>>(n);
 		train.addAll(l);
-		
+
 		km = kernel.getKernelMatrix(train);
-		
+
 		samples = (T[]) new Object[n];
 		labels = new int[n];
 
-		for(int i = 0 ; i < n ; i++) {
+		for (int i = 0; i < n; i++) {
 			TrainingSample<T> t = l.get(i);
 			samples[i] = t.sample;
 			labels[i] = t.label;
 		}
-		
+
 		alphas = new double[n];
-		
+
 		List<Integer> indices = new ArrayList<Integer>(n);
-		for(int i = 0 ; i < n ; i++) {
+		for (int i = 0; i < n; i++) {
 			indices.add(i);
 		}
-		
-		for(int e = 0 ; e < E ; e++) {
+
+		for (int e = 0; e < E; e++) {
 			Collections.shuffle(indices);
-			for(int i = 0 ; i < n ; i++) {
+			for (int i = 0; i < n; i++) {
 				update(indices.get(i));
 			}
 		}
@@ -119,19 +121,20 @@ public class SDCA<T> implements KernelSVM<T> {
 
 	/**
 	 * dual variable update
-	 * @param i index f the dual variable
+	 * 
+	 * @param i
+	 *            index f the dual variable
 	 */
 	private final void update(int i) {
-		int y = labels[i];
-		double z = VectorOperations.dot(alphas, km[i]);
+		double y = labels[i];
+		double z = (VectorOperations.dot(alphas, km[i]));
 		double da = y
 				* max(0,
-						min(1,
-							(1 - y*z) / (C*km[i][i]) + y*alphas[i]
-						)
-				) - alphas[i];
+						min(C, (1 - y * z) / km[i][i] + y
+								* alphas[i]));
+
+		alphas[i] = da;
 		
-		alphas[i] += C*da;
 	}
 
 	/*
@@ -143,8 +146,8 @@ public class SDCA<T> implements KernelSVM<T> {
 	@Override
 	public double valueOf(T e) {
 		double z = 0;
-		for(int i = 0 ; i < alphas.length ; i++) {
-			z += alphas[i]*kernel.valueOf(samples[i], e);
+		for (int i = 0; i < alphas.length; i++) {
+			z += alphas[i] * kernel.valueOf(samples[i], e);
 		}
 		return z;
 	}
@@ -162,6 +165,7 @@ public class SDCA<T> implements KernelSVM<T> {
 
 	/**
 	 * Get the number of epochs to train the classifier
+	 * 
 	 * @return the number of epochs
 	 */
 	public int getE() {
@@ -169,8 +173,11 @@ public class SDCA<T> implements KernelSVM<T> {
 	}
 
 	/**
-	 * Set the number of epochs (going through all samples once) for the training phase
-	 * @param e the number of epochs
+	 * Set the number of epochs (going through all samples once) for the
+	 * training phase
+	 * 
+	 * @param e
+	 *            the number of epochs
 	 */
 	public void setE(int e) {
 		E = e;
@@ -194,5 +201,41 @@ public class SDCA<T> implements KernelSVM<T> {
 	@Override
 	public double getC() {
 		return C;
+	}
+
+	public double getObjective() {
+		double obj = 0;
+
+		// norm of w
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				obj += 0.5 * alphas[i] * alphas[j] * (km[i][j]);
+			}
+		}
+
+		// loss
+		for (int i = 0; i < n; i++) {
+			double v = valueOf(samples[i]);
+			obj += C * max(0, 1 - labels[i] * v);
+		}
+
+		return obj / (double) n;
+	}
+
+	public double getDualObjective() {
+		double obj = 0;
+
+		for (int i = 0; i < n; i++) {
+			obj += labels[i] * alphas[i];
+		}
+		
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				obj -= 0.5 * alphas[i] * alphas[j] * km[i][j];
+
+			}
+		}
+
+		return obj / (double) n;
 	}
 }
