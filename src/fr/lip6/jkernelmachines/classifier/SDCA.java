@@ -128,13 +128,9 @@ public class SDCA<T> implements KernelSVM<T> {
 	private final void update(int i) {
 		double y = labels[i];
 		double z = (VectorOperations.dot(alphas, km[i]));
-		double da = y
-				* max(0,
-						min(C, (1 - y * z) / km[i][i] + y
-								* alphas[i]));
+		double da = (1 - y * z) / km[i][i] + y * alphas[i];
+		alphas[i] = y * max(0, min(C, da));
 
-		alphas[i] = da;
-		
 	}
 
 	/*
@@ -190,7 +186,10 @@ public class SDCA<T> implements KernelSVM<T> {
 
 	@Override
 	public double[] getAlphas() {
-		return alphas;
+		double[] a = new double[alphas.length];
+		for (int s = 0; s < a.length; s++)
+			a[s] = alphas[s] * train.get(s).label;
+		return a;
 	}
 
 	@Override
@@ -228,7 +227,7 @@ public class SDCA<T> implements KernelSVM<T> {
 		for (int i = 0; i < n; i++) {
 			obj += labels[i] * alphas[i];
 		}
-		
+
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
 				obj -= 0.5 * alphas[i] * alphas[j] * km[i][j];
