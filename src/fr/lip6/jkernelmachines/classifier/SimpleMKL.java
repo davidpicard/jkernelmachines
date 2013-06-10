@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import static java.lang.Math.abs;
 
 import fr.lip6.jkernelmachines.kernel.Kernel;
 import fr.lip6.jkernelmachines.kernel.SimpleCacheKernel;
@@ -202,8 +203,7 @@ public class SimpleMKL<T> implements Classifier<T> {
 			sum = 0.;
 			double alp[] = svm.getAlphas();
 			for(int i = 0 ; i < alp.length; i++)
-				if(alp[i] > 0)
-					sum += alp[i];
+				sum += abs(alp[i]);
 			double dualGap = (newObj + max - sum)/newObj;
 			
 			
@@ -292,13 +292,13 @@ public class SimpleMKL<T> implements Classifier<T> {
 			public void doLines(double[][] matrix, int from , int to) {
 				for(int index = from ; index < to ; index++)
 				{
-					if(alp[index] > 0)
+					if(abs(alp[index]) > 0)
 					{
-						double al1 = alp[index] * l.get(index).label;
+						double al1 = abs(alp[index]) * l.get(index).label;
 						for(int j = 0 ; j < matrix[index].length ; j++)
 						{
-							if(alp[j] > 0)
-								resLine[index] += al1 * alp[j] * l.get(j).label * matrix[index][j];
+							if(abs(alp[j]) > 0)
+								resLine[index] += al1 * abs(alp[j]) * l.get(j).label * matrix[index][j];
 						}
 					}
 				}
@@ -311,9 +311,9 @@ public class SimpleMKL<T> implements Classifier<T> {
 			obj1 += d;
 		
 		double obj2 = 0;
-		for(int i = 0; i < l.size(); i++)
-			if(alp[i] > 0)
-				obj2 += alp[i];
+		for(int i = 0; i < l.size(); i++) {
+			obj2 += abs(alp[i]);
+		}
 		
 		double obj = -0.5 * obj1 + obj2;
 		
