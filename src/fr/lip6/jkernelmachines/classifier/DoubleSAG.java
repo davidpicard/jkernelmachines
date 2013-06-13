@@ -106,7 +106,7 @@ public class DoubleSAG implements Classifier<double[]> {
 			if (norm > L)
 				L = norm;
 		}
-		alpha = 1 / (2 * L);
+		alpha = 1 / (4 * L);
 
 		d = new double[dim];
 		db = 0;
@@ -122,7 +122,7 @@ public class DoubleSAG implements Classifier<double[]> {
 			db = db - yi[i] * y;
 
 			// compute new derivative
-			yi[i] = dloss(y * (VectorOperations.dot(w, x) + b));
+			yi[i] = dloss(y * valueOf(x));
 
 			// add new gradient
 			VectorOperations.addi(d, d, yi[i] * y, x);
@@ -172,7 +172,7 @@ public class DoubleSAG implements Classifier<double[]> {
 		db = db - yi[i] * y;
 
 		// compute new derivative
-		yi[i] = dloss(y * (VectorOperations.dot(w, x) + b));
+		yi[i] = dloss(y * valueOf(x));
 
 		// add new gradient
 		VectorOperations.addi(d, d, yi[i] * y, x);
@@ -191,7 +191,7 @@ public class DoubleSAG implements Classifier<double[]> {
 	 */
 	@Override
 	public double valueOf(double[] e) {
-		return VectorOperations.dot(w, e) + b;
+		return VectorOperations.dot(w, e);
 	}
 
 	/*
