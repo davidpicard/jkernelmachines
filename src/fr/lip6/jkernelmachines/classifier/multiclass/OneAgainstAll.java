@@ -154,6 +154,14 @@ public class OneAgainstAll<T> implements MulticlassClassifier<T> {
 		//return class corresponding to this output
 		return classIndices.get(imax);
 	}
+	
+	/**
+	 * Returns the list of one against all classifiers used
+	 * @return the list of classifiers
+	 */
+	public List<Classifier<T>> getListOfClassifier() {
+		return listOfClassifiers;
+	}
 
 
 	/* (non-Javadoc)
