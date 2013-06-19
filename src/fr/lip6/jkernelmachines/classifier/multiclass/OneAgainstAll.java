@@ -159,7 +159,7 @@ public class OneAgainstAll<T> implements MulticlassClassifier<T> {
 	 * Returns the list of one against all classifiers used
 	 * @return the list of classifiers
 	 */
-	public List<Classifier<T>> getListOfClassifier() {
+	public List<Classifier<T>> getListOfClassifiers() {
 		return listOfClassifiers;
 	}
 
