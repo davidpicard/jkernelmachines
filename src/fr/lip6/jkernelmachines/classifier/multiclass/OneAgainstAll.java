@@ -16,161 +16,186 @@
 
     Copyright David Picard - 2012
 
-*/
+ */
 package fr.lip6.jkernelmachines.classifier.multiclass;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import fr.lip6.jkernelmachines.classifier.Classifier;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 import fr.lip6.jkernelmachines.util.DebugPrinter;
 
 /**
- * <p>Multiclass classifier with N times One against All scheme.</p>
  * <p>
- * The classification algorithm for each case is not set in this classifier, 
- * and should be provided.
+ * Multiclass classifier with N times One against All scheme.
+ * </p>
+ * <p>
+ * The classification algorithm for each case is not set in this classifier, and
+ * should be provided.
  * </p>
  * 
  * @author picard
- *
+ * 
  */
 public class OneAgainstAll<T> implements MulticlassClassifier<T> {
-	
+
 	Classifier<T> baseClassifier;
 
 	List<Integer> classIndices;
 	List<Classifier<T>> listOfClassifiers;
 	List<TrainingSample<T>> tlist;
 	int nbclasses = 0;
-	
+
 	DebugPrinter debug = new DebugPrinter();
-	
+
 	/**
 	 * <p>
 	 * Default constructor with underlying classifier algorithm.
 	 * </p>
 	 * <p>
-	 * The classifier given as argument is cloned N times at each training, 
-	 * in order to provide a binary classification for each category. 
+	 * The classifier given as argument is cloned N times at each training, in
+	 * order to provide a binary classification for each category.
 	 * </p>
-	 * @param c the classifier class to use
+	 * 
+	 * @param c
+	 *            the classifier class to use
 	 */
 	public OneAgainstAll(Classifier<T> c) {
 		baseClassifier = c;
 	}
-	
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see fr.lip6.classifier.Classifier#train(fr.lip6.type.TrainingSample)
 	 */
 	@Override
 	public void train(TrainingSample<T> t) {
-		if(tlist == null)
+		if (tlist == null)
 			tlist = new ArrayList<TrainingSample<T>>();
-		
+
 		tlist.add(t);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see fr.lip6.classifier.Classifier#train(java.util.List)
 	 */
 	@Override
 	public void train(List<TrainingSample<T>> l) {
 		tlist = new ArrayList<TrainingSample<T>>();
 		tlist.addAll(l);
-		
+
 		train();
 	}
-	
-	
+
 	private void train() {
-		//init
+		// init
 		classIndices = new ArrayList<Integer>();
 		listOfClassifiers = new ArrayList<Classifier<T>>();
 
-		//count classes
+		// count classes
 		nbclasses = 0;
-		for(TrainingSample<T> t : tlist) {
-			if(!classIndices.contains(t.label)) {
+		for (TrainingSample<T> t : tlist) {
+			if (!classIndices.contains(t.label)) {
 				classIndices.add(t.label);
 				nbclasses++;
-				//init classifiers
+				// init classifiers
 				listOfClassifiers.add(null);
 			}
 		}
-		debug.println(2, "Number of Classes: "+nbclasses);
-		
+		debug.println(2, "Number of Classes: " + nbclasses);
+
 		// learning N one against all classifiers
-		for(int i = 0 ; i < nbclasses ; i++) {
+		for (int i = 0; i < nbclasses; i++) {
 			int c = classIndices.get(i);
-			
-			//building classifier
+
+			// building classifier
 			Classifier<T> cls = null;
 			try {
-				 cls = (Classifier<T>) baseClassifier.copy();
-			}
-			catch (Exception e) {
+				cls = (Classifier<T>) baseClassifier.copy();
+			} catch (Exception e) {
 				debug.println(1, "ERROR: Classifier not Cloneable!");
 				return;
 			}
-			
-			//building ad hoc trai list
+
+			// building ad hoc trai list
 			List<TrainingSample<T>> train = new ArrayList<TrainingSample<T>>();
-			for(TrainingSample<T> t : tlist) {
+			for (TrainingSample<T> t : tlist) {
 				int y = -1;
-				if(t.label == c)
+				if (t.label == c)
 					y = 1;
 				train.add(new TrainingSample<T>(t.sample, y));
 			}
-			
-			//training
+
+			// training
 			cls.train(train);
-			
-			//storing
+
+			// storing
 			listOfClassifiers.set(i, cls);
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see fr.lip6.classifier.Classifier#valueOf(java.lang.Object)
 	 */
 	@Override
 	public double valueOf(T e) {
-		if(listOfClassifiers == null || listOfClassifiers.isEmpty())
+		if (listOfClassifiers == null || listOfClassifiers.isEmpty())
 			return 0;
-		
+
 		// find max output
 		int imax = -1;
-		double max = - Double.MAX_VALUE;
-		for(int i = 0 ; i < listOfClassifiers.size(); i++) {
+		double max = -Double.MAX_VALUE;
+		for (int i = 0; i < listOfClassifiers.size(); i++) {
 			double v = listOfClassifiers.get(i).valueOf(e);
-			if(v > max) {
+			if (v > max) {
 				max = v;
 				imax = i;
 			}
 		}
-		//return class corresponding to this output
+		// return class corresponding to this output
 		return classIndices.get(imax);
 	}
-	
+
 	/**
 	 * Returns the list of one against all classifiers used
+	 * 
 	 * @return the list of classifiers
 	 */
 	public List<Classifier<T>> getListOfClassifiers() {
 		return listOfClassifiers;
 	}
 
+	/**
+	 * Returns a map with class labels as keys and corresponding one against all
+	 * classifiers as values
+	 * 
+	 * @return the map of labels, classifiers
+	 */
+	public Map<Integer, Classifier<T>> getMapOfClassifiers() {
+		Map<Integer, Classifier<T>> map = new HashMap<Integer, Classifier<T>>();
+		for (int i = 0; i < classIndices.size(); i++) {
+			map.put(classIndices.get(i), listOfClassifiers.get(i));
+		}
+		return map;
+	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see fr.lip6.classifier.Classifier#copy()
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public OneAgainstAll<T> copy() throws CloneNotSupportedException {
-		return (OneAgainstAll<T>)super.clone();
+		return (OneAgainstAll<T>) super.clone();
 	}
 
 }
