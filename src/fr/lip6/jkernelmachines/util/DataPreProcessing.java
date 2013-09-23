@@ -48,6 +48,24 @@ public class DataPreProcessing {
 		}
 		
 	}
+	
+
+	/**
+	 * Normalize a list of double[] to have l2-norm equal to 1
+	 * @param list
+	 */
+	public static void normalizeDoubleList(List<double[]> list) {
+		if(list.isEmpty())
+			return;
+		DoubleLinear linear = new DoubleLinear();
+		
+		for(double[] desc : list) {
+			double norm = Math.sqrt(linear.valueOf(desc, desc));
+			for(int x = 0 ; x < desc.length ; x++)
+				desc[x] /= norm;
+		}
+		
+	}
 
 	/**
 	 * Process a list of training samples of double[] to have 0 mean
