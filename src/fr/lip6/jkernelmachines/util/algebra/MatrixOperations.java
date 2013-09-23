@@ -19,7 +19,7 @@
 */
 package fr.lip6.jkernelmachines.util.algebra;
 
-
+import static java.lang.Math.*;
 
 
 
@@ -253,6 +253,7 @@ public class MatrixOperations {
 		return out;
 	}
 	
+
 	/**
 	 * Performs the in place QR decomposition of a symmetric matrix, such that Q is orthonormal 
 	 * and R is an upper triangular matrix:
@@ -264,9 +265,95 @@ public class MatrixOperations {
 	 * @param A input matrix A
 	 */
 	public static void qri(double[][] Q, double[][] R, final double[][] A) {
+
 		if(!isSquare(A))
 			throw new ArithmeticException("Matrix must be square");
+		
+		if(A.length < 64)
+			qri_gramschmidt(Q, R, A);
+		else
+			qri_givens(Q, R, A);
+	}
+	
 
+	/**
+	 * Performs the in place QR decomposition of a symmetric matrix using Givens rotation matrices,
+	 * such that Q is orthonormal and R is an upper triangular matrix:
+	 * 
+	 * A = Q*R
+	 * 
+	 * @param Q output matrix Q
+	 * @param R output matrix R
+	 * @param A input matrix A
+	 */
+	private static void qri_givens(double[][]Q, double[][] R, final double[][] m) {
+		int n = m.length;
+
+		// copy matrix
+		for(int i = 0 ; i < n ; i++)
+			for(int j = 0 ; j < n ; j++) {
+				R[i][j] = m[i][j];
+			}
+		// init Q
+		for(int i = 0 ; i < n ; i++)
+			Q[i][i] = 1.;
+		
+		for(int i = 0 ; i < n ; i++) {
+			for(int j = i+1 ; j < n ; j++) {
+				double Rii = R[i][i];
+				double Rji = R[j][i];
+				double Rij = R[i][j];
+				double Rjj = R[j][j];
+				double Qii = Q[i][i];
+				double Qij = Q[i][j];
+				double Qji = Q[j][i];
+				double Qjj = Q[j][j];
+				
+				double r = sqrt(Rii*Rii+Rji*Rji);
+				double c = Rii/r;
+				double s = -Rji/r;
+				
+				// apply rotation
+				R[i][i] = r;
+				R[j][i] = 0;
+				R[j][j] = s * Rij + c * Rjj;
+				R[i][j] = c*Rij - s*Rjj;
+				Q[i][i] = c*Qii - s*Qji;
+				Q[j][j] = s*Qij + c*Qjj;
+				Q[i][j] = c*Qij - s*Qjj;
+				Q[j][i] = s*Qii + c*Qji;
+				
+				
+				for(int k = 0 ; k < n ; k++) {
+					if(k == i || k == j)
+						continue;
+					double Rik = R[i][k];
+					double Rjk = R[j][k];
+					double Qik = Q[i][k];
+					double Qjk = Q[j][k];
+					
+					R[i][k] = c*Rik - s*Rjk;
+					R[j][k] = s*Rik + c*Rjk;
+					Q[i][k] = c*Qik - s*Qjk;
+					Q[j][k] = s*Qik + c*Qjk;
+				}
+			}
+		}
+		// transpose Q to get basis
+		MatrixOperations.transi(Q);
+	}
+	
+	/**
+	 * Performs the in place QR decomposition of a symmetric matrix, such that Q is orthonormal 
+	 * and R is an upper triangular matrix:
+	 * 
+	 * A = Q*R
+	 * 
+	 * @param Q output matrix Q
+	 * @param R output matrix R
+	 * @param A input matrix A
+	 */
+	private static void qri_gramschmidt(double[][] Q, double[][] R, final double[][] A) {
 		//copy first 
 		double[] e = new double[A.length];
 		for(int l = 0 ; l < A.length ; l++)
@@ -309,6 +396,122 @@ public class MatrixOperations {
 	 * @return an array of two matrices containing {Q, L}
 	 */
 	public static double[][][] eig(double[][] A) {
+		if(A.length < 64)
+			return eig_qr(A);
+		else
+			return eig_givens(A, true);
+	}
+
+	/**
+	 * Performs the eigen decomposition of a symmetric matrix:
+	 * A = Q * L * Q'
+	 * with Q orthonormal and L diagonal
+	 * @param A input matrix
+	 * @return an array of two matrices containing {Q, L}
+	 */
+	private static final double[][][] eig_givens(double[][] m, boolean prec) {
+		int n = m.length;
+		double[][] matrix;
+		
+		// init eigenvectors
+		double[][] G;
+		if(!prec)  {
+			matrix = new double[n][n];
+			for(int i = 0 ; i < n ; i++)
+				for(int j = 0 ; j < n ; j++)
+					matrix[i][j] = m[i][j];
+			G = new double[n][n];
+			for(int i = 0 ; i < n ; i++)
+				G[i][i] = 1;
+		}
+		else
+		{
+			// QR preconditioning
+			double[][][] QR = new double[2][n][n];
+			qri_givens(QR[0], QR[1], m);
+			matrix = MatrixOperations.mul(QR[1], QR[0]);
+			G = MatrixOperations.transi(QR[0]);
+		}
+		
+		while(true) {
+			for(int i = 0 ; i < n-1 ; i++) {
+				// search largest of diag for i
+				int j = i+1;
+				for(int id = i+1 ; id < n ; id++) {
+					if(abs(matrix[i][id]) > abs(matrix[i][j]))
+						j = id;
+				}
+				double Sii = matrix[i][i];
+				double Sjj = matrix[j][j];
+				double Sij = matrix[i][j];
+				double Gii = G[i][i];
+				double Gjj = G[j][j];
+				double Gij = G[i][j];
+				double Gji = G[j][i];
+				//compute theta
+				double theta = 0;
+				if(Sii == Sjj)
+					theta = PI / 4;
+				else
+					theta = atan2(2*Sij, (Sjj - Sii))/2;
+				// compute givens rotation
+				double c = cos(theta);
+				double s = sin(theta);
+				
+				// apply givens rotation
+				matrix[i][i] = c*c*Sii + s*s*Sjj - 2*c*s*Sij;
+				matrix[j][j] = s*s*Sii + c*c*Sjj + 2*c*s*Sij;
+				matrix[i][j] = (c*c-s*s)*Sij + s*c*(Sii - Sjj);
+				matrix[j][i] = matrix[i][j];
+				G[i][i] = c*Gii - s*Gji;
+				G[i][j] = c*Gij - s*Gjj;
+				G[j][i] = s*Gii + c*Gji;
+				G[j][j] = s*Gij + c*Gjj;
+				
+				for(int k = 0 ; k < n ; k++) {
+					double Sik = matrix[i][k];
+					double Sjk = matrix[j][k];
+					double Gik = G[i][k];
+					double Gjk = G[j][k];
+					
+					if(k != i && k != j) {
+						matrix[i][k] = c*Sik - s*Sjk;
+						matrix[k][i] = matrix[i][k];
+						matrix[j][k] = s*Sik + c*Sjk;
+						matrix[k][j] = matrix[j][k];
+						
+						G[i][k] = c*Gik - s*Gjk;
+						G[j][k] = s*Gik + c*Gjk;
+					}
+				}			
+			}
+			
+			// check if done
+			double max = 0;
+			for(int i = 0 ; i < n-1 ; i++)
+				for(int j = i+1 ; j < n ; j++)
+					if(abs(matrix[i][j]) > max)
+						max = abs(matrix[i][j]);
+			if(max < 1e-15)
+				break;
+		}
+		for(int i = 0 ; i < n ; i++)
+			for(int j = i+1 ; j< n ; j++) {
+				matrix[i][j] = 0;
+				matrix[j][i] = 0;
+			}
+		return new double[][][] {G, matrix};
+	}
+
+	
+	/**
+	 * Performs the eigen decomposition of a symmetric matrix:
+	 * A = Q * L * Q'
+	 * with Q orthonormal and L diagonal
+	 * @param A input matrix
+	 * @return an array of two matrices containing {Q, L}
+	 */
+	private static double[][][] eig_qr(double[][] A) {
 		double[][] Q = null;
 		
 		if(!isSymmetric(A))
@@ -344,7 +547,7 @@ public class MatrixOperations {
 				break;
 			err = errt;
 			// next iteration
-			qri(QR[0], QR[1], Ak);
+			qri_gramschmidt(QR[0], QR[1], Ak);
 		}
 		while(err > 1e-12);
 		
