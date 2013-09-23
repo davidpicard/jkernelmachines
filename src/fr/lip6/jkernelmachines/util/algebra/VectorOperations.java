@@ -144,4 +144,14 @@ public class VectorOperations {
 	public static double n2p2(final double[] A) {
 		return dot(A, A);
 	}
+	
+	/**
+	 * Computes the square euclidean distance between 2 double arrays
+	 * @param A first array
+	 * @param B second array
+	 * @return
+	 */
+	public static double d2p2(final double[] A, final double[] B) {
+		return n2p2(A) + n2p2(B) - 2*dot(A, B);
+	}
 }
