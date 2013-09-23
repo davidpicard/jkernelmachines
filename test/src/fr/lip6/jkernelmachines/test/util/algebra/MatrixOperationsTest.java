@@ -206,7 +206,7 @@ public class MatrixOperationsTest {
 	}
 
 	/**
-	 * Test method for {@link fr.lip6.jkernelmachines.util.algebra.MatrixOperations#qri(double[][], double[][], double[][])}.
+	 * Test method for {@link fr.lip6.jkernelmachines.util.algebra.MatrixOperations#qri_gramschmidt(double[][], double[][], double[][])}.
 	 */
 	@Test
 	public final void testQri() {		
@@ -278,11 +278,27 @@ public class MatrixOperationsTest {
 		}
 		
 
-		// Does Q*R reconstruct A
+		// Does Q*L*Q' reconstruct A
 		double[][] C = MatrixOperations.mul(eig[0],  MatrixOperations.mul(eig[1], MatrixOperations.trans(eig[0])));
 		for(int i = 0 ; i < 3 ; i++) {
 			for(int j = 0 ; j < 3 ; j++) {
 				assertEquals(A[i][j], C[i][j], 1e-10);
+			}
+		}
+		
+		// test larger matrix
+		int n = 128;
+		double[][] X = new double[n][n];
+		for(int i = 0 ; i < n ; i++)
+			for(int j = 0 ; j < n ; j++)
+				X[i][j] = Math.random()*2 - 0.5;
+				
+		double[][] G = MatrixOperations.transMul(X, X);
+		double[][][] ei = MatrixOperations.eig(G);
+		double[][] rec = MatrixOperations.transMul(ei[0], MatrixOperations.mul(ei[1], ei[0]));
+		for(int i = 0 ; i < n ; i++) {
+			for(int j = 0 ; j < n ; j++) {
+				assertEquals(G[i][j], rec[i][j], 1e-12);
 			}
 		}
 		
