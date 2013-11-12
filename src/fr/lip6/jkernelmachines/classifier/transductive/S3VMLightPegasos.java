@@ -66,6 +66,8 @@ public class S3VMLightPegasos implements TransductiveClassifier<double[]> {
 	@Override
 	public void train(List<TrainingSample<double[]>> trainList,
 			List<TrainingSample<double[]>> testList) {
+		
+		debug.println(0, "Warning, this classifier is not working properly !");
 	
 		train = new ArrayList<TrainingSample<double[]>>();
 		train.addAll(trainList);

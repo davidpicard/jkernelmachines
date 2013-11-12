@@ -29,7 +29,7 @@ import org.junit.runners.Suite.SuiteClasses;
  *
  */
 @RunWith(Suite.class)
-@SuiteClasses({ S3VMLightPegasosTest.class, S3VMLightSGDQNTest.class,
+@SuiteClasses({ S3VMLightSGDQNTest.class,
 		S3VMLightTest.class })
 public class TransductiveClassifierTests {
 

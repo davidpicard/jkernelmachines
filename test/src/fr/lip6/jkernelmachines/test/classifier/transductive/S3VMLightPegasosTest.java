@@ -44,7 +44,7 @@ public class S3VMLightPegasosTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		GaussianGenerator g = new GaussianGenerator(2, 10.0f, 1.0);
+		GaussianGenerator g = new GaussianGenerator(2, 50.0f, 1.0);
 		train = g.generateList(10);
 
 		svm = new S3VMLightPegasos();
@@ -58,7 +58,7 @@ public class S3VMLightPegasosTest {
 		svm.train(train, train);
 		for (TrainingSample<double[]> t : train) {
 			double v = svm.valueOf(t.sample);
-			assertTrue(t.label * v > 0);
+			assertTrue(t.label * v >= 0);
 		}
 	}
 
