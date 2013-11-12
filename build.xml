@@ -8,6 +8,10 @@
      <property name="docjarfile" value="jkernelmachines-doc.jar"/>
      <property name="srcjarfile" value="jkernelmachines-src.jar"/>
      <property file="config.properties" />
+     
+     <!-- test for ejml -->
+     <available file="${ejml.dir}/ejml.jar" property="ejml.exclude" value=""/>
+     <property name="ejml.exclude" value="fr/lip6/jkernelmachines/util/algebra/ejml/**" />
 
      <target name="all" depends="jar" />
      
@@ -20,7 +24,14 @@
 
      <target name="compile" depends="init"> 
           <!-- Compile the java code -->
-          <javac srcdir="${src}" destdir="${build}" includeantruntime="false"/> 
+          <javac srcdir="${src}" destdir="${build}" includeantruntime="false"> 
+			   <classpath>
+				   <pathelement location="${ejml.dir}/ejml.jar" />
+			   </classpath>
+               <src path="${src}" />
+               <!-- exclude ejml wrapper if no jar -->
+               <exclude name="${ejml.exclude}" />
+          </javac>
      </target>
 
      <target name="jar" depends="compile">
@@ -91,6 +102,7 @@
                <pathelement path="${test-jarfile}"/>
                <pathelement path="${junit.library.dir}/junit4.jar"/>
                <pathelement path="${junit.library.dir}/ant-junit4.jar"/>
+			   <pathelement location="${ejml.dir}/ejml.jar" />
           </classpath>
 		  <formatter type="xml"/>
 		  <batchtest todir="${test-report}">
