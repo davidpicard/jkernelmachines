@@ -51,10 +51,12 @@ public class KernelPCATest {
 	@Before
 	public void setUp() throws Exception {
 		
-		GaussianGenerator gen = new GaussianGenerator(100);
-		list = gen.generateList(10);
+		int dim = 128;
 		
-		k = new DoubleGaussL2(0.5);
+		GaussianGenerator gen = new GaussianGenerator(dim, 0, 1.0);
+		list = gen.generateList(dim);
+		
+		k = new DoubleGaussL2(2.0);
 		pca = new KernelPCA<double[]>(k);
 		
 		pca.train(list);
@@ -73,7 +75,7 @@ public class KernelPCATest {
 		
 		for(int i = 0 ; i < m1.length ; i++) {
 			for(int j = i ; j < m1[0].length ; j++) {
-				assertEquals(m1[i][j], m2[i][j]+pca.getMean(), 1e-7);
+				assertEquals(m1[i][j], m2[i][j]+pca.getMean(), 1e-10);
 			}
 		}
 		
