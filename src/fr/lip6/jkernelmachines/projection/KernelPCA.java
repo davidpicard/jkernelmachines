@@ -50,6 +50,7 @@ public class KernelPCA<T> {
 		
 		// SVD of kernel matrix
 		double[][] K = kernel.getKernelMatrix(list);
+		mean = 0;
 		for(int i = 0 ; i < K.length ; i++) {
 			for(int j = i ; j < K.length ; j++) {
 				if(i == j) {
@@ -77,7 +78,7 @@ public class KernelPCA<T> {
 		whiteningCoefficients = new double[dim];
 		for(int d = 0 ; d < dim ; d++) {
 			double p = eig[1][d][d];
-			if(p > 1e-10) {
+			if(p > 1e-15) {
 				whiteningCoefficients[d] = 1./Math.sqrt(p);
 			}
 		}
