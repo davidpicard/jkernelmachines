@@ -19,10 +19,22 @@
 */
 package fr.lip6.jkernelmachines.util.algebra;
 
-import static java.lang.Math.*;
-import static fr.lip6.jkernelmachines.util.algebra.VectorOperations.*;
+import static fr.lip6.jkernelmachines.util.algebra.VectorOperations.addi;
+import static fr.lip6.jkernelmachines.util.algebra.VectorOperations.dot;
+import static fr.lip6.jkernelmachines.util.algebra.VectorOperations.n2;
+import static java.lang.Math.PI;
+import static java.lang.Math.abs;
+import static java.lang.Math.atan2;
+import static java.lang.Math.cos;
+import static java.lang.Math.random;
+import static java.lang.Math.signum;
+import static java.lang.Math.sin;
+import static java.lang.Math.sqrt;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
+
+import fr.lip6.jkernelmachines.util.DebugPrinter;
 
 
 
@@ -32,6 +44,23 @@ import java.util.Arrays;
  *
  */
 public class MatrixOperations {
+	
+	/* try to load ejml wrapper if present, to accelerate matrix eig */
+	static Method ejml_eig = null;
+	static {
+		try {
+			Class<?> emjl_ops = Class.forName("fr.lip6.jkernelmachines.util.algebra.ejml.EJMLMatrixOperations");
+			ejml_eig = emjl_ops.getDeclaredMethod("eig", double[][].class);
+		} catch (Exception e) {
+			ejml_eig = null;
+			if(DebugPrinter.DEBUG_LEVEL > 1) {
+				System.err.println("Warning ejml not present, eig will be slow");
+			}
+			if(DebugPrinter.DEBUG_LEVEL > 3) {
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	
 	/**
@@ -474,6 +503,7 @@ public class MatrixOperations {
 		// transpose to have column vectors in Q
 		transi(Q);
 	}
+	
 	/**
 	 * Performs the eigen decomposition of a symmetric matrix:
 	 * A = Q * L * Q'
@@ -482,6 +512,17 @@ public class MatrixOperations {
 	 * @return an array of two matrices containing {Q, L}
 	 */
 	public static double[][][] eig(double[][] A) {
+		// try ejml first if present
+		if(A.length > 65 && ejml_eig != null)
+			try {
+				return (double[][][]) ejml_eig.invoke(null, new Object[]{A});
+			} catch (Exception e) {
+				if(DebugPrinter.DEBUG_LEVEL > 3)
+					e.printStackTrace();
+			}
+		// fallback to our implementation
+		if(DebugPrinter.DEBUG_LEVEL > 3)
+			System.out.println("fallback to eig_jacobi");
 		return eig_jacobi(A, true);
 	}
 	
