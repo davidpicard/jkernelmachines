@@ -19,7 +19,7 @@
 */
 package fr.lip6.jkernelmachines.test.evaluation;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 

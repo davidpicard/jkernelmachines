@@ -19,11 +19,12 @@
 */
 package fr.lip6.jkernelmachines.test.classifier;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
 
 import fr.lip6.jkernelmachines.classifier.LaSVM;
 import fr.lip6.jkernelmachines.classifier.multiclass.OneAgainstAll;

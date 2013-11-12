@@ -19,13 +19,14 @@
 */
 package fr.lip6.jkernelmachines.classifier;
 
+import static java.lang.Math.abs;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static java.lang.Math.abs;
 
 import fr.lip6.jkernelmachines.kernel.Kernel;
 import fr.lip6.jkernelmachines.kernel.SimpleCacheKernel;
