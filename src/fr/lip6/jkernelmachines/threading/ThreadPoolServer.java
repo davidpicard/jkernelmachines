@@ -41,7 +41,9 @@ public class ThreadPoolServer {
 		if(executor == null)
 		{
 			int nbcpu = Runtime.getRuntime().availableProcessors();
-			executor = new ThreadPoolExecutor(nbcpu, nbcpu, 3, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+			executor = new ThreadPoolExecutor(nbcpu, 2*nbcpu, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+			executor.prestartAllCoreThreads();
+			executor.allowCoreThreadTimeOut(true);
 		}
 		return executor;
 	}
