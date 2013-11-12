@@ -4,4 +4,5 @@
 build/
 test/build/
 junit-report/
+doc/
 
