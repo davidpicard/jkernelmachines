@@ -28,7 +28,7 @@ import org.junit.runners.Suite.SuiteClasses;
  *
  */
 @RunWith(Suite.class)
-@SuiteClasses({ MatrixOperationsTest.class, VectorOperationsTest.class })
+@SuiteClasses({ ThreadedMatrixOperationsTest.class, MatrixOperationsTest.class, VectorOperationsTest.class })
 public class AlgebraTests {
 
 }
