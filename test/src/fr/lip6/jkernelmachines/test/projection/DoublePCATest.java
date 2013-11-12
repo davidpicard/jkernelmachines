@@ -41,8 +41,8 @@ public class DoublePCATest {
 	private List<TrainingSample<double[]>> list;
 	private DoublePCA pca;
 	
-	private int nbSamples = 20;
-	private int dim = 5;
+	private int nbSamples = 128;
+	private int dim = 64;
 
 	/**
 	 * @throws java.lang.Exception
