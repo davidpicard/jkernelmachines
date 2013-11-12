@@ -20,6 +20,7 @@
 package fr.lip6.jkernelmachines.test.util.algebra;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -260,10 +261,10 @@ public class MatrixOperationsTest {
 		for(int i = 0 ; i < 3 ; i++) {
 			for(int j = 0 ; j < 3 ; j++) {
 				if(i == j) {
-					assertEquals(1.0, UtU[i][j], 1e-15);
+					assertEquals(1.0, UtU[i][j], 1e-10);
 				}
 				else {
-					assertEquals(0, UtU[i][j], 1e-15);
+					assertEquals(0, UtU[i][j], 1e-10);
 				}
 			}
 		}
@@ -272,7 +273,7 @@ public class MatrixOperationsTest {
 		for(int i = 0 ; i < 3 ; i++) {
 			for(int j = 0 ; j < 3 ; j++) {
 				if(i != j) {
-					assertEquals(0.0, eig[1][i][j], 1e-15);
+					assertEquals(0.0, eig[1][i][j], 1e-10);
 				}				
 			}
 		}
@@ -287,7 +288,7 @@ public class MatrixOperationsTest {
 		}
 		
 		// test larger matrix
-		int n = 128;
+		int n = 256;
 		double[][] X = new double[n][n];
 		for(int i = 0 ; i < n ; i++)
 			for(int j = 0 ; j < n ; j++)
@@ -295,13 +296,61 @@ public class MatrixOperationsTest {
 				
 		double[][] G = MatrixOperations.transMul(X, X);
 		double[][][] ei = MatrixOperations.eig(G);
-		double[][] rec = MatrixOperations.transMul(ei[0], MatrixOperations.mul(ei[1], ei[0]));
+		// is U orthogonal?
+		UtU = MatrixOperations.transMul(ei[0], ei[0]);
 		for(int i = 0 ; i < n ; i++) {
 			for(int j = 0 ; j < n ; j++) {
-				assertEquals(G[i][j], rec[i][j], 1e-12);
+				if(i == j) {
+					assertEquals(1.0, UtU[i][j], 1e-10);
+				}
+				else {
+					assertEquals(0, UtU[i][j], 1e-10);
+				}
+			}
+		}
+		// is L diagonal
+		for(int i = 0 ; i < n ; i++) {
+			for(int j = 0 ; j < n ; j++) {
+				if(i != j) {
+					assertEquals(0.0, ei[1][i][j], 1e-10);
+				}
+				else {
+					assertTrue((ei[1][i][i]+1e-10) >= 0);
+				}
+			}
+		}
+		double[][] rec = MatrixOperations.mul(ei[0], MatrixOperations.mul(ei[1], MatrixOperations.trans(ei[0])));
+		for(int i = 0 ; i < n ; i++) {
+			for(int j = 0 ; j < n ; j++) {
+				assertEquals(G[i][j], rec[i][j], 1e-10);
 			}
 		}
 		
 	}
 
+	/**
+	 * Test method for {@link fr.lip6.jkernelmachines.util.algebra.MatrixOperations#tri(double[][])}.
+	 */
+	@Test
+	public final void testTri() {		
+		
+		// test larger matrix
+		int n = 128;
+		double[][] X = new double[n][n];
+		for(int i = 0 ; i < n ; i++)
+			for(int j = 0 ; j < n ; j++)
+				X[i][j] = Math.random()*2 - 0.5;
+				
+		double[][] G = MatrixOperations.transMul(X, X);
+		double[][][] qt = MatrixOperations.tri(G);
+		double[][] rec = MatrixOperations.mul(qt[0], MatrixOperations.mul(qt[1], MatrixOperations.trans(qt[0])));
+		for(int i = 0 ; i < n ; i++) {
+			for(int j = 0 ; j < n ; j++) {
+				assertEquals(G[i][j], rec[i][j], 1e-10);
+			}
+		}
+		
+		
+	}
+	
 }
