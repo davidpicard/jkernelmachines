@@ -32,7 +32,7 @@ import org.junit.runners.Suite.SuiteClasses;
 		DoubleSGDQNTest.class, DoubleSGDTest.class, DoubleSAGTest.class,
 		GradMKLTest.class, LaSVMITest.class, LaSVMTest.class,
 		SimpleMKLTest.class, SMOSVMTest.class, TSMKLTest.class,
-		MulticlassLaSVMTest.class })
+		MulticlassLaSVMTest.class, NystromLSSVMTest.class })
 public class ClassifierTests {
 
 }

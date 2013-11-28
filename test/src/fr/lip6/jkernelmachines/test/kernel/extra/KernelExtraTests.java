@@ -28,7 +28,7 @@ import org.junit.runners.Suite.SuiteClasses;
  *
  */
 @RunWith(Suite.class)
-@SuiteClasses({ CustomTrainTestMatrixKernelTest.class })
+@SuiteClasses({ CustomTrainTestMatrixKernelTest.class, NystromKernelTest.class })
 public class KernelExtraTests {
 
 }
