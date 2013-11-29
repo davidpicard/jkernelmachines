@@ -48,6 +48,9 @@ picard@ensea.fr
 * [CrossValidation](https://github.com/davidpicard/jkernelmachines/wiki/CrossValidation)
 * [Standalone programs](https://github.com/davidpicard/jkernelmachines/wiki/Standalone-programs)
 
+## Javadoc
+Available with the `ant doc` command, or [here](http://davidpicard.github.io/jkernelmachines/doc/)
+
 
 ## FAQ
 frequently asked questions are answered [here](https://github.com/davidpicard/jkernelmachines/wiki/FAQ)
