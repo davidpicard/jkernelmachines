@@ -49,6 +49,7 @@ public class MatrixOperations {
 	static Method ejml_eig = null;
 	static {
 		try {
+			Class.forName("org.ejml.data.DenseMatrix64F"); // check if ejml is there
 			Class<?> emjl_ops = Class.forName("fr.lip6.jkernelmachines.util.algebra.ejml.EJMLMatrixOperations");
 			ejml_eig = emjl_ops.getDeclaredMethod("eig", double[][].class);
 		} catch (Exception e) {
