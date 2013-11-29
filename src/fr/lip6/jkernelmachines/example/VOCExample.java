@@ -26,7 +26,7 @@ import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.lip6.jkernelmachines.classifier.DoubleSGD;
+import fr.lip6.jkernelmachines.classifier.DoubleSAG;
 import fr.lip6.jkernelmachines.evaluation.ApEvaluator;
 import fr.lip6.jkernelmachines.io.FvecImporter;
 import fr.lip6.jkernelmachines.type.TrainingSample;
@@ -111,8 +111,8 @@ public class VOCExample {
 		System.out.println("Test features loaded.");
 		
 		//classifier
-		DoubleSGD svm = new DoubleSGD();
-		svm.setEpochs(25);
+		DoubleSAG svm = new DoubleSAG();
+		svm.setE(10);
 		
 		// AP evaluation
 		ApEvaluator<double[]> ape = new ApEvaluator<double[]>(svm, train, test);
