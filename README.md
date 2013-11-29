@@ -16,24 +16,24 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 
-Copyright David Picard, Nicolas Thome and Matthieu Cord, 2010
+Copyright David Picard 2013
+
 picard@ensea.fr
 
-Features
---------
+## Features
 
 * Several learning algorithms (LaSVM, LaSVM-I, SMO, SimpleMKL, GradMKL, QNPKL, SGDQN, Pegasos, ...)
 * Multiclass classification through generic classifiers.
 * Datatype agnosticism through Java Generics
 * Easy coding of new kernels
 * Several standard and exotic kernels (kernel on bags, combination kernels, ...)
-* Input system (can read libsvm and csv files)
+* Input system (can read libsvm, csv and fvec files)
 * Toys generator for artificial data
+* Basic linear algebra package (optionally based on [EJML](http://code.google.com/p/efficient-java-matrix-library/))
 * Evaluation and Cross Validation packages
 * Stand alone (requires only a working jdk and ant for easy compiling)
 
-Wiki and Howtos
----------------
+## HowTo
 
 * [Compiling](https://github.com/davidpicard/jkernelmachines/wiki/Compiling)
 * [Basic Example](https://github.com/davidpicard/jkernelmachines/wiki/Basic-Example)
@@ -43,9 +43,15 @@ Wiki and Howtos
 * [Multiclass Training](https://github.com/davidpicard/jkernelmachines/wiki/Multiclass)
 * [Reading data](https://github.com/davidpicard/jkernelmachines/wiki/Reading-Data)
 * [Data generators](https://github.com/davidpicard/jkernelmachines/wiki/Data-Generators)
+* [Basic Linear Algebra](https://github.com/davidpicard/jkernelmachines/wiki/Basic-Linear-Algebra)
 * [Evaluation](https://github.com/davidpicard/jkernelmachines/wiki/Evaluation)
 * [CrossValidation](https://github.com/davidpicard/jkernelmachines/wiki/CrossValidation)
 * [Standalone programs](https://github.com/davidpicard/jkernelmachines/wiki/Standalone-programs)
+
+
+## FAQ
+frequently asked questions are answered [here](https://github.com/davidpicard/jkernelmachines/wiki/FAQ)
+
 
 Acknowledgement
 ---------------
