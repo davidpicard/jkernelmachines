@@ -7,6 +7,10 @@
 WEKAPATH=./weka.jar
 # assume jkernelmachines.jar is in JKMSPATH
 JKMSPATH=../jkernelmachines.jar
+if [ -f ../ejml.jar ]
+then
+    JKMSPATH=$JKMSPATH:../ejml.jar
+fi
 # assume resources are in RES
 RES=../resources/
 
@@ -133,6 +137,24 @@ echo "german number "$(java -cp ${JKMSPATH} fr.lip6.jkernelmachines.example.Cros
 
 echo ""
 
+
+### Nystrom LSSVM
+echo "NystromLSSVM"
+echo "-------"
+
+#ionosphre
+echo "ionosphere "$(java -cp ${JKMSPATH} fr.lip6.jkernelmachines.example.CrossValidationExample -f ${RES}/ionosphere_scale -p 0.8 -n 20 -k gauss -a nlssvm)
+
+# heart
+echo "heart "$(java -cp ${JKMSPATH} fr.lip6.jkernelmachines.example.CrossValidationExample -f ${RES}/heart_scale -p 0.8 -n 20 -k gauss -a nlssvm)
+
+# breast cancer
+echo "breast cancer "$(java -cp ${JKMSPATH} fr.lip6.jkernelmachines.example.CrossValidationExample -f ${RES}/breast-cancer_scale -p 0.8 -n 20 -k gauss -a nlssvm)
+
+# german number
+echo "german number "$(java -cp ${JKMSPATH} fr.lip6.jkernelmachines.example.CrossValidationExample -f ${RES}/german.numer_scale -p 0.8 -n 20 -k gauss -a nlssvm)
+
+echo ""
 
 
 
