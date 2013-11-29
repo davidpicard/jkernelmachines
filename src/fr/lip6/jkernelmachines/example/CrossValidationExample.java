@@ -24,6 +24,7 @@ import java.util.List;
 import fr.lip6.jkernelmachines.classifier.Classifier;
 import fr.lip6.jkernelmachines.classifier.LaSVM;
 import fr.lip6.jkernelmachines.classifier.LaSVMI;
+import fr.lip6.jkernelmachines.classifier.NystromLSSVM;
 import fr.lip6.jkernelmachines.classifier.SDCA;
 import fr.lip6.jkernelmachines.classifier.SMOSVM;
 import fr.lip6.jkernelmachines.evaluation.AccuracyEvaluator;
@@ -52,7 +53,7 @@ import fr.lip6.jkernelmachines.util.DebugPrinter;
  *	<li>-p percent: the percent of data to keep for training</li>
  *	<li>-n nbtests: the number of test to perform during crossvalidation</li>
  *	<li>-k kernel: the type of kernel (linear or gauss, default gauss)</li>
- *	<li>-a algorithm: type of SVM algorithm(lasvm, lasvmi, smo, default lasvm)</li>
+ *	<li>-a algorithm: type of SVM algorithm(lasvm, lasvmi, smo, nlssvm default lasvm)</li>
  *  <li>-pca type: perform a PCA as preprocessing (no, yes, white, default no)</li>
  *	<li>-v: verbose (v few, vv lot, vvv insane, default none)</li>
  * </ul>
@@ -112,7 +113,12 @@ public class CrossValidationExample {
 						svm = new SDCA<double[]>(kernel);
 					} else if (args[i].equalsIgnoreCase("smo")) {
 						svm = new SMOSVM<double[]>(kernel);
-					} else { // default lasvm
+					} else if (args[i].equalsIgnoreCase("nlssvm")) {
+						NystromLSSVM<double[]> nlssvm = new NystromLSSVM<double[]>(kernel);
+						nlssvm.setPercent(0.1);
+						svm = nlssvm;
+						
+					}  else { // default lasvm
 						svm = new LaSVM<double[]>(kernel);
 					}
 				}
