@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Class providing routines to import data i fvec format (usefull in computer vision).
  * @author picard
  *
  */

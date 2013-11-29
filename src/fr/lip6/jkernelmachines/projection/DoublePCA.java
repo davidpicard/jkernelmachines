@@ -32,6 +32,7 @@ import fr.lip6.jkernelmachines.threading.ThreadedMatrixOperator;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 
 /**
+ * Principal component analysis on double arrays.
  * @author picard
  *
  */

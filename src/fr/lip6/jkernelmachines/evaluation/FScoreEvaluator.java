@@ -25,6 +25,7 @@ import fr.lip6.jkernelmachines.classifier.Classifier;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 
 /**
+ * Evaluator computing the F-score (by default F1).
  * @author picard
  *
  */

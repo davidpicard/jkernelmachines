@@ -29,6 +29,7 @@ import fr.lip6.jkernelmachines.kernel.Kernel;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 
 /**
+ * Kernel principal component analysis, using generic datatypes.
  * @author picard
  *
  */

@@ -25,6 +25,7 @@ import fr.lip6.jkernelmachines.classifier.Classifier;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 
 /**
+ * Evaluator computing the precision defined as (number of relevant)/(number of retrieved).
  * @author picard
  *
  */

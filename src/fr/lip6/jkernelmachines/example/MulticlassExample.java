@@ -31,6 +31,7 @@ import fr.lip6.jkernelmachines.util.DebugPrinter;
 import fr.lip6.jkernelmachines.util.generators.MultiClassGaussianGenerator;
 
 /**
+ * Example of multiclass classification on artificial dataset.
  * @author picard
  *
  */
