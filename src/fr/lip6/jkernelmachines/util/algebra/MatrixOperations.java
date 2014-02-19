@@ -45,17 +45,22 @@ import fr.lip6.jkernelmachines.util.DebugPrinter;
  */
 public class MatrixOperations {
 	
+	public final static double num_prec = 1e-14;
+	
 	/* try to load ejml wrapper if present, to accelerate matrix eig */
 	static Method ejml_eig = null;
+	static Method ejml_inv = null;
 	static {
 		try {
 			Class.forName("org.ejml.data.DenseMatrix64F"); // check if ejml is there
 			Class<?> emjl_ops = Class.forName("fr.lip6.jkernelmachines.util.algebra.ejml.EJMLMatrixOperations");
 			ejml_eig = emjl_ops.getDeclaredMethod("eig", double[][].class);
+			ejml_inv = emjl_ops.getDeclaredMethod("inv", double[][].class);
 		} catch (Exception e) {
 			ejml_eig = null;
+			ejml_inv = null;
 			if(DebugPrinter.DEBUG_LEVEL > 1) {
-				System.err.println("Warning ejml not present, eig will be slow");
+				System.err.println("Warning ejml not present, some operations will be slow");
 			}
 			if(DebugPrinter.DEBUG_LEVEL > 3) {
 				e.printStackTrace();
@@ -504,6 +509,42 @@ public class MatrixOperations {
 		// transpose to have column vectors in Q
 		transi(Q);
 	}
+	
+	/**
+	 * Compute the inverse matrix
+	 * @param A input matrix
+	 * @return the inverse of A if possible
+	 */
+	public static double[][] inv(final double[][] A) {
+		int n = A.length;
+		if( n > 65 && ejml_inv != null) {
+			try {
+				return (double[][]) ejml_inv.invoke(null,  new Object[]{A});
+			}
+			catch (Exception e) {
+				if(DebugPrinter.DEBUG_LEVEL > 3)
+					e.printStackTrace();
+			}
+		}
+		// fallback to our implementation
+		double[][][] ei = eig(A);
+		double[][] u = ei[0];
+		double[][] l = ei[1];
+		
+		for(int i = 0 ; i < l.length ; i++) {
+			if(l[i][i] <= -num_prec)
+				return null;
+			if(abs(l[i][i]) > num_prec) {
+				l[i][i] = 1/l[i][i];
+			}
+			else {
+				l[i][i] = 0;
+			}
+		}
+		return mul(u, mul(l, trans(u)));
+	}
+	
+	
 	
 	/**
 	 * Performs the eigen decomposition of a symmetric matrix:

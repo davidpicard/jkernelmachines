@@ -24,6 +24,7 @@ import java.util.Arrays;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.factory.DecompositionFactory;
 import org.ejml.factory.EigenDecomposition;
+import org.ejml.ops.CommonOps;
 
 import fr.lip6.jkernelmachines.util.algebra.ThreadedMatrixOperations;
 
@@ -55,5 +56,25 @@ public class EJMLMatrixOperations {
 			
 		}
 		return new double[][][]{ThreadedMatrixOperations.transi(U), lambda};
+	}
+	
+	/**
+	 * computes the inverse of a matrix
+	 * @param A input matrix
+	 * @return inverse of A
+	 */
+	public static double[][] inv(final double[][] A) {
+		int n = A.length;
+		DenseMatrix64F A_ejml = new DenseMatrix64F(A);
+		
+		if(!CommonOps.invert(A_ejml))
+			return null;
+		double[][] A_inv = new double[n][n];
+		for(int i = 0 ; i < n ; i++) {
+			for(int j = 0 ; j < n ; j++) {
+				A_inv[i][j] = A_ejml.get(i, j);
+			}
+		}
+		return A_inv;
 	}
 }
