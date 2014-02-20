@@ -19,6 +19,7 @@
 */
 package fr.lip6.jkernelmachines.density;
 
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -27,7 +28,7 @@ import java.util.List;
  * @author dpicard
  *
  */
-public interface DensityFunction<T> {
+public interface DensityFunction<T> extends Serializable {
 
 	/**
 	 * Adds a sample to the training set and train the density function
