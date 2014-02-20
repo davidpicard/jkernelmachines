@@ -32,6 +32,8 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
 import fr.lip6.jkernelmachines.util.generators.GaussianGenerator;
 
 /**
+ * Tast case for the DoubleGaussianMixtureModel class.
+ * 
  * @author picard
  *
  */
@@ -44,8 +46,8 @@ public class DoubleGaussianMixtureModelTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		GaussianGenerator gen = new GaussianGenerator(2, 2, 0.2);
-		List<TrainingSample<double[]>> list = gen.generateList(100, 100);
+		GaussianGenerator gen = new GaussianGenerator(8, 2, 0.1);
+		List<TrainingSample<double[]>> list = gen.generateList(1000, 1000);
 		train = new ArrayList<double[]>();
 		for(TrainingSample<double[]> t : list) {
 			train.add(t.sample);
@@ -58,7 +60,6 @@ public class DoubleGaussianMixtureModelTest {
 	@Test
 	public final void testTrainListOfdouble() {
 		DoubleGaussianMixtureModel gmm = new DoubleGaussianMixtureModel(2);
-		
 		gmm.train(train);
 		
 		for(double[] x : train) {
