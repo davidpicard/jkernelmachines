@@ -47,6 +47,8 @@ import fr.lip6.jkernelmachines.util.algebra.VectorOperations;
  */
 public class DoubleGaussianMixtureModel implements DensityFunction<double[]> {
 
+	private static final long serialVersionUID = -6989529384513214743L;
+
 	int k;
 	double[] w;
 	double[][] mu;
@@ -313,21 +315,21 @@ public class DoubleGaussianMixtureModel implements DensityFunction<double[]> {
 	}
 
 	/**
-	 * Gets the covariance matrices of each component of the mixture
+	 * Gets the inverse covariance matrices of each component of the mixture
 	 * 
-	 * @return an array of double[][] arrays, each being the covariance matrix
-	 *         of associated Gaussian
+	 * @return an array of double[][] arrays, each being the inverse covariance
+	 *         matrix of associated Gaussian
 	 */
 	public double[][][] getSigma() {
 		return sigma;
 	}
 
 	/**
-	 * Sets the covariance matrices of each component of the mixture
+	 * Sets the inverse covariance matrices of each component of the mixture
 	 * 
 	 * @param sigma
-	 *            an array of double[][], each being the covariance matrix of
-	 *            associated Gaussian
+	 *            an array of double[][], each being the inverse covariance
+	 *            matrix of associated Gaussian
 	 */
 	public void setSigma(double[][][] sigma) {
 		this.sigma = sigma;
