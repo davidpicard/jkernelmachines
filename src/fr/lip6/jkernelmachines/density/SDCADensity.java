@@ -47,7 +47,7 @@ public class SDCADensity<T> implements DensityFunction<T> {
 	public boolean CACHED_KERNEL = true;
 
 	double C = 1.0;
-	int E = 100;
+	int E = 500;
 
 	List<T> train;
 
@@ -99,7 +99,6 @@ public class SDCADensity<T> implements DensityFunction<T> {
 		l.toArray(samples);
 
 		alphas = new double[n];
-		C = 1. / n;
 
 		List<Integer> indices = new ArrayList<Integer>(n);
 		for (int i = 0; i < n; i++) {
@@ -136,8 +135,11 @@ public class SDCADensity<T> implements DensityFunction<T> {
 			kmii = kernel.valueOf(samples[i], samples[i]);
 		else
 			kmii = km[i][i];
-		double da = (1 - z) / kmii + alphas[i];
-		alphas[i] = max(0, min(C, da));
+		double suma = 0;
+		for(int d = 0 ; d < alphas.length ; d++)
+			suma += alphas[d];
+		double da = (1. - z) / kmii + alphas[i] - C/samples.length*(suma - 1);
+		alphas[i] = max(0, min(C/samples.length, da));
 
 	}
 
@@ -152,7 +154,7 @@ public class SDCADensity<T> implements DensityFunction<T> {
 		double sum = 0;
 		for (int i = 0; i < samples.length; i++)
 			sum += alphas[i] * kernel.valueOf(samples[i], e);
-		return sum;
+		return sum ;
 	}
 
 	public Kernel<T> getKernel() {

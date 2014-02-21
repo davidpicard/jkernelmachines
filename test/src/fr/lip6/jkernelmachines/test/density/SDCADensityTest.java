@@ -22,12 +22,14 @@ package fr.lip6.jkernelmachines.test.density;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import fr.lip6.jkernelmachines.density.SDCADensity;
+import fr.lip6.jkernelmachines.density.SMODensity;
 import fr.lip6.jkernelmachines.kernel.typed.DoubleGaussL2;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 import fr.lip6.jkernelmachines.util.generators.GaussianGenerator;
@@ -47,7 +49,7 @@ public class SDCADensityTest {
 	@Before
 	public void setUp() throws Exception {
 		GaussianGenerator gen = new GaussianGenerator(2, 2, 1.0);
-		List<TrainingSample<double[]>> list = gen.generateList(10, 20);
+		List<TrainingSample<double[]>> list = gen.generateList(100, 100);
 		train = new ArrayList<double[]>();
 		for (TrainingSample<double[]> t : list) {
 			train.add(t.sample);
@@ -78,10 +80,11 @@ public class SDCADensityTest {
 	@Test
 	public final void testTrainListOfT() {
 		DoubleGaussL2 k = new DoubleGaussL2();
+//		DoubleLinear k = new DoubleLinear();
 		SDCADensity<double[]> de = new SDCADensity<double[]>(k);
 		de.setC(1.);
-		de.train(train.subList(0, train.size() / 2));
-
+		de.train(train);
+		
 		for (double[] x : train) {
 			assertTrue(!Double.isNaN(de.valueOf(x)));
 		}
