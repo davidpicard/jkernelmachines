@@ -22,14 +22,12 @@ package fr.lip6.jkernelmachines.test.density;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import fr.lip6.jkernelmachines.density.SDCADensity;
-import fr.lip6.jkernelmachines.density.SMODensity;
 import fr.lip6.jkernelmachines.kernel.typed.DoubleGaussL2;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 import fr.lip6.jkernelmachines.util.generators.GaussianGenerator;
@@ -80,7 +78,6 @@ public class SDCADensityTest {
 	@Test
 	public final void testTrainListOfT() {
 		DoubleGaussL2 k = new DoubleGaussL2();
-//		DoubleLinear k = new DoubleLinear();
 		SDCADensity<double[]> de = new SDCADensity<double[]>(k);
 		de.setC(1.);
 		de.train(train);
