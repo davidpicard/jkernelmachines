@@ -798,4 +798,12 @@ public class SimpleMKL<T> implements Classifier<T> {
 		return svm;
 	}
 
+	public int getMaxIteration() {
+		return maxIteration;
+	}
+
+	public void setMaxIteration(int maxIteration) {
+		this.maxIteration = maxIteration;
+	}
+
 }
