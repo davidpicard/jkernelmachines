@@ -86,6 +86,18 @@ public class SimpleMKL<T> implements Classifier<T> {
 		}
 	}
 	
+	/**
+	 * Removes a kernel from the MKL problem
+	 * @param k the kernel to remove
+	 */
+	public void removeKernel(Kernel<T> k) {
+		if(kernels.contains(k)) {
+			int index = kernels.indexOf(k);
+			kernels.remove(index);
+			kernelWeights.remove(index);
+		}
+	}
+	
 	@Override
 	public void train(TrainingSample<T> t) {
 		List<TrainingSample<T>> l = new ArrayList<TrainingSample<T>>();
