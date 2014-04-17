@@ -52,13 +52,14 @@ import fr.lip6.jkernelmachines.util.DebugPrinter;
  *
  * @param <T> Datatype of training samples
  */
-public class SimpleMKL<T> implements Classifier<T> {
+public class SimpleMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T> {
 	
+	private List<TrainingSample<T>> list;
 	private ArrayList<Kernel<T>> kernels;
 	private ArrayList<Double> kernelWeights;
 	
 	private int maxIteration = 50;
-	private double C = 1.e5;
+	private double C = 1.e2;
 	private double numPrec = 1.e-12, epsKTT = 0.1, epsDG = 0.01, epsGS = 1.e-8, eps = 1.e-8;
 	private boolean checkDualGap = true, checkKTT = false;
 	
@@ -82,7 +83,7 @@ public class SimpleMKL<T> implements Classifier<T> {
 		if(!kernels.contains(k))
 		{
 			kernels.add(k);
-			kernelWeights.add(1.0);
+			kernelWeights.add(0.0);
 		}
 	}
 	
@@ -108,17 +109,39 @@ public class SimpleMKL<T> implements Classifier<T> {
 	@Override
 	public void train(List<TrainingSample<T>> l) {
 		
+		list = new ArrayList<TrainingSample<T>>(l.size());
+		list.addAll(l);
+		
+		retrain();
+		
+	}
+	
+	public void retrain() {
+		if(list == null) {
+			return;
+		}
+		
 		//caching matrices
 		ArrayList<SimpleCacheKernel<T>> km = new ArrayList<SimpleCacheKernel<T>>();
 		ArrayList<Double> dm = new ArrayList<Double>();
 		double dm0 = 1./kernels.size();
+		double sumWeights = 0;
+		for(double d : kernelWeights) {
+			sumWeights += d;
+		}
+		boolean init = (abs(sumWeights - 1) < numPrec)?false:true;
 		for(int i = 0 ; i < kernels.size(); i++)
 		{
 			Kernel<T> k = kernels.get(i);
-			SimpleCacheKernel<T> csk = new SimpleCacheKernel<T>(new ThreadedKernel<T>(k), l);
+			SimpleCacheKernel<T> csk = new SimpleCacheKernel<T>(new ThreadedKernel<T>(k), list);
 			csk.setName(k.toString());
 			km.add(csk);
-			dm.add(dm0);
+			if(init) {
+				dm.add(dm0);
+			}
+			else {
+				dm.add(kernelWeights.get(i));
+			}
 		}
 		
 		//------------------------------
@@ -126,9 +149,9 @@ public class SimpleMKL<T> implements Classifier<T> {
 		//------------------------------
 		//creating kernel
 		ThreadedSumKernel<T> tsk = buildKernel(km, dm);
-		retrainSVM(tsk, l);
-		double oldObj = svmObj(km, dm, l);
-		ArrayList<Double> grad = gradSVM(km, dm, l);
+		retrainSVM(tsk, list);
+		double oldObj = svmObj(km, dm, list);
+		ArrayList<Double> grad = gradSVM(km, dm, list);
 		debug.println(1, "iter \t | \t obj \t\t | \t dualgap \t | \t KKT");
 		debug.println(1, "init \t | \t "+format.format(oldObj)+" \t | \t "+Double.NaN+" \t\t | \t "+Double.NaN);
 		
@@ -143,7 +166,7 @@ public class SimpleMKL<T> implements Classifier<T> {
 			//------------------------------
 			//		UPDATE WEIGHTS
 			//------------------------------
-			double newObj = mklUpdate(grad, km, dm, l);
+			double newObj = mklUpdate(grad, km, dm, list);
 			
 			//------------------------------
 			//		numerical cleaning
@@ -168,7 +191,7 @@ public class SimpleMKL<T> implements Classifier<T> {
 			//------------------------------
 			//	approximate KTT condition
 			//------------------------------
-			grad = gradSVM(km, dm, l);
+			grad = gradSVM(km, dm, list);
 			debug.println(3, "loop : grad = "+grad);
 			
 			//searching min and max grad for non nul dm
@@ -264,7 +287,7 @@ public class SimpleMKL<T> implements Classifier<T> {
 		kernelWeights = dm;
 		//creating kernel
 		tsk = buildKernel(km, dm);
-		retrainSVM(tsk, l);
+		retrainSVM(tsk, list);
 		
 		//stop threads
 		ThreadPoolServer.shutdownNow();
@@ -713,15 +736,29 @@ public class SimpleMKL<T> implements Classifier<T> {
 	/**
 	 * Tells the weights of the samples
 	 * @return an array of double representing the weights
+	 * @deprecated
 	 */
 	public double[] getTrainingWeights() {
 		return svm.getAlphas();
 	}
 	
-	/**
-	 * Tells the weights of the kernels
-	 * @return an array of double representing the weights
-	 */
+	@Override
+	public void setKernel(Kernel<T> k) {
+		// does nothing
+	}
+
+	@Override
+	public double[] getAlphas() {
+		return svm.getAlphas();
+	}
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		// TODO Auto-generated method stub
+		return super.clone();
+	}
+
+	@Override
 	public double[] getKernelWeights()
 	{
 		double dm[] = new double[kernelWeights.size()];
@@ -733,8 +770,15 @@ public class SimpleMKL<T> implements Classifier<T> {
 	/**
 	 * associative table of kernels and their corresponding weights
 	 * @return a Map indexing pairs of <Kernel, Weight>
+	 * @deprecated
 	 */
 	public Map<Kernel<T>, Double> getWeights() {
+		return getKernelWeightMap();
+	}
+	
+	@Override
+	public Map<Kernel<T>, Double> getKernelWeightMap() {
+
 		Map<Kernel<T>, Double> hash = new HashMap<Kernel<T>, Double>();
 		for(int i = 0 ; i < kernels.size(); i++)
 		{
@@ -743,6 +787,12 @@ public class SimpleMKL<T> implements Classifier<T> {
 		return hash;
 	}
 	
+	@Override
+	public List<Kernel<T>> getKernels() {
+		return  kernels;
+	}
+
+
 	/**
 	 * Tells the values of hyperparameter C
 	 * @return C
@@ -792,14 +842,6 @@ public class SimpleMKL<T> implements Classifier<T> {
 	@Override
 	public SimpleMKL<T> copy() throws CloneNotSupportedException {
 		return (SimpleMKL<T>) super.clone();
-	}
-
-	/**
-	 * Returns the list of kernels
-	 * @return kernels
-	 */
-	public List<Kernel<T>> getKernels() {
-		return kernels;
 	}
 
 	/**
