@@ -20,7 +20,9 @@
 package fr.lip6.jkernelmachines.classifier;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import fr.lip6.jkernelmachines.kernel.Kernel;
 import fr.lip6.jkernelmachines.kernel.adaptative.ThreadedSumKernel;
@@ -41,7 +43,7 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
  * @author David Picard
  *
  */
-public class TSMKL<T> implements KernelSVM<T> {
+public class TSMKL<T> implements KernelSVM<T>, MKL<T> {
 	
 	
 	LaSVM<T> lasvm;
@@ -273,6 +275,19 @@ public class TSMKL<T> implements KernelSVM<T> {
 	 */
 	public List<Kernel<T>> getKernels() {
 		return kernels;
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.lip6.jkernelmachines.classifier.MKL#getKernelWeightMap()
+	 */
+	@Override
+	public Map<Kernel<T>, Double> getKernelWeightMap() {
+		Map<Kernel<T>, Double> hash = new HashMap<Kernel<T>, Double>();
+		for(int i = 0 ; i < kernels.size(); i++)
+		{
+			hash.put(kernels.get(i), beta[i]);
+		}
+		return hash;
 	}
 
 	
