@@ -16,7 +16,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 
-Copyright David Picard 2013
+Copyright David Picard 2014
 
 picard@ensea.fr
 
@@ -59,6 +59,6 @@ frequently asked questions are answered [here](https://github.com/davidpicard/jk
 Acknowledgement
 ---------------
 
-This work was mostly done while working at Lip6 - http://www.lip6.fr
+This work was started while working at Lip6 - http://www.lip6.fr
 
 
