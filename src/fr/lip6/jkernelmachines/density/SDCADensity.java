@@ -47,7 +47,7 @@ public class SDCADensity<T> implements DensityFunction<T> {
 	public boolean CACHED_KERNEL = true;
 
 	double C = 1.0;
-	int E = 500;
+	int E = 10;
 
 	List<T> train;
 
