@@ -22,6 +22,7 @@ package fr.lip6.jkernelmachines.evaluation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import fr.lip6.jkernelmachines.classifier.Classifier;
 import fr.lip6.jkernelmachines.type.TrainingSample;
@@ -42,6 +43,7 @@ public class RandomSplitCrossValidation<T> implements CrossValidation {
 	Classifier<T> classifier;
 	List<TrainingSample<T>> list;
 	Evaluator<T> evaluator;
+	long seed = 0;
 	
 	
 	double trainPercent = 0.7;
@@ -70,11 +72,11 @@ public class RandomSplitCrossValidation<T> implements CrossValidation {
 		results = new double[nbTest];
 		
 		int trainSize = (int) (trainPercent * list.size());
-		
+		Random ran = new Random(seed);
 		while(nb > 0){
 			
 			//random split
-			Collections.shuffle(list);
+			Collections.shuffle(list, ran);
 			List<TrainingSample<T>> trainList = list.subList(0, trainSize);
 			List<TrainingSample<T>> testList = list.subList(trainSize, list.size());
 			
@@ -189,6 +191,14 @@ public class RandomSplitCrossValidation<T> implements CrossValidation {
 	 */
 	public void setNbTest(int nbTest) {
 		this.nbTest = nbTest;
+	}
+
+	public long getSeed() {
+		return seed;
+	}
+
+	public void setSeed(long seed) {
+		this.seed = seed;
 	}
 
 }
