@@ -21,8 +21,10 @@ package fr.lip6.jkernelmachines.classifier;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import fr.lip6.jkernelmachines.kernel.Kernel;
 import fr.lip6.jkernelmachines.kernel.SimpleCacheKernel;
@@ -36,7 +38,7 @@ import fr.lip6.jkernelmachines.util.DebugPrinter;
  *
  * @param <T>
  */
-public class GradMKL<T> implements Classifier<T> {
+public class GradMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T> {
 
 	ArrayList<TrainingSample<T>> listOfExamples;
 	ArrayList<Double> listOfExampleWeights;
@@ -347,13 +349,14 @@ public class GradMKL<T> implements Classifier<T> {
 		return listOfExampleWeights;
 	}
 	
-	/**
-	 * Tells the weights on kernels
-	 * @return the list of kernel weights
-	 */
-	public ArrayList<Double> getKernelWeights()
+	@Override
+	public double[] getKernelWeights()
 	{
-		return listOfKernelWeights;
+		double[] w = new double[listOfKernelWeights.size()];
+		for(int d = 0 ; d < w.length ; d++) {
+			w[d] = listOfKernelWeights.get(d);
+		}
+		return w;
 	}
 	
 	/**
@@ -417,5 +420,34 @@ public class GradMKL<T> implements Classifier<T> {
 	 */
 	public KernelSVM<T> getClassifier() {
 		return svm;
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.lip6.jkernelmachines.classifier.MKL#getKernelWeightMap()
+	 */
+	@Override
+	public Map<Kernel<T>, Double> getKernelWeightMap() {
+		HashMap<Kernel<T>, Double> map = new HashMap<Kernel<T>, Double>();
+		for(int i = 0 ; i < listOfKernels.size() ; i++) {
+			map.put(listOfKernels.get(i), listOfKernelWeights.get(i));
+		}
+		return map;
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.lip6.jkernelmachines.classifier.KernelSVM#setKernel(fr.lip6.jkernelmachines.kernel.Kernel)
+	 */
+	@Override
+	public void setKernel(Kernel<T> k) {
+		// does nothing
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.lip6.jkernelmachines.classifier.KernelSVM#getAlphas()
+	 */
+	@Override
+	public double[] getAlphas() {
+		return svm.getAlphas();
 	}
 }
