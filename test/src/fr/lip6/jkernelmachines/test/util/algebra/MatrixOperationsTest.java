@@ -377,6 +377,9 @@ public class MatrixOperationsTest {
 				X[i][j] = Math.random() * 2 - 1.0;
 
 		double[][] G = MatrixOperations.transMul(X, X);
+		for(int i = 0 ; i < n ; i++) {
+			G[i][i] += 1.0;
+		}
 		// A*(invA) = I
 		double[][] Ginv = MatrixOperations.inv(G);
 
