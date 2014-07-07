@@ -99,10 +99,41 @@ public final class LaSVM<T> implements KernelSVM<T> {
 	/* (non-Javadoc)
 	 * @see fr.lip6.classifier.Classifier#train(java.util.List)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void train(List<TrainingSample<T>> l) {
 		tlist = new ArrayList<TrainingSample<T>>();
 		tlist.addAll(l);
+		
+		if(tlist.isEmpty()) {
+			return;
+		}
+		
+		// handle single label
+		int yref = tlist.get(0).label;
+		boolean single = true;
+		for(TrainingSample<T> t  : tlist) {
+			if(t.label != yref) {
+				single = false;
+			}
+		}
+		if(single) {
+			// default to parzen
+			tarray = (T[]) new Object[tlist.size()];
+			for(int i = 0 ; i < tarray.length ; i++)
+				tarray[i] = tlist.get(i).sample;
+			
+			alphas = new double[tlist.size()];
+			Arrays.fill(alphas, yref*C);
+			
+			S = new boolean[tlist.size()];
+			Arrays.fill(S, true);
+			
+			y = new int[tlist.size()];
+			Arrays.fill(y, yref);
+					
+			return;
+		}
 
 		//init S and gs
 		init();
