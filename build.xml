@@ -24,7 +24,7 @@
 
      <target name="compile" depends="init"> 
           <!-- Compile the java code -->
-          <javac srcdir="${src}" destdir="${build}" includeantruntime="false"> 
+          <javac srcdir="${src}" destdir="${build}" includeantruntime="false" fork="yes" compiler="javac1.7" target="1.7" > 
 			   <classpath>
 				   <pathelement location="${ejml.dir}/ejml.jar" />
 			   </classpath>
