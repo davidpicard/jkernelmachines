@@ -68,11 +68,13 @@ public class AccuracyEvaluator<T> implements Evaluator<T> {
 	 */
 	@Override
 	public void evaluate() {
-		if(trainList != null && testList != null) {
+		if(trainList != null) {
 			long time = System.currentTimeMillis();
 			classifier.train(trainList);
 			debug.println(2, "trained in "+(System.currentTimeMillis()-time)+"ms.");
-			time = System.currentTimeMillis();
+		}
+		if(testList != null) {
+			long time = System.currentTimeMillis();
 			double good = 0;
 			for(TrainingSample<T> t : testList) {
 				double v = classifier.valueOf(t.sample);
