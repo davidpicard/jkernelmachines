@@ -23,7 +23,7 @@ import java.util.Arrays;
 
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.factory.DecompositionFactory;
-import org.ejml.factory.EigenDecomposition;
+import org.ejml.interfaces.decomposition.EigenDecomposition;
 import org.ejml.ops.CommonOps;
 
 import fr.lip6.jkernelmachines.util.algebra.ThreadedMatrixOperations;
