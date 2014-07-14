@@ -516,6 +516,11 @@ public class DoubleQNPKL implements KernelSVM<double[]>, Serializable {
         public void setKernel(Kernel<double[]> k) {
             // nothing
         }
+
+        @Override
+        public Kernel<double[]> getKernel() {
+            return svm.getKernel();
+        }
 	
 	
 	class GradMAtrixOperator extends ThreadedMatrixOperator {

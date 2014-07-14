@@ -450,4 +450,9 @@ public class GradMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T> {
 	public double[] getAlphas() {
 		return svm.getAlphas();
 	}
+
+        @Override
+        public Kernel<T> getKernel() {
+            return svm.getKernel();
+        }
 }

@@ -28,6 +28,12 @@ import fr.lip6.jkernelmachines.kernel.Kernel;
  *
  */
 public interface KernelSVM<T> extends Classifier<T> {
+    
+        /**
+         * Tells the current Kernel.
+         * @return the current kernel
+         */
+        public Kernel<T> getKernel();
 	
 	/**
 	 * Sets the kernel to use as similarity measure

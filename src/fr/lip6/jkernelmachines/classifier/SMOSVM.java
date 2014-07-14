@@ -610,11 +610,9 @@ public class SMOSVM<T> implements KernelSVM<T>, Serializable, Cloneable {
 		return (SMOSVM<T>) super.clone();
 	}
 
-	/**
-	 * Returns the kernel used by this SVM
-	 * @return the kernel
-	 */
-	public Object getKernel() {
-		return kernel;
-	}
+
+        @Override
+        public Kernel<T> getKernel() {
+            return kernel;
+        }
 }

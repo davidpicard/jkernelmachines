@@ -237,4 +237,9 @@ public class SDCA<T> implements KernelSVM<T> {
 
 		return obj / (double) n;
 	}
+
+        @Override
+        public Kernel<T> getKernel() {
+            return kernel;
+        }
 }

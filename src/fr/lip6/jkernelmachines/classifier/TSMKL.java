@@ -290,5 +290,10 @@ public class TSMKL<T> implements KernelSVM<T>, MKL<T> {
 		return hash;
 	}
 
+        @Override
+        public Kernel<T> getKernel() {
+            return lasvm.getKernel();
+        }
+
 	
 }

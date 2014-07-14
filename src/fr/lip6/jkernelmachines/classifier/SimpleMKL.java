@@ -868,4 +868,9 @@ public class SimpleMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T> {
 		this.maxIteration = maxIteration;
 	}
 
+        @Override
+        public Kernel<T> getKernel() {
+            return svm.getKernel();
+        }
+
 }
