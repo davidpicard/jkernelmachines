@@ -85,8 +85,10 @@ public class ApEvaluator<T> implements Serializable, Evaluator<T>
 	public void evaluate()
 	{
 		long time = System.currentTimeMillis();
-		train();
-		debug.println(2, "training done in "+(System.currentTimeMillis()-time)+" ms");
+                if(train != null) {
+                    train();
+                    debug.println(2, "training done in "+(System.currentTimeMillis()-time)+" ms");
+                }
 		time = System.currentTimeMillis();
 		esResults = evaluateSet(test);
 		debug.println(2, "testingset done in "+(System.currentTimeMillis()-time));

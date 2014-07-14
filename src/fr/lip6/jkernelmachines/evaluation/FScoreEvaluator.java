@@ -66,7 +66,9 @@ public class FScoreEvaluator<T> implements Evaluator<T> {
 	 */
 	@Override
 	public void evaluate() {
+            if(trainList != null) {
 		cls.train(trainList);
+            }
 	}
 
 	/* (non-Javadoc)
