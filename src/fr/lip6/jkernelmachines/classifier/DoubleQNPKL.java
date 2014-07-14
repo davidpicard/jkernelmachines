@@ -19,6 +19,14 @@
 */
 package fr.lip6.jkernelmachines.classifier;
 
+import fr.lip6.jkernelmachines.kernel.Kernel;
+import fr.lip6.jkernelmachines.kernel.typed.DoubleLinear;
+import fr.lip6.jkernelmachines.kernel.typed.GeneralizedDoubleGaussL2;
+import fr.lip6.jkernelmachines.threading.ThreadPoolServer;
+import fr.lip6.jkernelmachines.threading.ThreadedMatrixOperator;
+import fr.lip6.jkernelmachines.type.TrainingSample;
+import fr.lip6.jkernelmachines.util.DebugPrinter;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,13 +38,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
-import fr.lip6.jkernelmachines.kernel.typed.DoubleLinear;
-import fr.lip6.jkernelmachines.kernel.typed.GeneralizedDoubleGaussL2;
-import fr.lip6.jkernelmachines.threading.ThreadPoolServer;
-import fr.lip6.jkernelmachines.threading.ThreadedMatrixOperator;
-import fr.lip6.jkernelmachines.type.TrainingSample;
-import fr.lip6.jkernelmachines.util.DebugPrinter;
 
 /**
  * <p>
@@ -52,14 +53,14 @@ import fr.lip6.jkernelmachines.util.DebugPrinter;
  * @author dpicard
  *
  */
-public class DoubleQNPKL implements Classifier<double[]> {
+public class DoubleQNPKL implements KernelSVM<double[]>, Serializable {
 
 	List<TrainingSample<double[]>> listOfExamples;
 	List<Double> listOfExampleWeights;
 	List<Double> listOfKernelWeights;
 	int dim = 0;
 	
-	DebugPrinter debug = new DebugPrinter();
+	transient DebugPrinter debug = new DebugPrinter();
 
 	
 	LaSVM<double[]> svm;
@@ -435,7 +436,7 @@ public class DoubleQNPKL implements Classifier<double[]> {
 	{
 		LaSVM<double[]> svm = new LaSVM<double[]>(kernel);
 		svm.setC(C);
-		svm.setE(2);
+		svm.setE(10);
 		debug.println(3, "+ training svm");
 		svm.train(listOfExamples);
 		return svm;
@@ -505,6 +506,16 @@ public class DoubleQNPKL implements Classifier<double[]> {
 			w[x] = listOfKernelWeights.get(x);
 		return w;
 	}
+
+        @Override
+        public double[] getAlphas() {
+            return svm.getAlphas();
+        }
+
+        @Override
+        public void setKernel(Kernel<double[]> k) {
+            // nothing
+        }
 	
 	
 	class GradMAtrixOperator extends ThreadedMatrixOperator {
