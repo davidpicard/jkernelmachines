@@ -19,14 +19,14 @@
  */
 package fr.lip6.jkernelmachines.classifier;
 
+import fr.lip6.jkernelmachines.type.TrainingSample;
+import fr.lip6.jkernelmachines.util.DebugPrinter;
+import fr.lip6.jkernelmachines.util.algebra.VectorOperations;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import fr.lip6.jkernelmachines.type.TrainingSample;
-import fr.lip6.jkernelmachines.util.DebugPrinter;
-import fr.lip6.jkernelmachines.util.algebra.VectorOperations;
 
 /**
  * Linear SVM using the SAG algorithm:<br/>
@@ -38,7 +38,7 @@ import fr.lip6.jkernelmachines.util.algebra.VectorOperations;
  * @author picard
  * 
  */
-public class DoubleSAG implements Classifier<double[]> {
+public class DoubleSAG implements Classifier<double[]>, Serializable {
 
 	// Available losses
 	/** Type of loss function using hinge */
@@ -62,7 +62,7 @@ public class DoubleSAG implements Classifier<double[]> {
 	double lambda = 1e-4;
 	long E = 4;
 
-	DebugPrinter debug = new DebugPrinter();
+	transient DebugPrinter debug = new DebugPrinter();
 
 	// tmp variables
 	private double alpha;

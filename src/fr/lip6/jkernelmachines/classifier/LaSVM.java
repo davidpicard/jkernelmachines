@@ -22,16 +22,16 @@
  */
 package fr.lip6.jkernelmachines.classifier;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
 import fr.lip6.jkernelmachines.kernel.Kernel;
 import fr.lip6.jkernelmachines.threading.ThreadPoolServer;
 import fr.lip6.jkernelmachines.threading.ThreadedMatrixOperator;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 import fr.lip6.jkernelmachines.util.DebugPrinter;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * <p>
@@ -45,7 +45,7 @@ import fr.lip6.jkernelmachines.util.DebugPrinter;
  * @author picard
  *
  */
-public final class LaSVM<T> implements KernelSVM<T> {
+public final class LaSVM<T> implements KernelSVM<T>, Serializable {
 
 	private Kernel<T> kernel;
 	
@@ -72,7 +72,7 @@ public final class LaSVM<T> implements KernelSVM<T> {
 	
 	private static final int initSampling = 5;
 	
-	DebugPrinter debug = new DebugPrinter();
+	transient DebugPrinter debug = new DebugPrinter();
 	
 	/**
 	 * Constructor with specific kernel

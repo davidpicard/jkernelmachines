@@ -19,24 +19,23 @@
 */
 package fr.lip6.jkernelmachines.projection;
 
+import fr.lip6.jkernelmachines.threading.ThreadedMatrixOperator;
+import fr.lip6.jkernelmachines.type.TrainingSample;
 import static fr.lip6.jkernelmachines.util.algebra.MatrixOperations.eig;
 import static fr.lip6.jkernelmachines.util.algebra.MatrixOperations.transi;
 import static fr.lip6.jkernelmachines.util.algebra.VectorOperations.add;
 import static fr.lip6.jkernelmachines.util.algebra.VectorOperations.dot;
 import static fr.lip6.jkernelmachines.util.algebra.VectorOperations.mul;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import fr.lip6.jkernelmachines.threading.ThreadedMatrixOperator;
-import fr.lip6.jkernelmachines.type.TrainingSample;
 
 /**
  * Principal component analysis on double arrays.
  * @author picard
  *
  */
-public class DoublePCA {
+public class DoublePCA implements Serializable {
 	
 	double[][] projectors;
 	double[] whitening_coeff;
