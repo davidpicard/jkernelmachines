@@ -47,6 +47,8 @@ import java.util.List;
  */
 public final class LaSVM<T> implements KernelSVM<T>, Serializable {
 
+	private static final long serialVersionUID = -831288193185967121L;
+
 	private Kernel<T> kernel;
 	
 	private List<TrainingSample<T>> tlist; //training set
@@ -89,10 +91,43 @@ public final class LaSVM<T> implements KernelSVM<T>, Serializable {
 	 */
 	@Override
 	public void train(TrainingSample<T> t) {
-		if(tlist == null)
+		if(tlist == null) {
 			tlist = new ArrayList<TrainingSample<T>>();
-		tlist.add(t);
-		
+			tlist.add(t);
+			init();
+		}
+		else {
+			tlist.add(t);
+			//compute kernel
+			kmatrix = kernel.getKernelMatrix(tlist);
+			
+			
+			int idx = tlist.size()-1;
+			// update variables
+			S = Arrays.copyOf(S, tlist.size());
+			S[idx] = true;
+			alphas = Arrays.copyOf(alphas, tlist.size());
+			y = Arrays.copyOf(y, tlist.size());
+			y[idx] = t.label;
+			
+			g = Arrays.copyOf(g, tlist.size());
+			g[idx] =  y[idx];
+			for(int s = 0 ; s < alphas.length ; s++)
+				g[idx] -= alphas[s] * kmatrix[idx][s];
+			kmaxmin = Arrays.copyOf(kmaxmin, tlist.size());
+			
+			imin = -1;
+			imax = -1;
+			minmaxFlag = false;
+			
+			//set minmax
+			Cmin = Arrays.copyOf(Cmin, tlist.size());
+			Cmax = Arrays.copyOf(Cmax, tlist.size());
+			Cmin[y.length-1] = Math.min(C*y[y.length-1] , 0);
+			Cmax[y.length-1] = Math.max(C*y[y.length-1], 0);
+			
+			
+		}
 		train();
 	}
 
@@ -432,6 +467,9 @@ public final class LaSVM<T> implements KernelSVM<T>, Serializable {
 	 */
 	@Override
 	public final double valueOf(T e) {
+		if(S == null) {
+			return 0;
+		}
 		double r = b;
 		//cache kernel
 		double[] kline = new double[S.length];

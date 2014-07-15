@@ -55,6 +55,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class DoubleQNPKL implements KernelSVM<double[]>, Serializable {
 
+	private static final long serialVersionUID = -5475712590325368437L;
 	List<TrainingSample<double[]>> listOfExamples;
 	List<Double> listOfExampleWeights;
 	List<Double> listOfKernelWeights;

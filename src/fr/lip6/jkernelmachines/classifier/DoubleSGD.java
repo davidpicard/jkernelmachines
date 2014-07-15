@@ -72,8 +72,7 @@ public class DoubleSGD implements Classifier<double[]> {
 	
 	@Override
 	public void train(TrainingSample<double[]> t) {
-		// TODO Auto-generated method stub
-
+		throw new UnsupportedOperationException("Not applicable");
 	}
 
 	@Override

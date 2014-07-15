@@ -64,8 +64,9 @@ public class TSMKL<T> implements KernelSVM<T>, MKL<T> {
 	 */
 	@Override
 	public void train(TrainingSample<T> t) {
-		if(tlist == null)
+		if(tlist == null) {
 			tlist = new ArrayList<TrainingSample<T>>();
+		}
 		tlist.add(t);
 		
 		train(tlist);

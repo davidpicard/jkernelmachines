@@ -80,7 +80,7 @@ public class SimpleMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T> {
 	 */
 	public void addKernel(Kernel<T> k)
 	{
-		if(!kernels.contains(k))
+		if(k!= null && !kernels.contains(k))
 		{
 			kernels.add(k);
 			kernelWeights.add(0.0);
@@ -101,9 +101,11 @@ public class SimpleMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T> {
 	
 	@Override
 	public void train(TrainingSample<T> t) {
-		List<TrainingSample<T>> l = new ArrayList<TrainingSample<T>>();
-		l.add(t);
-		train(l);		
+		if(list == null) {
+			list = new ArrayList<TrainingSample<T>>();
+		}
+		list.add(t);
+		train(list);		
 	}
 
 	@Override
@@ -328,6 +330,7 @@ public class SimpleMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T> {
 			public void doLines(double[][] matrix, int from , int to) {
 				for(int index = from ; index < to ; index++)
 				{
+					resLine[index] = 0;
 					if(abs(alp[index]) > 0)
 					{
 						double al1 = abs(alp[index]) * l.get(index).label;
@@ -730,6 +733,9 @@ public class SimpleMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T> {
 
 	@Override
 	public double valueOf(T e) {
+		if(svm == null) {
+			return 0;
+		}
 		return svm.valueOf(e);
 	}
 

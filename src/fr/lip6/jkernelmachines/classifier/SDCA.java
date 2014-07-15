@@ -77,6 +77,9 @@ public class SDCA<T> implements KernelSVM<T> {
 	 */
 	@Override
 	public void train(TrainingSample<T> t) {
+		if(train == null) {
+			train = new ArrayList<TrainingSample<T>>();
+		}
 		train.add(t);
 		train(train);
 	}

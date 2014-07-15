@@ -60,7 +60,6 @@ public class GradMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T> {
 	{
 		listOfKernels = new ArrayList<Kernel<T>>();
 		listOfKernelWeights = new ArrayList<Double>();
-		listOfExamples = new ArrayList<TrainingSample<T>>();
 		listOfExampleWeights = new ArrayList<Double>();
 	}
 	
@@ -72,8 +71,11 @@ public class GradMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T> {
 	
 	@Override
 	public void train(TrainingSample<T> t) {
-		// TODO Auto-generated method stub
-		System.err.println("Not implemented !!!");
+		if(listOfExamples == null) {
+			listOfExamples = new ArrayList<TrainingSample<T>>();
+		}
+		listOfExamples.add(t);
+		train(listOfExamples);
 	}
 
 	@Override
@@ -174,7 +176,8 @@ public class GradMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T> {
 		svm.setKernel(tsk);
 		svm.train(l);
 		
-		//5. save examples wxaeights
+		//5. save examples weights
+		listOfExamples = new ArrayList<TrainingSample<T>>();
 		listOfExamples.addAll(l);
 		listOfExampleWeights.clear();
 		for(double d : svm.getAlphas())

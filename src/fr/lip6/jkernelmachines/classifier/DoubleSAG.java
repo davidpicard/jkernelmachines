@@ -40,6 +40,7 @@ import java.util.List;
  */
 public class DoubleSAG implements Classifier<double[]>, Serializable {
 
+	private static final long serialVersionUID = -3497156096402090039L;
 	// Available losses
 	/** Type of loss function using hinge */
 	public static final int HINGELOSS = 1;

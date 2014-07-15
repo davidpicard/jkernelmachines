@@ -60,8 +60,10 @@ public class NystromLSSVM<T> implements Classifier<T> {
 	 */
 	@Override
 	public void train(TrainingSample<T> t) {
-		if (list == null)
+		if (list == null) {
 			list = new ArrayList<TrainingSample<T>>();
+		}
+		list.add(t);
 		train(list);
 	}
 
