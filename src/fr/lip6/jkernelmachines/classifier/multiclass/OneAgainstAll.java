@@ -163,6 +163,44 @@ public class OneAgainstAll<T> implements MulticlassClassifier<T> {
 		// return class corresponding to this output
 		return classIndices.get(imax);
 	}
+	
+
+	/* (non-Javadoc)
+	 * @see fr.lip6.jkernelmachines.classifier.multiclass.MulticlassClassifier#getConfidence(java.lang.Object)
+	 */
+	@Override
+	public double getConfidence(T e) {
+		if (listOfClassifiers == null || listOfClassifiers.isEmpty())
+			return 0;
+
+		// find max output
+		double max = -Double.MAX_VALUE;
+		for (int i = 0; i < listOfClassifiers.size(); i++) {
+			double v = listOfClassifiers.get(i).valueOf(e);
+			if (v > max) {
+				max = v;
+			}
+		}
+		
+		return max;
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.lip6.jkernelmachines.classifier.multiclass.MulticlassClassifier#getConfidences(java.lang.Object)
+	 */
+	@Override
+	public double[] getConfidences(T e) {
+		double[] v = new double[listOfClassifiers.size()];
+		for(int i = 0 ; i < v.length ; i++) {
+			v[i] = listOfClassifiers.get(i).valueOf(e);
+		}
+		
+		double[] ret = new double[v.length];
+		for(int i = 0 ; i < v.length ; i++) {
+			ret[classIndices.get(i)] = v[i];
+		}
+		return ret;
+	}
 
 	/**
 	 * Returns the list of one against all classifiers used
@@ -197,5 +235,6 @@ public class OneAgainstAll<T> implements MulticlassClassifier<T> {
 	public OneAgainstAll<T> copy() throws CloneNotSupportedException {
 		return (OneAgainstAll<T>) super.clone();
 	}
+
 
 }

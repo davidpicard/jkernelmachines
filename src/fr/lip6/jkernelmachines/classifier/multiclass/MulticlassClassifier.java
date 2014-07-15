@@ -28,5 +28,19 @@ import fr.lip6.jkernelmachines.classifier.Classifier;
  *
  */
 public interface MulticlassClassifier<T> extends Classifier<T> {
+	
+	/**
+	 * Tells the confidence associated with the predicted class
+	 * @param t the sample to evaluate
+	 * @return the confidence
+	 */
+	public double getConfidence(T t);
+	
+	/**
+	 * Tells the confidences for all classes
+	 * @param t the sample to evaluate
+	 * @return the vector of confidences for all classes
+	 */
+	public double[] getConfidences(T t);
 
 }
