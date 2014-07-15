@@ -78,6 +78,7 @@ public class OneAgainstAll<T> implements MulticlassClassifier<T> {
 			tlist = new ArrayList<TrainingSample<T>>();
 
 		tlist.add(t);
+		train();
 	}
 
 	/*
