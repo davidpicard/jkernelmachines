@@ -82,17 +82,10 @@ public class MulticlassAccuracyEvaluator<T> implements Evaluator<T> {
 	 */
 	@Override
 	public void evaluate() {
-		if (classifier == null || trainList == null || testList == null) {
-			accuracy = -1;
-			return;
-		}
-		if (trainList.isEmpty() || testList.isEmpty()) {
-			accuracy = -1;
-			return;
-		}
-
 		// train
-		classifier.train(trainList);
+		if(classifier != null && trainList != null) {
+			classifier.train(trainList);
+		}
 
 		double top = 0;
 		for (TrainingSample<T> t : testList) {
