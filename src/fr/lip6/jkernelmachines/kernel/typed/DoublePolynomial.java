@@ -30,7 +30,8 @@ import static java.lang.Math.pow;
  */
 public class DoublePolynomial extends Kernel<double[]> {
 
-    private int d = 2;
+	private static final long serialVersionUID = -466396178441616817L;
+	private int d = 2;
     
     /**
      * Default constructor, d = 2
@@ -49,12 +50,12 @@ public class DoublePolynomial extends Kernel<double[]> {
     
     @Override
     public double valueOf(double[] t1, double[] t2) {
-        return pow(VectorOperations.dot(t1, t2)+1, d);
+        return pow(0.5*VectorOperations.dot(t1, t2)+0.5, d);
     }
 
     @Override
     public double valueOf(double[] t1) {
-        return pow(VectorOperations.dot(t1, t1)+1, d);
+        return pow(0.5*VectorOperations.dot(t1, t1)+0.5, d);
     }
     
 }

@@ -30,7 +30,8 @@ import static java.lang.Math.pow;
  */
 public class DoubleHPolynomial extends Kernel<double[]> {
 
-    private int d = 2;
+	private static final long serialVersionUID = 2961358288571394251L;
+	private int d = 2;
     
     /**
      * Default constructor, d = 2
