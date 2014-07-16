@@ -29,6 +29,7 @@ import fr.lip6.jkernelmachines.classifier.SDCA;
 import fr.lip6.jkernelmachines.classifier.SMOSVM;
 import fr.lip6.jkernelmachines.evaluation.AccuracyEvaluator;
 import fr.lip6.jkernelmachines.evaluation.RandomSplitCrossValidation;
+import fr.lip6.jkernelmachines.io.ArffImporter;
 import fr.lip6.jkernelmachines.io.LibSVMImporter;
 import fr.lip6.jkernelmachines.kernel.Kernel;
 import fr.lip6.jkernelmachines.kernel.typed.DoubleGaussL2;
@@ -155,7 +156,12 @@ public class CrossValidationExample {
 		// read data
 		List<TrainingSample<double[]>> list = null;
 		try {
-			list = LibSVMImporter.importFromFile(file);
+			if(file.endsWith(".arff")) {
+				list = ArffImporter.importFromFile(file);
+			}
+			else {
+				list = LibSVMImporter.importFromFile(file);
+			}
 		} catch (Exception e) {
 			System.out.println("Wrong data file");
 			printHelp();
