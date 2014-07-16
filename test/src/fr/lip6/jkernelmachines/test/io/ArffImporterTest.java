@@ -14,21 +14,42 @@
     You should have received a copy of the GNU General Public License
     along with JkernelMachines.  If not, see <http://www.gnu.org/licenses/>.
 
-    Copyright David Picard - 2013
+    Copyright David Picard - 2014
 
 */
 package fr.lip6.jkernelmachines.test.io;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import java.io.IOException;
+import java.util.List;
+
+import org.junit.Test;
+
+import fr.lip6.jkernelmachines.io.ArffImporter;
+import fr.lip6.jkernelmachines.type.TrainingSample;
 
 /**
  * @author picard
  *
  */
-@RunWith(Suite.class)
-@SuiteClasses({ LibSvmImporterTest.class, FvecImporterTest.class, ArffImporterTest.class })
-public class ImporterTests {
+public class ArffImporterTest {
+
+	/**
+	 * Test method for {@link fr.lip6.jkernelmachines.io.ArffImporter#importFromFile(java.lang.String)}.
+	 */
+	@Test
+	public final void testImportFromFile() {
+		try {
+			List<TrainingSample<double[]>> l = ArffImporter.importFromFile("resources/ionosphere.arff");
+			assertEquals(351, l.size());
+			assertEquals(34, l.get(0).sample.length);
+			
+		} catch (IOException e) {
+			fail("Exception thrown: "+e.getMessage());
+		}
+		
+	}
 
 }
