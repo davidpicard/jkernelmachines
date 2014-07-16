@@ -61,7 +61,7 @@ public class SimpleMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T> {
 	private int maxIteration = 50;
 	private double C = 1.e2;
 	private double numPrec = 1.e-12, epsKTT = 0.1, epsDG = 0.01, epsGS = 1.e-8, eps = 1.e-8;
-	private boolean checkDualGap = true, checkKTT = false;
+	private boolean checkDualGap = true, checkKKT = true;
 	
 	private KernelSVM<T> svm;
 	
@@ -229,20 +229,22 @@ public class SimpleMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T> {
 			//		Duality gap
 			//-------------------------------
 			
-			//searching -grad max
-			double max = -Double.MAX_VALUE;
-			for(int i = 0 ; i < dm.size(); i++)
-			{
-				double g = -grad.get(i);
-				if(g > max)
-					max = g;
-			}
+			// computing hinge losses
+			double err = 0;
+			for(int i = 0 ; i < list.size() ; i++) {
+				TrainingSample<T> t = list.get(i);
+				err += C* Math.max(0, 1-t.label*svm.valueOf(t.sample));
+			}			
 			//computing sum alpha
 			sum = 0.;
 			double alp[] = svm.getAlphas();
 			for(int i = 0 ; i < alp.length; i++)
 				sum += abs(alp[i]);
-			double dualGap = (newObj + max - sum)/newObj;
+
+			double Dobj = newObj - err;
+			Dobj = sum-Dobj;
+			
+			double dualGap = (newObj - Dobj)/(newObj);
 			
 			
 			
@@ -260,15 +262,15 @@ public class SimpleMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T> {
 			//------------------------------
 			boolean stop = false;
 			//ktt
-			if(kttConstraint < epsKTT && kttZero && checkKTT)
+			if(kttConstraint < epsKTT && kttZero && checkKKT)
 			{
 				debug.println(1, "KTT conditions met, possible stoping");
 				stop = true;
 			}
 			//dualgap
-			if(dualGap < epsDG && checkDualGap)
+			if((stop || !checkKKT) && dualGap < epsDG && checkDualGap)
 			{
-				debug.println(1, "DualGap reached, possible stoping");
+				debug.println(1, "DualGap reached, stoping");
 				stop = true;
 			}
 			//stagnant gradient
@@ -350,11 +352,12 @@ public class SimpleMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T> {
 			obj1 += d;
 		
 		double obj2 = 0;
-		for(int i = 0; i < l.size(); i++) {
-			obj2 += abs(alp[i]);
+		for(int i = 0 ; i < l.size() ; i++) {
+			TrainingSample<T> t = l.get(i);
+			obj2 += C* Math.max(0, 1-t.label*svm.valueOf(t.sample));
 		}
 		
-		double obj = -0.5 * obj1 + obj2;
+		double obj = 0.5*obj1 + obj2;
 		
 		debug.print(3, "]");
 		
@@ -401,6 +404,7 @@ public class SimpleMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T> {
 				public void doLines(double[][] matrix , int from , int to) {
 					for(int index = from ; index < to ; index++)
 					{
+						resLine[index] = 0;
 						if(alp[index] > 0)
 						{
 							double al1 = -0.5 * alp[index] * l.get(index).label;
