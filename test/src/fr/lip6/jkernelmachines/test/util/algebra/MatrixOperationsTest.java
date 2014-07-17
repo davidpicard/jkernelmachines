@@ -95,6 +95,23 @@ public class MatrixOperationsTest {
 
 	/**
 	 * Test method for
+	 * {@link fr.lip6.jkernelmachines.util.algebra.MatrixOperations#transi(double[][], double[][])}
+	 * .
+	 */
+	@Test
+	public final void testTransi2() {
+		double[][] A = { { 1, 2 }, { 3, 4 } };
+		double[][] C = { { 0, 0 }, { 0, 0 } };
+
+		MatrixOperations.transi(C, A);
+		assertEquals(1, C[0][0], 1e-15);
+		assertEquals(3, C[0][1], 1e-15);
+		assertEquals(2, C[1][0], 1e-15);
+		assertEquals(4, C[1][1], 1e-15);
+	}
+
+	/**
+	 * Test method for
 	 * {@link fr.lip6.jkernelmachines.util.algebra.MatrixOperations#mul(double[][], double[][])}
 	 * .
 	 */

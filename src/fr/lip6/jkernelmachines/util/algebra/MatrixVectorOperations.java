@@ -48,6 +48,29 @@ public class MatrixVectorOperations {
 	}
 	
 	/**
+	 * Performs a matrix*vector multiplication in place
+	 * @param A input matrix of size m*n
+	 * @param x input vector of dimension n
+	 * @return A*x of dimension n
+	 */
+	public static double[] rMuli(double[] C, final double[][] A, final double[] x) {
+		int n = x.length;
+		int m = A.length;
+		if(A[0].length != n) {
+			throw new ArithmeticException("Matrix Dimension must agree : "+A[0].length+", "+n);
+		}
+		if(C.length != m) {
+			throw new ArithmeticException("Matrix Dimension must agree : "+C.length+", "+m);
+		}
+		
+		for(int i = 0 ; i < m ; i++) {
+			C[i] = VectorOperations.dot(A[i], x);
+		}
+		
+		return C;
+	}
+	
+	/**
 	 * Adds the tensor product of a vector to a matrix (usefull for covariance matrices)
 	 * @param C output matrix, C = C +x*x'
 	 * @param x input vector

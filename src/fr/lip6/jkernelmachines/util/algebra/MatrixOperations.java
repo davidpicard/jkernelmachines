@@ -152,6 +152,26 @@ public class MatrixOperations {
 	}
 	
 	/**
+	 * Computes the transposed matrix of a matrix in place
+	 * @param C the output matrix
+	 * @param A the input matrix
+	 * @return a newly allocated matrix containing the transpose of A
+	 */
+	public static double[][] transi(double[][] C, final double[][] A) {
+		if(C.length != A[0].length || C[0].length != A.length) {
+			throw new ArithmeticException("Matrix dimension must agree: "+A.length+"x"+A[0].length+" != "+C[0].length+"x"+C.length);
+		}
+		
+		for(int j = 0 ; j < A.length; j++) {
+			for(int i = 0 ; i < A[0].length ; i++) {
+				C[i][j] = A[j][i];
+			}
+		}
+		
+		return C;
+	}
+	
+	/**
 	 * Performs the matrix multiplication between two double matrices
 	 * C = A * B
 	 * @param A first matrix
