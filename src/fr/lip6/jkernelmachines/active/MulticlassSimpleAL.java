@@ -23,6 +23,7 @@ import static java.lang.Math.abs;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import fr.lip6.jkernelmachines.classifier.Classifier;
 import fr.lip6.jkernelmachines.classifier.multiclass.MulticlassClassifier;
@@ -41,10 +42,24 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
  */
 public class MulticlassSimpleAL<T> extends ActiveLearner<T> {
 	
+	List<TrainingSample<T>> used;
+	int[] samplesPerClass;
+	List<Integer> classes;
+	boolean classeBalanced = true;
+	
 	public MulticlassSimpleAL(MulticlassClassifier<T> c, List<TrainingSample<T>> l) {
 		classifier = c;
 		train = new ArrayList<TrainingSample<T>>(l.size());
 		train.addAll(l);
+		used = new ArrayList<TrainingSample<T>>();
+		
+		classes = new ArrayList<>();
+		for(TrainingSample<T> t: train) {
+			if(!classes.contains(t.label)) {
+				classes.add(t.label);
+			}
+		}
+		samplesPerClass = new int[classes.size()];
 	}
 	
 	/* (non-Javadoc)
@@ -56,14 +71,41 @@ public class MulticlassSimpleAL<T> extends ActiveLearner<T> {
 			return null;
 		}
 		
+		// find most imbalanced class
+		int smin = 0;			
+		if(classeBalanced) {
+			for(int i = 1 ; i < samplesPerClass.length ; i++) {
+				if(samplesPerClass[i] < samplesPerClass[smin]) {
+					smin = i;
+				}
+			}
+		}
 		double min = Double.POSITIVE_INFINITY;
-		int index = -1;
+		int index = 0;
 		
 		for(int i = 0 ; i < l.size() ; i++) {
-			double v = abs(((MulticlassClassifier<T>)classifier).getConfidence(l.get(i).sample));
-			if(v < min) {
-				min = v;
-				index = i;
+			TrainingSample<T> t = l.get(i);
+			
+			if(classeBalanced) {
+				if(classes.indexOf(t.label) != smin)
+					continue;
+			}
+			
+
+			double v = ((MulticlassClassifier<T>)classifier).getConfidence(t.sample);
+			double c = classifier.valueOf(t.sample);
+			Map<Integer, Double> values = ((MulticlassClassifier<T>)classifier).getConfidences(t.sample);
+			if(values == null) {
+				continue;
+			}
+			for(int y : values.keySet()) {
+				if(y != c) {
+					double diff = abs(values.get(y) - v);
+					if(diff < min) {
+						min = diff;
+						index = i;
+					}
+				}
 			}
 		}
 		
@@ -89,6 +131,8 @@ public class MulticlassSimpleAL<T> extends ActiveLearner<T> {
 				return;
 			}
 			train.remove(t);
+			samplesPerClass[classes.indexOf(t.label)]++;
+			
 			classifier.train(t);
 		}
 		
@@ -100,6 +144,22 @@ public class MulticlassSimpleAL<T> extends ActiveLearner<T> {
 			throw new UnsupportedOperationException("Argument must be a MulticlassClassifier");
 		}
 		classifier = cls;
+	}
+
+	/**
+	 * Tells is use a class balancing criterion
+	 * @return true if criterion is used
+	 */
+	public boolean isClasseBalanced() {
+		return classeBalanced;
+	}
+
+	/**
+	 * Sets the use of a criterion aiming at balanced classes
+	 * @param classeBalanced true if using the criterion
+	 */
+	public void setClasseBalanced(boolean classeBalanced) {
+		this.classeBalanced = classeBalanced;
 	}
 
 }
