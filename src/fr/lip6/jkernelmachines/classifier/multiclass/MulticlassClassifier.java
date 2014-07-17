@@ -19,6 +19,8 @@
 */
 package fr.lip6.jkernelmachines.classifier.multiclass;
 
+import java.util.Map;
+
 import fr.lip6.jkernelmachines.classifier.Classifier;
 
 /**
@@ -41,6 +43,6 @@ public interface MulticlassClassifier<T> extends Classifier<T> {
 	 * @param t the sample to evaluate
 	 * @return the vector of confidences for all classes
 	 */
-	public double[] getConfidences(T t);
+	public Map<Integer, Double> getConfidences(T t);
 
 }

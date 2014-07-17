@@ -190,17 +190,15 @@ public class OneAgainstAll<T> implements MulticlassClassifier<T> {
 	 * @see fr.lip6.jkernelmachines.classifier.multiclass.MulticlassClassifier#getConfidences(java.lang.Object)
 	 */
 	@Override
-	public double[] getConfidences(T e) {
-		double[] v = new double[listOfClassifiers.size()];
-		for(int i = 0 ; i < v.length ; i++) {
-			v[i] = listOfClassifiers.get(i).valueOf(e);
-		}
+	public Map<Integer, Double> getConfidences(T e) {
+		if (listOfClassifiers == null || listOfClassifiers.isEmpty())
+			return null;
 		
-		double[] ret = new double[v.length];
-		for(int i = 0 ; i < v.length ; i++) {
-			ret[classIndices.get(i)] = v[i];
+		HashMap<Integer, Double> map = new HashMap<>();
+		for(int i = 0 ; i < listOfClassifiers.size() ; i++) {
+			 map.put(classIndices.get(i), listOfClassifiers.get(i).valueOf(e));
 		}
-		return ret;
+		return map;
 	}
 
 	/**
