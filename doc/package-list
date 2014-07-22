@@ -1,10 +1,12 @@
 fr.lip6.jkernelmachines
+fr.lip6.jkernelmachines.active
 fr.lip6.jkernelmachines.classifier
 fr.lip6.jkernelmachines.classifier.multiclass
 fr.lip6.jkernelmachines.classifier.transductive
 fr.lip6.jkernelmachines.density
 fr.lip6.jkernelmachines.evaluation
 fr.lip6.jkernelmachines.example
+fr.lip6.jkernelmachines.gui
 fr.lip6.jkernelmachines.io
 fr.lip6.jkernelmachines.kernel
 fr.lip6.jkernelmachines.kernel.adaptative
