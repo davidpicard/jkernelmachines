@@ -32,6 +32,12 @@ import fr.lip6.jkernelmachines.kernel.Kernel;
  * 
  */
 public interface MKL<T> {
+	
+	/**
+	 * Adds a kernel to the MKL problem
+	 * @param kernel the new kernel to add
+	 */
+	public void addKernel(Kernel<T> kernel);
 
 	/**
 	 * Gets an array containing the weights of the different kernels, in the
