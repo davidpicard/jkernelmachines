@@ -21,6 +21,7 @@ package fr.lip6.jkernelmachines.classifier;
 
 import static java.lang.Math.abs;
 
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,21 +53,23 @@ import fr.lip6.jkernelmachines.util.DebugPrinter;
  *
  * @param <T> Datatype of training samples
  */
-public class SimpleMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T> {
+public class SimpleMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T>, Serializable {
 	
-	private List<TrainingSample<T>> list;
-	private ArrayList<Kernel<T>> kernels;
-	private ArrayList<Double> kernelWeights;
+	private static final long serialVersionUID = 7563788821457267923L;
 	
-	private int maxIteration = 50;
-	private double C = 1.e2;
-	private double numPrec = 1.e-12, epsKTT = 0.1, epsDG = 0.01, epsGS = 1.e-8, eps = 1.e-8;
-	private boolean checkDualGap = true, checkKKT = true;
+	protected List<TrainingSample<T>> list;
+	protected ArrayList<Kernel<T>> kernels;
+	protected ArrayList<Double> kernelWeights;
 	
-	private KernelSVM<T> svm;
+	protected int maxIteration = 50;
+	protected double C = 1.e2;
+	protected double numPrec = 1.e-12, epsKTT = 0.1, epsDG = 0.01, epsGS = 1.e-8, eps = 1.e-8;
+	protected boolean checkDualGap = true, checkKKT = true;
+	
+	protected KernelSVM<T> svm;
 	
 	private DecimalFormat format = new DecimalFormat("#0.0000");
-	DebugPrinter debug = new DebugPrinter();
+	transient DebugPrinter debug = new DebugPrinter();
 
 	public SimpleMKL()
 	{
@@ -277,7 +280,7 @@ public class SimpleMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T> {
 			if(Math.abs(oldObj - newObj) < numPrec)
 			{
 				debug.println(1, "No improvement during iteration, stoping (old : "+oldObj+" new : "+newObj+")");
-				stop = true;
+//				stop = true;
 			}
 			if(stop)
 				loop = false;
@@ -696,6 +699,7 @@ public class SimpleMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T> {
 		ThreadedSumKernel<T> tsk = buildKernel(km, dm);		
 		//updating svm
 		retrainSVM(tsk, l);
+		costNew = svmObj(km, dm, l);
 		
 		//verbosity
 		debug.print(3, "mklupdate : dm = "+dmOld);
@@ -726,7 +730,7 @@ public class SimpleMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T> {
 		//default svm algorithm is lasvm
 		if(svm == null) {
 			LaSVM<T> lasvm = new LaSVM<T>(k);
-			lasvm.setE(2);
+			lasvm.setE(5);
 			svm = lasvm;
 		}
 		//new settings
@@ -762,10 +766,10 @@ public class SimpleMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T> {
 		return svm.getAlphas();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
-		// TODO Auto-generated method stub
-		return super.clone();
+		return (SimpleMKL<T>) super.clone();
 	}
 
 	@Override
