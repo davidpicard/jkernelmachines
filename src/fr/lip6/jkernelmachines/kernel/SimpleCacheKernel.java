@@ -66,6 +66,22 @@ public final class SimpleCacheKernel<T> extends Kernel<T> {
 	public double[][] getKernelMatrix(List<TrainingSample<T>> e) {
 		return matrix;
 	}
+
+
+	/**
+	 * Returns the underlying kernel
+	 * @return the cached kernel
+	 */
+	public Kernel<T> getKernel() {
+		return kernel;
+	}
+
+
+	@Override
+	public String toString() {
+		return kernel.toString();
+	}
+	
 	
 	
 
