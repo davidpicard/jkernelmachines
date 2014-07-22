@@ -16,7 +16,7 @@
 
     Copyright David Picard - 2014
 
-*/
+ */
 
 package fr.lip6.jkernelmachines.gui;
 
@@ -26,13 +26,16 @@ import java.io.Serializable;
 
 /**
  * Very simple model class that encapsulate a classifier and preprocessing tools
+ * 
  * @author David Picard
  */
-public class Model  implements Serializable {
-        int dim;
-        boolean pcaEnable;
-        boolean whiteningEnable;
-        boolean normalizationEnable;
-        DoublePCA pca;
-        Classifier<double[]> classifier;    
+public class Model implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	int dim;
+	boolean pcaEnable;
+	boolean whiteningEnable;
+	boolean normalizationEnable;
+	DoublePCA pca;
+	Classifier<double[]> classifier;
 }

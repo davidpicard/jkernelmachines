@@ -37,6 +37,7 @@ import java.util.List;
  */
 public class DoublePCA implements Serializable {
 	
+	private static final long serialVersionUID = -6200080076438113052L;
 	double[][] projectors;
 	double[] whitening_coeff;
 	double[] mean;
