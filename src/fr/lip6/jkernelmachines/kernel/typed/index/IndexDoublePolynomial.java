@@ -49,7 +49,7 @@ public class IndexDoublePolynomial extends Kernel<double[]> {
 	public double valueOf(double[] t1, double[] t2) {
 		if(t1[ind] == 0. || t2[ind] == 0.)
 			return 0.;
-		return pow(t2[ind]*t1[ind], degree);
+		return pow(0.5+0.5*t2[ind]*t1[ind], degree);
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class IndexDoublePolynomial extends Kernel<double[]> {
 
 		if(t1[ind] == 0.)
 			return 0.;
-		return pow(t1[ind]*t1[ind], degree);
+		return pow(0.5+0.5*t1[ind]*t1[ind], degree);
 	}
 
 	
