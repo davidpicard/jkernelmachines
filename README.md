@@ -22,12 +22,13 @@ picard@ensea.fr
 
 ## Features
 
-* Several learning algorithms (LaSVM, LaSVM-I, SMO, SimpleMKL, GradMKL, QNPKL, SGDQN, Pegasos, ...)
+* Several learning algorithms (LaSVM, LaSVM-I, SMO, SimpleMKL, GradMKL, QNPKL, SGDQN, Pegasos, NystromSVM, LLSVM...)
 * Multiclass classification through generic classifiers.
+* Active learning
 * Datatype agnosticism through Java Generics
 * Easy coding of new kernels
 * Several standard and exotic kernels (kernel on bags, combination kernels, ...)
-* Input system (can read libsvm, csv and fvec files)
+* Input system (can read libsvm, csv, arff and fvec files)
 * Toys generator for artificial data
 * Basic linear algebra package (optionally based on [EJML](http://code.google.com/p/efficient-java-matrix-library/))
 * Evaluation and Cross Validation packages
