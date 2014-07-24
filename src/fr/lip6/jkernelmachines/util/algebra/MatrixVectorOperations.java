@@ -21,6 +21,7 @@ package fr.lip6.jkernelmachines.util.algebra;
 
 
 /**
+ * This class provides operations between matrices and vectors
  * @author picard
  *
  */
@@ -38,7 +39,12 @@ public class MatrixVectorOperations {
 		if(A[0].length != n) {
 			throw new ArithmeticException("Matrix Dimension must agree : "+A[0].length+", "+n);
 		}
-		double[] o = new double[n];
+		
+		if(m > ThreadedMatrixVectorOperations.granularity && n > ThreadedMatrixVectorOperations.granularity) {
+			return ThreadedMatrixVectorOperations.rMul(A, x);
+		}
+		
+		double[] o = new double[m];
 		
 		for(int i = 0 ; i < m ; i++) {
 			o[i] = VectorOperations.dot(A[i], x);
@@ -61,6 +67,10 @@ public class MatrixVectorOperations {
 		}
 		if(C.length != m) {
 			throw new ArithmeticException("Matrix Dimension must agree : "+C.length+", "+m);
+		}
+
+		if(m > ThreadedMatrixVectorOperations.granularity && n > ThreadedMatrixVectorOperations.granularity) {
+			return ThreadedMatrixVectorOperations.rMuli(C, A, x);
 		}
 		
 		for(int i = 0 ; i < m ; i++) {
@@ -89,5 +99,23 @@ public class MatrixVectorOperations {
 		}
 		
 		return C;
+	}
+
+	/**
+	 * Computes the tensor (outer) product of two vectors
+	 * @param x first vector
+	 * @param y second vector
+	 * @return x*y^T
+	 */
+	public static double[][] outer(final double[] x, final double[] y) {
+		double[][] m = new double[x.length][y.length];
+		
+		for(int i = 0 ; i < m.length ; i++) {
+			for(int j = 0 ; j < m[0].length ; j++) {
+				m[i][j] = x[i]*y[j];
+			}
+		}
+		
+		return m;
 	}
 }

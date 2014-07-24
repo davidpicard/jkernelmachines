@@ -103,6 +103,28 @@ public class VectorOperations {
 		
 		return C;
 	}
+	
+	public static double[] prod(final double[] A, final double[] B) {
+		double[] out = new double[A.length];
+		prodi(out, A, B);
+		return out;
+	}
+	
+	public static double[] prodi(double[] C, final double[] A, final double[] B) {
+		int packed = 2 * (A.length / 2);
+		int l = 0;
+		// packed operations
+		for(l = 0 ; l < packed ; l += 2) {
+			C[l] = A[l]*B[l];
+			C[l+1] = A[l+1]*B[l];
+		}
+		// remaining operations
+		for(; l < A.length ; l++) {
+			C[l] = A[l]*B[l];
+		}
+		
+		return C;
+	}
 
 	/**
 	 * Computes the dot product between to double arrays

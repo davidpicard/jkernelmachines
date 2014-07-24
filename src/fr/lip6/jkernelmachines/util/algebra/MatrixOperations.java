@@ -190,6 +190,10 @@ public class MatrixOperations {
 			throw new ArithmeticException("Matrix dimensions must agree.");
 		}
 		
+		if(m > ThreadedMatrixOperations.granularity && n > ThreadedMatrixOperations.granularity) {
+			return ThreadedMatrixOperations.mul(A, B);
+		}
+		
 		double[][] out = new double[m][n];
 		
 		for(int i = 0 ; i < m ; i++) {
@@ -225,6 +229,12 @@ public class MatrixOperations {
 		if(p != B.length) {
 			throw new ArithmeticException("Matrix dimensions must agree.");
 		}
+
+		if(m > ThreadedMatrixOperations.granularity && n > ThreadedMatrixOperations.granularity) {
+			return ThreadedMatrixOperations.muli(C, A, B);
+		}
+		
+		
 		for(int i = 0 ; i < m ; i++) {
 			for(int j = 0 ; j < n ; j++) {
 				double sum = 0;
@@ -584,7 +594,7 @@ public class MatrixOperations {
 			}
 		// fallback to our implementation
 		if(DebugPrinter.DEBUG_LEVEL > 3)
-			System.out.println("fallback to eig_jacobi");
+			System.err.println("fallback to eig_jacobi");
 		return eig_jacobi(A, true);
 	}
 	
