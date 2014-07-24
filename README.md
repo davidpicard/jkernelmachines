@@ -32,7 +32,7 @@ picard@ensea.fr
 * Toys generator for artificial data
 * Basic linear algebra package (optionally based on [EJML](http://code.google.com/p/efficient-java-matrix-library/))
 * Evaluation and Cross Validation packages
-* Stand alone (requires only a working jdk and ant for easy compiling)
+* Stand alone (requires only a working jdk 1.7 and ant for easy compiling)
 * Simple GUI
 
 ## HowTo
