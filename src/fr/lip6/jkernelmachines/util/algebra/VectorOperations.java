@@ -128,8 +128,8 @@ public class VectorOperations {
 
 	/**
 	 * Computes the dot product between to double arrays
-	 * @param a first array
-	 * @param b second array
+	 * @param A first array
+	 * @param B second array
 	 * @return the dot product between A and B
 	 */
 	public static double dot(final double[] A, final double[] B) {
@@ -171,7 +171,7 @@ public class VectorOperations {
 	 * Computes the square euclidean distance between 2 double arrays
 	 * @param A first array
 	 * @param B second array
-	 * @return
+	 * @return squared euclidean distance
 	 */
 	public static double d2p2(final double[] A, final double[] B) {
 		return n2p2(A) + n2p2(B) - 2*dot(A, B);

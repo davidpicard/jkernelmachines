@@ -380,7 +380,7 @@ public class LaSVMI<T> implements KernelSVM<T> {
 	/**
 	 * Tells the C hyperparameter
 	 * 
-	 * @return
+	 * @return C
 	 */
 	public double getC() {
 		return C;
@@ -389,7 +389,7 @@ public class LaSVMI<T> implements KernelSVM<T> {
 	/**
 	 * Sets the C hyperparameter (default 1.0)
 	 * 
-	 * @param c
+	 * @param c C
 	 */
 	public void setC(double c) {
 		C = c;
@@ -398,7 +398,7 @@ public class LaSVMI<T> implements KernelSVM<T> {
 	/**
 	 * Tells the number of epochs of training (default 2)
 	 * 
-	 * @return
+	 * @return E
 	 */
 	public long getE() {
 		return E;
@@ -407,7 +407,7 @@ public class LaSVMI<T> implements KernelSVM<T> {
 	/**
 	 * Sets the number of epoch of training (default 2)
 	 * 
-	 * @param e
+	 * @param e E
 	 */
 	public void setE(long e) {
 		E = e;
@@ -416,7 +416,7 @@ public class LaSVMI<T> implements KernelSVM<T> {
 	/**
 	 * Tells support vectors coefficients in order of the training list
 	 * 
-	 * @return
+	 * @return alpha
 	 */
 	public double[] getAlphas() {
 		double[] a = new double[alpha.length];
@@ -428,7 +428,7 @@ public class LaSVMI<T> implements KernelSVM<T> {
 	/**
 	 * Set the kernel to use
 	 * 
-	 * @param kernel
+	 * @param kernel the kernel
 	 */
 	public void setKernel(Kernel<T> kernel) {
 		this.kernel = kernel;
@@ -437,7 +437,7 @@ public class LaSVMI<T> implements KernelSVM<T> {
 	/**
 	 * Tells the parameter s of the ramp loss (default -1)
 	 * 
-	 * @return
+	 * @return s
 	 */
 	public double getS() {
 		return s;
@@ -446,7 +446,7 @@ public class LaSVMI<T> implements KernelSVM<T> {
 	/**
 	 * Sets the parameter s of the ramp loss (default -1)
 	 * 
-	 * @param s
+	 * @param s s
 	 */
 	public void setS(double s) {
 		this.s = s;
@@ -465,7 +465,7 @@ public class LaSVMI<T> implements KernelSVM<T> {
 
 	/**
 	 * Returns the kernel used by this classifier
-	 * @return kernel
+	 * @return the kernel
 	 */
 	public Kernel<T> getKernel() {
 		return kernel;

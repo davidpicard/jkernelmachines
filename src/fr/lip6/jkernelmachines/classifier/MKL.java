@@ -59,7 +59,7 @@ public interface MKL<T> {
 	 * Gets a mapping of pairs <Kernel,Double> containing the kernels and
 	 * weights in the set.
 	 * 
-	 * @return
+	 * @return the map of pairs <kernel,weight>
 	 */
 	public Map<Kernel<T>, Double> getKernelWeightMap();
 

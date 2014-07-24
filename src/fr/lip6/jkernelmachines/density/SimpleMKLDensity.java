@@ -265,10 +265,10 @@ public class SimpleMKLDensity<T> implements DensityFunction<T> {
 	/**
 	 * computing the objective function value
 	 * 
-	 * @param km
-	 * @param dm
-	 * @param l
-	 * @return
+	 * @param km list of kernels
+	 * @param dm associated weights
+	 * @param l list of training samples
+	 * @return primal objective
 	 */
 	private double svmObj(List<SimpleCacheKernel<T>> km, List<Double> dm,
 			final List<T> l) {
@@ -338,10 +338,10 @@ public class SimpleMKLDensity<T> implements DensityFunction<T> {
 	/**
 	 * computing the gradient of the objective function
 	 * 
-	 * @param km
-	 * @param dm
-	 * @param l
-	 * @return
+	 * @param km list of kernels
+	 * @param dm associated weights
+	 * @param l list of training samples
+	 * @return gradient w.r.t. kernel weights
 	 */
 	private ArrayList<Double> gradSVM(List<SimpleCacheKernel<T>> km,
 			List<Double> dm, final List<T> l) {

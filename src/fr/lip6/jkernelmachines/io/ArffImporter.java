@@ -47,7 +47,7 @@ public class ArffImporter {
 	 * The class attribute has to be called "Class", case insensitive.
 	 * </p>
 	 * @param filename
-	 * @return
+	 * @return list of training samples
 	 * @throws IOException
 	 */
 	public static List<TrainingSample<double[]>> importFromFile(String filename) throws IOException {

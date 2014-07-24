@@ -421,7 +421,7 @@ public class MatrixOperations {
 	 * 
 	 * @param Q output matrix Q
 	 * @param R output matrix R
-	 * @param A input matrix A
+	 * @param m input matrix m
 	 */
 	public static void qri_givens(double[][]Q, double[][] R, final double[][] m) {
 		int n = m.length;
@@ -602,10 +602,10 @@ public class MatrixOperations {
 	 * Performs the eigen decomposition of a symmetric matrix:
 	 * A = Q * L * Q'
 	 * with Q orthonormal and L diagonal
-	 * @param A input matrix
+	 * @param m input matrix
 	 * @return an array of two matrices containing {Q, L}
 	 */
-	public static final double[][][] eig_jacobi(double[][] m, boolean prec) {
+	public static final double[][][] eig_jacobi(final double[][] m, boolean prec) {
 		int n = m.length;
 		double[][] matrix;
 		
@@ -726,7 +726,7 @@ public class MatrixOperations {
 	 * Performs the trigonalization of a symmetric matrix:
 	 * A = Q * T * Q'
 	 * with Q orthonormal and T tridiagonal
-	 * @param A input matrix
+	 * @param m input matrix
 	 * @return an array of two matrices containing {Q, L}
 	 */
 	public static double[][][] tri(final double[][] m){

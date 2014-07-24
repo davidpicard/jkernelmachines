@@ -302,10 +302,10 @@ public class SimpleMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T>, Serial
 	
 	/**
 	 * computing the objective function value
-	 * @param km
-	 * @param dm
-	 * @param l
-	 * @return
+	 * @param km list of kernels
+	 * @param dm associated weights
+	 * @param l list of training samples
+	 * @return primal objective value
 	 */
 	private double svmObj(List<SimpleCacheKernel<T>> km,
 			List<Double> dm, final List<TrainingSample<T>> l) {
@@ -379,10 +379,10 @@ public class SimpleMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T>, Serial
 
 	/**
 	 * computing the gradient of the objective function
-	 * @param km
-	 * @param dm
-	 * @param l
-	 * @return
+	 * @param km list of kernels
+	 * @param dm associated weights
+	 * @param l list of training samples
+	 * @return gradient w.r.t. the kernel weights
 	 */
 	private ArrayList<Double> gradSVM(List<SimpleCacheKernel<T>> km, List<Double> dm, final List<TrainingSample<T>> l) {
 		//creating kernel

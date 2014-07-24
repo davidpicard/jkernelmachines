@@ -369,9 +369,9 @@ public class DoubleSGDQN implements Classifier<double[]> {
 
 	
 	/**
-	 * fonction de coût utilisée
-	 * @param z
-	 * @return
+	 * loss value of a sample output z = y*f(x)
+	 * @param z the sample output
+	 * @return the loss
 	 */
 	private double loss(double z)
 	{

@@ -63,18 +63,24 @@ public abstract class ActiveLearner<T> {
 	
 	/**
 	 * Getter for the classifier
-	 * @return
+	 * @return the classifier
 	 */
 	public Classifier<T> getClassifier() {
 		return this.classifier;
 	}
 
-
+	/**
+	 * Return the list of training samples
+	 * @return the list of training samples
+	 */
 	public List<TrainingSample<T>> getTrain() {
 		return train;
 	}
 
-
+	/**
+	 * Sets the list of training samples
+	 * @param train the list of training samples
+	 */
 	public void setTrain(List<TrainingSample<T>> train) {
 		this.train = train;
 	}
