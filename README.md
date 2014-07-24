@@ -33,10 +33,12 @@ picard@ensea.fr
 * Basic linear algebra package (optionally based on [EJML](http://code.google.com/p/efficient-java-matrix-library/))
 * Evaluation and Cross Validation packages
 * Stand alone (requires only a working jdk and ant for easy compiling)
+* Simple GUI
 
 ## HowTo
 
 * [Compiling](https://github.com/davidpicard/jkernelmachines/wiki/Compiling)
+* [Graphical User Interface](https://github.com/davidpicard/jkernelmachines/wiki/JkmsGUI)
 * [Basic Example](https://github.com/davidpicard/jkernelmachines/wiki/Basic-Example)
 * [Kernels](https://github.com/davidpicard/jkernelmachines/wiki/Kernel-HowTo)
 * [Classifier Training](https://github.com/davidpicard/jkernelmachines/wiki/Classifier-Training)
