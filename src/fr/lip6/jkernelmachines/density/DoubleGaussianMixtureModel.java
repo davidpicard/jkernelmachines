@@ -113,7 +113,12 @@ public class DoubleGaussianMixtureModel implements DensityFunction<double[]> {
 			w[c[i]] += 1;
 		}
 		for (int g = 0; g < k; g++) {
-			VectorOperations.muli(mu[g], mu[g], 1. / w[g]);
+			if(w[g] > 0) {
+				VectorOperations.muli(mu[g], mu[g], 1. / w[g]);
+			}
+			else {
+				Arrays.fill(mu[g], 0);
+			}
 		}
 
 		for (; t < 1000; t++) {
@@ -148,7 +153,12 @@ public class DoubleGaussianMixtureModel implements DensityFunction<double[]> {
 				w[c[i]] += 1;
 			}
 			for (int g = 0; g < k; g++) {
-				VectorOperations.muli(mu[g], mu[g], 1. / w[g]);
+				if(w[g] > 0) {
+					VectorOperations.muli(mu[g], mu[g], 1. / w[g]);
+				}
+				else {
+					Arrays.fill(mu[g], 0);
+				}
 			}
 		}
 
@@ -254,6 +264,24 @@ public class DoubleGaussianMixtureModel implements DensityFunction<double[]> {
 
 		}
 		return sum;
+	}
+	
+	/**
+	 * Return a vector containing the likelihood to each Gaussian component
+	 * @param e the sample to evaluate
+	 * @return the vector of likelihood
+	 */
+	public double[] likelihood(double[] e) {
+		double[] l = new double[k];
+		
+		for (int g = 0; g < k; g++) {
+			double[] xtc = VectorOperations.add(e, -1, mu[g]);
+			double[] o = MatrixVectorOperations.rMul(sigma[g], xtc);
+			l[g] = w[g] * exp(-0.5 * VectorOperations.dot(xtc, o));
+
+		}		
+		
+		return l;
 	}
 
 	/**
