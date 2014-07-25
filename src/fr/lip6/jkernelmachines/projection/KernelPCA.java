@@ -16,7 +16,7 @@
 
     Copyright David Picard - 2013
 
-*/
+ */
 package fr.lip6.jkernelmachines.projection;
 
 import static fr.lip6.jkernelmachines.util.algebra.MatrixOperations.eig;
@@ -30,114 +30,128 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
 
 /**
  * Kernel principal component analysis, using generic datatypes.
+ * 
  * @author picard
- *
+ * 
  */
 public class KernelPCA<T> {
-	
+
 	private Kernel<T> kernel;
 	private double mean = 0;
 	private double[][] projectors;
 	private double[] whiteningCoefficients;
 	private List<TrainingSample<T>> list;
 	private int dim;
-	
+
 	public KernelPCA(Kernel<T> k) {
 		this.kernel = k;
 	}
-	
+
 	public void train(List<TrainingSample<T>> list) {
 		this.list = list;
-		
+
 		// SVD of kernel matrix
 		double[][] K = kernel.getKernelMatrix(list);
 		mean = 0;
-		for(int i = 0 ; i < K.length ; i++) {
-			for(int j = i ; j < K.length ; j++) {
-				if(i == j) {
+		for (int i = 0; i < K.length; i++) {
+			for (int j = i; j < K.length; j++) {
+				if (i == j) {
 					mean += K[i][j];
-				}
-				else {
-					mean += 2*K[i][j];
+				} else {
+					mean += 2 * K[i][j];
 				}
 			}
 		}
 		mean /= (K.length * K.length);
-		for(int i = 0 ; i < K.length ; i++) {
-			for(int j = i ; j < K.length ; j++) {
+		for (int i = 0; i < K.length; i++) {
+			for (int j = i; j < K.length; j++) {
 				K[i][j] -= mean;
 				K[j][i] = K[i][j];
 			}
 		}
 		double[][][] eig = eig(K);
 		dim = eig[0].length;
-		
+
 		// projectors
 		projectors = transi(eig[0]);
-		
+
 		// whitening coeff
 		whiteningCoefficients = new double[dim];
-		for(int d = 0 ; d < dim ; d++) {
+		for (int d = 0; d < dim; d++) {
 			double p = eig[1][d][d];
-			if(p > 1e-15) {
-				whiteningCoefficients[d] = 1./Math.sqrt(p);
+			if (p > 1e-15) {
+				whiteningCoefficients[d] = 1. / Math.sqrt(p);
 			}
 		}
 	}
-	
-	public TrainingSample<double[]> project(TrainingSample<T> t, boolean whitening) {
+
+	public TrainingSample<double[]> project(TrainingSample<T> t,
+			boolean whitening) {
 		double[] proj = new double[dim];
-		
-		for(int d = 0 ; d < dim ; d++){
-			for(int i = 0 ; i < list.size() ; i++) {
-				proj[d] += projectors[d][i] * (kernel.valueOf(list.get(i).sample, t.sample)-mean);
+
+		for (int i = 0; i < list.size(); i++) {
+			double v = (kernel.valueOf(list.get(i).sample, t.sample) - mean);
+			for (int d = 0; d < dim; d++) {
+				proj[d] += projectors[d][i] * v;
 			}
+		}
+		
+		for (int d = 0; d < dim; d++) {
 			proj[d] *= whiteningCoefficients[d];
-			if(whitening) {
+			if (whitening) {
 				proj[d] *= whiteningCoefficients[d];
 			}
 		}
-		
+
 		return new TrainingSample<double[]>(proj, t.label);
 	}
-	
+
 	public TrainingSample<double[]> project(TrainingSample<T> t) {
 		return project(t, false);
 	}
-	
+
 	/**
 	 * Performs the projection on a list of samples.
-	 * @param list the list of input samples
+	 * 
+	 * @param list
+	 *            the list of input samples
 	 * @return a new list with projected samples
 	 */
-	public List<TrainingSample<double[]>> projectList(final List<TrainingSample<T>> list) {
+	public List<TrainingSample<double[]>> projectList(
+			final List<TrainingSample<T>> list) {
 		List<TrainingSample<double[]>> out = new ArrayList<TrainingSample<double[]>>();
-		
-		for(TrainingSample<T> t : list) {
+
+		for (TrainingSample<T> t : list) {
 			out.add(project(t));
 		}
-		
+
 		return out;
 	}
 
 	/**
-	 * Performs the projection on a list of samples with optional whitening (unitary covariance matrix).
-	 * @param list the list of input samples
-	 * @param whitening option to perform a whitened projection
+	 * Performs the projection on a list of samples with optional whitening
+	 * (unitary covariance matrix).
+	 * 
+	 * @param list
+	 *            the list of input samples
+	 * @param whitening
+	 *            option to perform a whitened projection
 	 * @return a new list with projected samples
 	 */
-	public List<TrainingSample<double[]>> projectList(final List<TrainingSample<T>> list, boolean whitening) {
+	public List<TrainingSample<double[]>> projectList(
+			final List<TrainingSample<T>> list, boolean whitening) {
 		List<TrainingSample<double[]>> out = new ArrayList<TrainingSample<double[]>>();
-		
-		for(TrainingSample<T> t : list) {
+
+		for (TrainingSample<T> t : list) {
 			out.add(project(t, whitening));
 		}
-		
+
 		return out;
 	}
 
 	/**
 	 * Get the kernel use in the KernelPCA
+	 * 
 	 * @return the current kernel
 	 */
 	public Kernel<T> getKernel() {
@@ -146,7 +160,9 @@ public class KernelPCA<T> {
 
 	/**
 	 * Set the current Kernel
-	 * @param kernel the kernel
+	 * 
+	 * @param kernel
+	 *            the kernel
 	 */
 	public void setKernel(Kernel<T> kernel) {
 		this.kernel = kernel;
@@ -154,6 +170,7 @@ public class KernelPCA<T> {
 
 	/**
 	 * Get the mean of the current Kernel
+	 * 
 	 * @return the mean of the kernel over the training set
 	 */
 	public double getMean() {
@@ -162,6 +179,7 @@ public class KernelPCA<T> {
 
 	/**
 	 * Get the projector coefficients obtained after learning
+	 * 
 	 * @return the kernel expansion coefficients
 	 */
 	public double[][] getProjectors() {
@@ -170,6 +188,7 @@ public class KernelPCA<T> {
 
 	/**
 	 * Get the whitening coefficient
+	 * 
 	 * @return the whitening coefficients
 	 */
 	public double[] getWhiteningCoefficients() {
