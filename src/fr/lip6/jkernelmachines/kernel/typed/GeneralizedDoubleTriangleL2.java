@@ -22,7 +22,6 @@ package fr.lip6.jkernelmachines.kernel.typed;
 import java.util.List;
 
 import fr.lip6.jkernelmachines.kernel.Kernel;
-import fr.lip6.jkernelmachines.threading.ThreadPoolServer;
 import fr.lip6.jkernelmachines.threading.ThreadedMatrixOperator;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 
@@ -141,7 +140,6 @@ public class GeneralizedDoubleTriangleL2 extends Kernel<double[]> {
 		
 		factory.getMatrix(matrix);
 		
-		ThreadPoolServer.shutdownNow();	
 		return matrix;
 	}
 }

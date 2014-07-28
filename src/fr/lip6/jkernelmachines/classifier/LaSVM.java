@@ -22,16 +22,16 @@
  */
 package fr.lip6.jkernelmachines.classifier;
 
-import fr.lip6.jkernelmachines.kernel.Kernel;
-import fr.lip6.jkernelmachines.threading.ThreadPoolServer;
-import fr.lip6.jkernelmachines.threading.ThreadedMatrixOperator;
-import fr.lip6.jkernelmachines.type.TrainingSample;
-import fr.lip6.jkernelmachines.util.DebugPrinter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import fr.lip6.jkernelmachines.kernel.Kernel;
+import fr.lip6.jkernelmachines.threading.ThreadedMatrixOperator;
+import fr.lip6.jkernelmachines.type.TrainingSample;
+import fr.lip6.jkernelmachines.util.DebugPrinter;
 
 /**
  * <p>
@@ -225,8 +225,6 @@ public final class LaSVM<T> implements KernelSVM<T>, Serializable {
 		//clear cache
 		kmatrix = null;
 
-		//stop threads
-		ThreadPoolServer.shutdownNow();
 	}
 	
 	public void retrain()
@@ -261,8 +259,6 @@ public final class LaSVM<T> implements KernelSVM<T>, Serializable {
 		reprocess();
 		
 
-		//stop threads
-		ThreadPoolServer.shutdownNow();
 	}
 	
 	//init by adding a few samples to S

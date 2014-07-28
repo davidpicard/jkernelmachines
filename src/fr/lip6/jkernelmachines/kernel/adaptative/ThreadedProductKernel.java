@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import fr.lip6.jkernelmachines.kernel.Kernel;
-import fr.lip6.jkernelmachines.threading.ThreadPoolServer;
 import fr.lip6.jkernelmachines.threading.ThreadedMatrixOperator;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 
@@ -196,7 +195,7 @@ public class ThreadedProductKernel<T> extends Kernel<T> {
 			
 			matrix = tmo.getMatrix(matrix);
 		}
-		ThreadPoolServer.shutdownNow();	
+		
 		return matrix;
 	}
 }

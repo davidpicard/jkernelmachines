@@ -30,7 +30,6 @@ import fr.lip6.jkernelmachines.kernel.Kernel;
 import fr.lip6.jkernelmachines.kernel.SimpleCacheKernel;
 import fr.lip6.jkernelmachines.kernel.ThreadedKernel;
 import fr.lip6.jkernelmachines.kernel.adaptative.ThreadedSumKernel;
-import fr.lip6.jkernelmachines.threading.ThreadPoolServer;
 import fr.lip6.jkernelmachines.threading.ThreadedMatrixOperator;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 import fr.lip6.jkernelmachines.util.DebugPrinter;
@@ -258,8 +257,6 @@ public class SimpleMKLDensity<T> implements DensityFunction<T> {
 		tsk = buildKernel(km, dm);
 		retrainSVM(tsk, l);
 
-		// stop threads
-		ThreadPoolServer.shutdownNow();
 	}
 
 	/**

@@ -21,7 +21,6 @@ package fr.lip6.jkernelmachines.kernel;
 
 import java.util.List;
 
-import fr.lip6.jkernelmachines.threading.ThreadPoolServer;
 import fr.lip6.jkernelmachines.threading.ThreadedMatrixOperator;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 
@@ -89,7 +88,6 @@ public class ThreadedKernel<T> extends Kernel<T> {
 		/* do the actuel computing of the matrix */
 		matrix = factory.getMatrix(matrix);
 		
-		ThreadPoolServer.shutdownNow();	
 		return matrix;
 	}
 

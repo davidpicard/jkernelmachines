@@ -23,7 +23,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.lip6.jkernelmachines.threading.ThreadPoolServer;
 import fr.lip6.jkernelmachines.threading.ThreadedMatrixOperator;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 
@@ -99,9 +98,7 @@ public abstract class Kernel<T> implements Serializable {
 			}
 		};
 		
-		factory.getMatrix(matrix);
-		
-		ThreadPoolServer.shutdownNow();		
+		factory.getMatrix(matrix);	
 		
 		return matrix;
 	}

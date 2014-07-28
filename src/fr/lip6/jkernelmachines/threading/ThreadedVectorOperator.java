@@ -65,6 +65,8 @@ public abstract class ThreadedVectorOperator {
 			//wait for all jobs
 			while(!futures.isEmpty())
 				futures.remove().get();
+
+			ThreadPoolServer.shutdownNow(threadPool);
 			
 			return vector;
 		} catch (InterruptedException e) {

@@ -19,13 +19,6 @@
 */
 package fr.lip6.jkernelmachines.classifier;
 
-import fr.lip6.jkernelmachines.kernel.Kernel;
-import fr.lip6.jkernelmachines.kernel.typed.DoubleLinear;
-import fr.lip6.jkernelmachines.kernel.typed.GeneralizedDoubleGaussL2;
-import fr.lip6.jkernelmachines.threading.ThreadPoolServer;
-import fr.lip6.jkernelmachines.threading.ThreadedMatrixOperator;
-import fr.lip6.jkernelmachines.type.TrainingSample;
-import fr.lip6.jkernelmachines.util.DebugPrinter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,9 +28,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+
+import fr.lip6.jkernelmachines.kernel.Kernel;
+import fr.lip6.jkernelmachines.kernel.typed.DoubleLinear;
+import fr.lip6.jkernelmachines.kernel.typed.GeneralizedDoubleGaussL2;
+import fr.lip6.jkernelmachines.threading.ThreadPoolServer;
+import fr.lip6.jkernelmachines.threading.ThreadedMatrixOperator;
+import fr.lip6.jkernelmachines.type.TrainingSample;
+import fr.lip6.jkernelmachines.util.DebugPrinter;
 
 /**
  * <p>
@@ -178,8 +177,6 @@ public class DoubleQNPKL implements KernelSVM<double[]>, Serializable {
 
 		debug.println(3, "kernel weights : "+listOfKernelWeights);
 		debug.println(1, "PKL trained in "+(System.currentTimeMillis()-tim)+" milis.");
-		//stop threads
-		ThreadPoolServer.shutdownNow();
 	}
 	
 	/**
@@ -289,8 +286,7 @@ public class DoubleQNPKL implements KernelSVM<double[]>, Serializable {
 //			grad[x] *= kernel.getGammas()[x];
 		
 		//1 job par ligne
-		int nbcpu = Runtime.getRuntime().availableProcessors();
-		ThreadPoolExecutor threadPool = new ThreadPoolExecutor(nbcpu, nbcpu, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+		ThreadPoolExecutor threadPool = ThreadPoolServer.getThreadPoolExecutor();
 		Queue<Future<?>> futures = new LinkedList<Future<?>>();
 		
 		class GradRunnable implements Runnable {
@@ -329,7 +325,8 @@ public class DoubleQNPKL implements KernelSVM<double[]>, Serializable {
 				e.printStackTrace();
 			}
 		}
-		threadPool.shutdownNow();
+		
+		ThreadPoolServer.shutdownNow(threadPool);
 
 		//numerical cleaning
 		for(int i = 0 ; i < grad.length; i++)

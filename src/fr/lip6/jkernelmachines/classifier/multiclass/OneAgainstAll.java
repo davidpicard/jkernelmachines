@@ -23,8 +23,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import fr.lip6.jkernelmachines.classifier.Classifier;
+import fr.lip6.jkernelmachines.threading.ThreadPoolServer;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 import fr.lip6.jkernelmachines.util.DebugPrinter;
 
@@ -110,35 +115,74 @@ public class OneAgainstAll<T> implements MulticlassClassifier<T> {
 			}
 		}
 		debug.println(2, "Number of Classes: " + nbclasses);
+		
+		ThreadPoolExecutor ex = ThreadPoolServer.getThreadPoolExecutor();
+		List<Future<Object>> futures = new ArrayList<>();
 
 		// learning N one against all classifiers
-		for (int i = 0; i < nbclasses; i++) {
-			int c = classIndices.get(i);
+		for (int id = 0; id < nbclasses; id++) {
+			final int i = id;
+			futures.add(ex.submit(new Callable<Object>() {
 
-			// building classifier
-			Classifier<T> cls = null;
-			try {
-				cls = (Classifier<T>) baseClassifier.copy();
-			} catch (Exception e) {
-				debug.println(1, "ERROR: Classifier not Cloneable!");
-				return;
-			}
+				@Override
+				public Object call() throws Exception {
 
-			// building ad hoc trai list
-			List<TrainingSample<T>> train = new ArrayList<TrainingSample<T>>();
-			for (TrainingSample<T> t : tlist) {
-				int y = -1;
-				if (t.label == c)
-					y = 1;
-				train.add(new TrainingSample<T>(t.sample, y));
-			}
+					Classifier<T> cls = null;
+					int c = 0;
+					
+					synchronized(listOfClassifiers) {
+						c = classIndices.get(i);
+	
+						// building classifier
+						try {
+							cls = (Classifier<T>) baseClassifier.copy();
+						} catch (Exception e) {
+							debug.println(1, "ERROR: Classifier not Cloneable!");
+							throw new UnsupportedOperationException(baseClassifier.getClass().getSimpleName()+" is not clonable.");
+						}
+					}
 
-			// training
-			cls.train(train);
+					System.out.println(i+": learning!");
+					// building ad hoc trai list
+					List<TrainingSample<T>> train = new ArrayList<TrainingSample<T>>();
+					for (TrainingSample<T> t : tlist) {
+						int y = -1;
+						if (t.label == c)
+							y = 1;
+						train.add(new TrainingSample<T>(t.sample, y));
+					}
 
-			// storing
-			listOfClassifiers.set(i, cls);
+					// training
+					cls.train(train);
+
+					// storing
+					synchronized(listOfClassifiers) {
+						listOfClassifiers.set(i, cls);
+					}
+
+					System.out.println(i+": done!");
+					return null;
+				}
+				
+			}));
 		}
+
+		
+		for(Future<Object> f : futures) {
+			try {
+				f.get();
+			} catch (InterruptedException e) {
+				debug.println(1, "Error in learning on classifier");
+				e.printStackTrace();
+				throw new RuntimeException("Failed threading training");
+			} catch (ExecutionException e) {
+				debug.println(1, "Error in learning on classifier");
+				e.printStackTrace();
+				throw new RuntimeException("Failed threading training");
+			}
+		}
+		
+		ThreadPoolServer.shutdownNow(ex);
 	}
 
 	/*

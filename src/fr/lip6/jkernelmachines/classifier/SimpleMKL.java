@@ -33,7 +33,6 @@ import fr.lip6.jkernelmachines.kernel.Kernel;
 import fr.lip6.jkernelmachines.kernel.SimpleCacheKernel;
 import fr.lip6.jkernelmachines.kernel.ThreadedKernel;
 import fr.lip6.jkernelmachines.kernel.adaptative.ThreadedSumKernel;
-import fr.lip6.jkernelmachines.threading.ThreadPoolServer;
 import fr.lip6.jkernelmachines.threading.ThreadedMatrixOperator;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 import fr.lip6.jkernelmachines.util.DebugPrinter;
@@ -296,8 +295,6 @@ public class SimpleMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T>, Serial
 		tsk = buildKernel(km, dm);
 		retrainSVM(tsk, list);
 		
-		//stop threads
-		ThreadPoolServer.shutdownNow();
 	}
 	
 	/**

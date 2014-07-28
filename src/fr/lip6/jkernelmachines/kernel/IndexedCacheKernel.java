@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import fr.lip6.jkernelmachines.threading.ThreadPoolServer;
 import fr.lip6.jkernelmachines.threading.ThreadedMatrixOperator;
 
 /**
@@ -104,7 +103,6 @@ public final class IndexedCacheKernel<S,T> extends Kernel<S> {
 		/* do the actuel computing of the matrix */
 		matrix = factory.getMatrix(matrix);
 				
-		ThreadPoolServer.shutdownNow();	
 	}
 	
 	@Override

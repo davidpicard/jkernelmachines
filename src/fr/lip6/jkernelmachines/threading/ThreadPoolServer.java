@@ -16,45 +16,57 @@
 
     Copyright David Picard - 2010
 
-*/
+ */
 package fr.lip6.jkernelmachines.threading;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import fr.lip6.jkernelmachines.util.DebugPrinter;
+
 /**
  * Threading utility used by various algorithm for obtaining a pool of threads.
+ * 
  * @author picard
- *
+ * 
  */
 public class ThreadPoolServer {
 
-	private static ThreadPoolExecutor executor;
-	
+	// private static ThreadPoolExecutor executor;
+	private static DebugPrinter debug = new DebugPrinter();
+
 	/**
 	 * Tells the system wide ThreadPoolServer (Singleton pattern)
+	 * 
 	 * @return system wide instance of this class.
 	 */
-	public static ThreadPoolExecutor getThreadPoolExecutor()
-	{
-		if(executor == null)
-		{
-			int nbcpu = Runtime.getRuntime().availableProcessors();
-			executor = new ThreadPoolExecutor(nbcpu, 2*nbcpu, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-			executor.prestartAllCoreThreads();
-			executor.allowCoreThreadTimeOut(true);
-		}
+	public static ThreadPoolExecutor getThreadPoolExecutor() {
+		ThreadPoolExecutor executor;
+		int nbcpu = Runtime.getRuntime().availableProcessors();
+		executor = new ThreadPoolExecutor(nbcpu, 2 * nbcpu, 1,
+				TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+		executor.prestartAllCoreThreads();
+		executor.allowCoreThreadTimeOut(true);
 		return executor;
 	}
-	
+
 	/**
 	 * Stops the server.
 	 */
-	public static void shutdownNow() {
-		if(executor != null)
-			executor.shutdownNow();
+	public static void shutdownNow(ThreadPoolExecutor executor) {
+		if (executor != null) {
+			executor.shutdown();
+			try {
+				while (!executor.isShutdown()) {
+					executor.awaitTermination(100, TimeUnit.MILLISECONDS);
+				}
+			} catch (InterruptedException e) {
+				debug.println(1, "Failed to awxait termination");
+				e.printStackTrace();
+			}
+		}
 		executor = null;
 	}
-	
+
 }

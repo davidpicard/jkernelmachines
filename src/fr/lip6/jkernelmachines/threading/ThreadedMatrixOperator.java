@@ -33,9 +33,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 public abstract class ThreadedMatrixOperator {
 	
 
-	//one job per line of the matrix
-	ThreadPoolExecutor threadPool = ThreadPoolServer.getThreadPoolExecutor();
-	Queue<Future<?>> futures = new LinkedList<Future<?>>();
 	
 	int nbjobs = (2*Runtime.getRuntime().availableProcessors());
 	
@@ -46,6 +43,10 @@ public abstract class ThreadedMatrixOperator {
 	 */
 	public double[][] getMatrix(final double[][] matrix)
 	{
+		//one job per line of the matrix
+		ThreadPoolExecutor threadPool = ThreadPoolServer.getThreadPoolExecutor();
+		Queue<Future<?>> futures = new LinkedList<Future<?>>();
+		
 		int increm = matrix.length / nbjobs  + 1 ;
 		
 		try
@@ -73,6 +74,8 @@ public abstract class ThreadedMatrixOperator {
 			}
 //			System.out.print("\r");
 
+			ThreadPoolServer.shutdownNow(threadPool);
+			
 			return matrix;
 		} catch (InterruptedException e) {
 
@@ -92,5 +95,4 @@ public abstract class ThreadedMatrixOperator {
 	public void setNbJobs(int n) {
 		nbjobs = n;
 	}
-	
 }

@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import fr.lip6.jkernelmachines.kernel.Kernel;
-import fr.lip6.jkernelmachines.threading.ThreadPoolServer;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 import fr.lip6.jkernelmachines.util.DebugPrinter;
 
@@ -160,8 +159,6 @@ public class LaSVMI<T> implements KernelSVM<T> {
 			}
 		clean();
 
-		if (cache)
-			ThreadPoolServer.shutdownNow();
 
 	}
 
