@@ -86,6 +86,8 @@ public class MulticlassAccuracyEvaluator<T> implements Evaluator<T> {
 		if(classifier != null && trainList != null) {
 			classifier.train(trainList);
 		}
+		
+		debug.println(1, "training done, testing begins");
 
 		double top = 0;
 		for (TrainingSample<T> t : testList) {
