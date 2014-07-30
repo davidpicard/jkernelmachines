@@ -64,7 +64,7 @@ public final class LaSVM<T> implements KernelSVM<T>, Serializable {
 	private double[][] kmatrix;
 	private boolean minmaxFlag = false;
 	private double[] kmaxmin;
-	private final LinkedList<Integer> trainQueue = new LinkedList<Integer>();
+	private LinkedList<Integer> trainQueue;
 	
 	private double b = 0; // bias
 	
@@ -180,8 +180,8 @@ public final class LaSVM<T> implements KernelSVM<T>, Serializable {
 	@SuppressWarnings("unchecked")
 	private void train()
 	{
-
-		trainQueue.clear();
+		trainQueue = new LinkedList<Integer>();
+		
 		for(int e = 0 ; e < E ; e++)
 		{
 			//do one pass over the entire (shuffled) training set
