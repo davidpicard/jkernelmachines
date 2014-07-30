@@ -197,7 +197,7 @@ public class LaSVMI<T> implements KernelSVM<T> {
 		debug.println(4, "- reprocess()");
 
 		int i = -1, j = -1;
-		double min = Double.MAX_VALUE, max = -Double.MAX_VALUE;
+		double min = Double.POSITIVE_INFINITY, max = Double.NEGATIVE_INFINITY;
 
 		// finding argmin and argmax
 		for (int n = 0; n < train.size(); n++) {

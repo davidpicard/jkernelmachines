@@ -200,7 +200,7 @@ public class SimpleMKLDensity<T> implements DensityFunction<T> {
 			// -------------------------------
 
 			// searching -grad max
-			double max = -Double.MAX_VALUE;
+			double max = Double.NEGATIVE_INFINITY;
 			for (int i = 0; i < dm.size(); i++) {
 				double g = -grad.get(i);
 				if (g > max)
@@ -413,7 +413,7 @@ public class SimpleMKLDensity<T> implements DensityFunction<T> {
 		}
 
 		// finding max dm
-		double max = -Double.MAX_VALUE;
+		double max = Double.NEGATIVE_INFINITY;
 		int indMax = 0;
 		for (int i = 0; i < dm.size(); i++) {
 			double d = dm.get(i);

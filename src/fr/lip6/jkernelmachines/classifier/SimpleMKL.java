@@ -458,7 +458,7 @@ public class SimpleMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T>, Serial
 		}
 		
 		//finding max dm
-		double max = -Double.MAX_VALUE;
+		double max = Double.NEGATIVE_INFINITY;
 		int indMax = 0;
 		for(int i = 0 ; i < dm.size(); i++)
 		{

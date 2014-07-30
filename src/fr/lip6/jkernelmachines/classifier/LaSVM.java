@@ -317,8 +317,8 @@ public final class LaSVM<T> implements KernelSVM<T>, Serializable {
 			return;
 		imin = -1;
 		imax = -1;
-		gmin = Double.MAX_VALUE;
-		gmax = -Double.MAX_VALUE;
+		gmin = Double.POSITIVE_INFINITY;
+		gmax = Double.NEGATIVE_INFINITY;
 		for(int s =0 ; s < S.length ; s++)
 		{
 			if(!S[s])
