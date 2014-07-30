@@ -16,7 +16,7 @@
 
     Copyright David Picard - 2010
 
-*/
+ */
 package fr.lip6.jkernelmachines.kernel;
 
 import java.util.List;
@@ -24,33 +24,36 @@ import java.util.List;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 
 /**
- * Very simple caching method for any kernel. Caches only the Gram matrix of a specified list of training samples.
+ * Very simple caching method for any kernel. Caches only the Gram matrix of a
+ * specified list of training samples.
+ * 
  * @author picard
- *
+ * 
  * @param <T>
  */
 public final class SimpleCacheKernel<T> extends Kernel<T> {
 
-	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2417905029129394427L;
-	
+
 	final private Kernel<T> kernel;
 	final private double matrix[][];
-	
+
 	/**
 	 * Constructor using a kernel and a list of samples
-	 * @param k the underlying of this caching kernel
-	 * @param l the list on which to compute the Gram matrix
+	 * 
+	 * @param k
+	 *            the underlying of this caching kernel
+	 * @param l
+	 *            the list on which to compute the Gram matrix
 	 */
 	public SimpleCacheKernel(Kernel<T> k, List<TrainingSample<T>> l) {
 		kernel = k;
 		matrix = k.getKernelMatrix(l);
 	}
-	
-	
+
 	@Override
 	final public double valueOf(T t1, T t2) {
 		return kernel.valueOf(t1, t2);
@@ -61,28 +64,25 @@ public final class SimpleCacheKernel<T> extends Kernel<T> {
 		return kernel.valueOf(t1);
 	}
 
-
 	@Override
 	public double[][] getKernelMatrix(List<TrainingSample<T>> e) {
-		return matrix;
-	}
 
+		return matrix;
+
+	}
 
 	/**
 	 * Returns the underlying kernel
+	 * 
 	 * @return the cached kernel
 	 */
 	public Kernel<T> getKernel() {
 		return kernel;
 	}
 
-
 	@Override
 	public String toString() {
 		return kernel.toString();
 	}
-	
-	
-	
 
 }
