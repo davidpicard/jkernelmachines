@@ -114,8 +114,8 @@ public class OneAgainstAll<T> implements MulticlassClassifier<T> {
 				listOfClassifiers.add(null);
 			}
 		}
-		debug.println(2, "Number of Classes: " + nbclasses);
-		
+		debug.println(1, "Number of Classes: " + nbclasses);
+
 		ThreadPoolExecutor ex = ThreadPoolServer.getThreadPoolExecutor();
 		List<Future<Object>> futures = new ArrayList<>();
 
@@ -129,20 +129,22 @@ public class OneAgainstAll<T> implements MulticlassClassifier<T> {
 
 					Classifier<T> cls = null;
 					int c = 0;
-					
-					synchronized(listOfClassifiers) {
+
+					synchronized (listOfClassifiers) {
 						c = classIndices.get(i);
-	
+
 						// building classifier
 						try {
 							cls = (Classifier<T>) baseClassifier.copy();
 						} catch (Exception e) {
 							debug.println(1, "ERROR: Classifier not Cloneable!");
-							throw new UnsupportedOperationException(baseClassifier.getClass().getSimpleName()+" is not clonable.");
+							throw new UnsupportedOperationException(
+									baseClassifier.getClass().getSimpleName()
+											+ " is not clonable.");
 						}
 					}
 
-					System.out.println(i+": learning!");
+					debug.println(2, i + ": learning!");
 					// building ad hoc trai list
 					List<TrainingSample<T>> train = new ArrayList<TrainingSample<T>>();
 					for (TrainingSample<T> t : tlist) {
@@ -156,19 +158,18 @@ public class OneAgainstAll<T> implements MulticlassClassifier<T> {
 					cls.train(train);
 
 					// storing
-					synchronized(listOfClassifiers) {
+					synchronized (listOfClassifiers) {
 						listOfClassifiers.set(i, cls);
 					}
 
-					System.out.println(i+": done!");
+					debug.println(1, i + ": done!");
 					return null;
 				}
-				
+
 			}));
 		}
 
-		
-		for(Future<Object> f : futures) {
+		for (Future<Object> f : futures) {
 			try {
 				f.get();
 			} catch (InterruptedException e) {
@@ -181,7 +182,7 @@ public class OneAgainstAll<T> implements MulticlassClassifier<T> {
 				throw new RuntimeException("Failed threading training");
 			}
 		}
-		
+
 		ThreadPoolServer.shutdownNow(ex);
 	}
 
@@ -192,26 +193,65 @@ public class OneAgainstAll<T> implements MulticlassClassifier<T> {
 	 */
 	@Override
 	public double valueOf(T e) {
+		final T t = e;
 		if (listOfClassifiers == null || listOfClassifiers.isEmpty())
 			return 0;
 
+		final double[] values = new double[listOfClassifiers.size()];
+
+		if (nbclasses > 2 * Runtime.getRuntime().availableProcessors()) {
+			ThreadPoolExecutor ex = ThreadPoolServer.getThreadPoolExecutor();
+			List<Future<Object>> futures = new ArrayList<>(
+					listOfClassifiers.size());
+			for (int i = 0; i < listOfClassifiers.size(); i++) {
+				final int id = i;
+				futures.add(ex.submit(new Callable<Object>() {
+
+					@Override
+					public Object call() throws Exception {
+						values[id] = listOfClassifiers.get(id).valueOf(t);
+						return null;
+					}
+
+				}));
+			}
+
+			for (Future<Object> f : futures) {
+				try {
+					f.get();
+				} catch (InterruptedException | ExecutionException e1) {
+					debug.println(1, "unable to thread evaluation");
+					e1.printStackTrace();
+					return -1;
+				}
+			}
+
+			ThreadPoolServer.shutdownNow(ex);
+		}
+		else {
+			for(int i = 0 ; i < nbclasses ; i++) {
+				values[i] = listOfClassifiers.get(i).valueOf(e);
+			}
+		}
+
 		// find max output
 		int imax = -1;
-		double max = -Double.MAX_VALUE;
+		double max = Double.NEGATIVE_INFINITY;
 		for (int i = 0; i < listOfClassifiers.size(); i++) {
-			double v = listOfClassifiers.get(i).valueOf(e);
-			if (v > max) {
-				max = v;
+			if (values[i] > max) {
+				max = values[i];
 				imax = i;
 			}
 		}
 		// return class corresponding to this output
 		return classIndices.get(imax);
 	}
-	
 
-	/* (non-Javadoc)
-	 * @see fr.lip6.jkernelmachines.classifier.multiclass.MulticlassClassifier#getConfidence(java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fr.lip6.jkernelmachines.classifier.multiclass.MulticlassClassifier#
+	 * getConfidence(java.lang.Object)
 	 */
 	@Override
 	public double getConfidence(T e) {
@@ -226,21 +266,24 @@ public class OneAgainstAll<T> implements MulticlassClassifier<T> {
 				max = v;
 			}
 		}
-		
+
 		return max;
 	}
 
-	/* (non-Javadoc)
-	 * @see fr.lip6.jkernelmachines.classifier.multiclass.MulticlassClassifier#getConfidences(java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fr.lip6.jkernelmachines.classifier.multiclass.MulticlassClassifier#
+	 * getConfidences(java.lang.Object)
 	 */
 	@Override
 	public Map<Integer, Double> getConfidences(T e) {
 		if (listOfClassifiers == null || listOfClassifiers.isEmpty())
 			return null;
-		
+
 		HashMap<Integer, Double> map = new HashMap<>();
-		for(int i = 0 ; i < listOfClassifiers.size() ; i++) {
-			 map.put(classIndices.get(i), listOfClassifiers.get(i).valueOf(e));
+		for (int i = 0; i < listOfClassifiers.size(); i++) {
+			map.put(classIndices.get(i), listOfClassifiers.get(i).valueOf(e));
 		}
 		return map;
 	}
@@ -278,6 +321,5 @@ public class OneAgainstAll<T> implements MulticlassClassifier<T> {
 	public OneAgainstAll<T> copy() throws CloneNotSupportedException {
 		return (OneAgainstAll<T>) super.clone();
 	}
-
 
 }
