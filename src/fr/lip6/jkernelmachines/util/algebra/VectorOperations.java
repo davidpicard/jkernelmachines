@@ -104,12 +104,25 @@ public class VectorOperations {
 		return C;
 	}
 	
+	/**
+	 * Performs the component wise product between 2 vectors
+	 * @param A first array
+	 * @param B second array
+	 * @return an array containing the compoentn wise product
+	 */
 	public static double[] prod(final double[] A, final double[] B) {
 		double[] out = new double[A.length];
 		prodi(out, A, B);
 		return out;
 	}
 	
+	/**
+	 * Performs the in place component wise product between 2 vectors
+	 * @param C the output array
+	 * @param A first array
+	 * @param B second array
+	 * @return C
+	 */
 	public static double[] prodi(double[] C, final double[] A, final double[] B) {
 		int packed = 2 * (A.length / 2);
 		int l = 0;
