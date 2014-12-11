@@ -10,7 +10,7 @@
      <property file="config.properties" />
      
      <!-- test for ejml -->
-     <available file="${ejml.dir}/ejml.jar" property="ejml.exclude" value=""/>
+     <available file="${ejml.dir}/${ejml.file}" property="ejml.exclude" value=""/>
      <property name="ejml.exclude" value="fr/lip6/jkernelmachines/util/algebra/ejml/**" />
 
      <target name="all" depends="jar" />
@@ -26,7 +26,7 @@
           <!-- Compile the java code -->
           <javac srcdir="${src}" destdir="${build}" includeantruntime="false" fork="yes" compiler="javac1.7" target="1.7" > 
 			   <classpath>
-				   <pathelement location="${ejml.dir}/ejml.jar" />
+				   <pathelement location="${ejml.dir}/${ejml.file}" />
 			   </classpath>
                <src path="${src}" />
                <!-- exclude ejml wrapper if no jar -->
@@ -106,7 +106,7 @@
                <pathelement path="${test-jarfile}"/>
                <pathelement path="${junit.library.dir}/junit4.jar"/>
                <pathelement path="${junit.library.dir}/ant-junit4.jar"/>
-			   <pathelement location="${ejml.dir}/ejml.jar" />
+			   <pathelement location="${ejml.dir}/${ejml.file}" />
           </classpath>
 		  <formatter type="xml"/>
 		  <batchtest todir="${test-report}">
