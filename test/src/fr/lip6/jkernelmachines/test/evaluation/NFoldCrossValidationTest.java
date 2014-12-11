@@ -64,6 +64,11 @@ public class NFoldCrossValidationTest {
 		rscv.run();
 		
 		assertEquals(1.0, rscv.getAverageScore(), 1e-15);
+
+		rscv.setBalanced(false);
+		rscv.run();
+		
+		assertEquals(1.0, rscv.getAverageScore(), 1e-15);
 	}
 
 }

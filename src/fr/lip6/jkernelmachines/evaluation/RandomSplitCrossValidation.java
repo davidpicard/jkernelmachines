@@ -32,14 +32,17 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
  * random into training and validation sets (using the trainPercent parameter). nbTest
  * evaluation are performed.</p>
  * 
- * <p>By default, 70% of the samples are used for training, and 20 tests are performed</p>
+ * <p>By default, 70% of the samples are used for training, and 20 tests are performed.</p>
+ * This CV is balanced by default.
  * 
  * @author picard
  *
  * @param <T> samples datatype
  */
-public class RandomSplitCrossValidation<T> implements CrossValidation {
+public class RandomSplitCrossValidation<T> implements CrossValidation, BalancedCrossValidation {
 
+	boolean balance = true;
+	
 	Classifier<T> classifier;
 	List<TrainingSample<T>> list;
 	Evaluator<T> evaluator;
@@ -77,8 +80,32 @@ public class RandomSplitCrossValidation<T> implements CrossValidation {
 			
 			//random split
 			Collections.shuffle(list, ran);
-			List<TrainingSample<T>> trainList = list.subList(0, trainSize);
-			List<TrainingSample<T>> testList = list.subList(trainSize, list.size());
+			List<TrainingSample<T>> trainList = new ArrayList<>(trainSize);
+			List<TrainingSample<T>> testList = new ArrayList<>(list.size()-trainSize);
+			if(balance) {
+				List<TrainingSample<T>> pos = new ArrayList<TrainingSample<T>>();
+				List<TrainingSample<T>> neg = new ArrayList<TrainingSample<T>>();
+				for(TrainingSample<T> t : list) {
+					if(t.label == 1) {
+						pos.add(t);
+					}
+					else {
+						neg.add(t);
+					}
+				}
+				
+				trainList.addAll(pos.subList(0, (int)(pos.size()*trainPercent)));
+				testList.addAll(pos);
+				trainList.addAll(neg.subList(0, (int)(neg.size()*trainPercent)));
+				testList.addAll(neg);
+				testList.removeAll(trainList);
+				
+			}
+			else {
+				trainList.addAll(list.subList(0, trainSize));
+				testList.addAll(list);
+				testList.removeAll(trainList);
+			}
 			
 			//set evaluator parameters
 			evaluator.setClassifier(classifier);
@@ -199,6 +226,22 @@ public class RandomSplitCrossValidation<T> implements CrossValidation {
 
 	public void setSeed(long seed) {
 		this.seed = seed;
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.lip6.jkernelmachines.evaluation.BalancedCrossValidation#isBalanced()
+	 */
+	@Override
+	public boolean isBalanced() {
+		return balance;
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.lip6.jkernelmachines.evaluation.BalancedCrossValidation#setBalanced(boolean)
+	 */
+	@Override
+	public void setBalanced(boolean balanced) {
+		balance = balanced;
 	}
 
 }

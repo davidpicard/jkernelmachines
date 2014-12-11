@@ -64,9 +64,12 @@ public class RandomSplitCrossValidationTest {
 		RandomSplitCrossValidation<double[]> rscv = new RandomSplitCrossValidation<double[]>(svm, train, ae);
 		rscv.setTrainPercent(0.9);
 		rscv.setNbTest(10);
-		
+
 		rscv.run();
-		
+		assertEquals(1.0, rscv.getAverageScore(), 1e-15);
+
+		rscv.setBalanced(false);
+		rscv.run();
 		assertEquals(1.0, rscv.getAverageScore(), 1e-15);
 	}
 

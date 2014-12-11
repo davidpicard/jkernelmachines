@@ -34,12 +34,14 @@ import fr.lip6.jkernelmachines.util.DebugPrinter;
  * testing, and the remaining for training, and so on.
  * <b>Warning, no randomization is performed on the list, so be careful it is not
  * in the order of the classes which would bias the learning.</b>
+ * This CV is balanced by default
  * </p>
  * @author picard
  *
  */
-public class NFoldCrossValidation<T> implements CrossValidation {
+public class NFoldCrossValidation<T> implements CrossValidation, BalancedCrossValidation {
 	
+	boolean balanced = true;
 	int N = 5;
 	Classifier<T> classifier;
 	List<TrainingSample<T>> list;
@@ -71,17 +73,39 @@ public class NFoldCrossValidation<T> implements CrossValidation {
 	 */
 	@Override
 	public void run() {
-		int step = list.size() / N;
 		results = new double[N];
 		
+		List<TrainingSample<T>> pos = new ArrayList<TrainingSample<T>>();
+		List<TrainingSample<T>> neg = new ArrayList<TrainingSample<T>>();
+		for(TrainingSample<T> t : list) {
+			if(t.label == 1) {
+				pos.add(t);
+			}
+			else {
+				neg.add(t);
+			}
+		}
+
 		for (int n = 0 ; n < N ; n++) {
 			
 			//setting nth fold
 			List<TrainingSample<T>> test = new ArrayList<TrainingSample<T>>();
-			test.addAll(list.subList(n*step, (n+1)*step));
 			List<TrainingSample<T>> train = new ArrayList<TrainingSample<T>>();
-			train.addAll(list);
-			train.removeAll(test);
+			if(balanced) {
+				int step = pos.size() / N;
+				test.addAll(pos.subList(n*step, (n+1)*step));
+				train.addAll(pos);
+				step = neg.size() / N;
+				test.addAll(neg.subList(n*step, (n+1)*step));
+				train.addAll(neg);
+				train.removeAll(test);
+			}
+			else {
+				int step = list.size() / N;
+				test.addAll(list.subList(n*step, (n+1)*step));
+				train.addAll(list);
+				train.removeAll(test);
+			}
 			
 			debug.println(4, "train size: "+train.size());
 			debug.println(4, "test size: "+test.size());
@@ -140,6 +164,24 @@ public class NFoldCrossValidation<T> implements CrossValidation {
 	@Override
 	public double[] getScores() {
 		return results;
+	}
+
+
+	/**
+	 * Returns true if the splits are balanced between positive and negative
+	 * @return
+	 */
+	public boolean isBalanced() {
+		return balanced;
+	}
+
+
+	/**
+	 * Set class balancing strategy when computing the splits
+	 * @param balanced true if enables balancing
+	 */
+	public void setBalanced(boolean balanced) {
+		this.balanced = balanced;
 	}
 
 }
