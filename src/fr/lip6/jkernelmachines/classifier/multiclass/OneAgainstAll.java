@@ -199,7 +199,7 @@ public class OneAgainstAll<T> implements MulticlassClassifier<T> {
 
 		final double[] values = new double[listOfClassifiers.size()];
 
-		if (nbclasses > 2 * Runtime.getRuntime().availableProcessors()) {
+		if (nbclasses >  Runtime.getRuntime().availableProcessors()) {
 			ThreadPoolExecutor ex = ThreadPoolServer.getThreadPoolExecutor();
 			List<Future<Object>> futures = new ArrayList<>(
 					listOfClassifiers.size());
