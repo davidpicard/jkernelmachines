@@ -35,7 +35,7 @@ import fr.lip6.jkernelmachines.threading.ThreadPoolServer;
  */
 public class ThreadedMatrixVectorOperations {
 
-	public static int granularity = 1024;
+	public static int granularity = 8;
 	
 	/**
 	 * Performs a matrix*vector multiplication

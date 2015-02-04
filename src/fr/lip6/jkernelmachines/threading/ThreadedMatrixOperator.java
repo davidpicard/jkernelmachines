@@ -25,6 +25,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import fr.lip6.jkernelmachines.util.DebugPrinter;
+
 /**
  * Utility for the parallelization of matrix operations.
  * @author picard
@@ -32,9 +34,9 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public abstract class ThreadedMatrixOperator {
 	
-
+	static DebugPrinter debug = new DebugPrinter();
 	
-	int nbjobs = (2*Runtime.getRuntime().availableProcessors());
+	static int lines = 1;
 	
 	/**
 	 * get the parallelized matrix
@@ -47,7 +49,7 @@ public abstract class ThreadedMatrixOperator {
 		ThreadPoolExecutor threadPool = ThreadPoolServer.getThreadPoolExecutor();
 		Queue<Future<?>> futures = new LinkedList<Future<?>>();
 		
-		int increm = matrix.length / nbjobs  + 1 ;
+		int increm = lines;
 		
 		try
 		{
@@ -70,20 +72,17 @@ public abstract class ThreadedMatrixOperator {
 			while(!futures.isEmpty())
 			{
 				futures.remove().get();
-//				System.out.print("\r"+futures.size()+" to go");
 			}
-//			System.out.print("\r");
 
 			ThreadPoolServer.shutdownNow(threadPool);
 			
 			return matrix;
 		} catch (InterruptedException e) {
 
-			System.err.println("MatrixWorkerFactory : getMatrix impossible");
-			e.printStackTrace();
+			debug.println(3, "MatrixWorkerFactory : getMatrix interrupted");
 			return null;
 		} catch (ExecutionException e) {
-			System.err.println("MatrixWorkerFactory : Exception in execution, matrix unavailable.");
+			debug.println(1, "MatrixWorkerFactory : Exception in execution, matrix unavailable.");
 			e.printStackTrace();
 			return null;
 		}
@@ -92,7 +91,11 @@ public abstract class ThreadedMatrixOperator {
 	
 	public abstract void doLines(double matrix[][], int from, int to);
 	
-	public void setNbJobs(int n) {
-		nbjobs = n;
+	/**
+	 * Sets the number of lines computed by each job
+	 * @param n the number of lines (default 1)
+	 */
+	public static void setLines(int n) {
+		lines = n;
 	}
 }
