@@ -176,9 +176,10 @@ public class ThreadedSumKernel<T> extends Kernel<T> {
 				public void doLines(double[][] matrix , int from , int to) {
 					for(int index = from ; index < to ; index++)
 					{
-						for(int j = 0 ; j < matrix[index].length ; j++)
+						for(int j = index ; j < matrix[index].length ; j++)
 						{
 							matrix[index][j] += m[index][j] * w;
+							matrix[j][index] = matrix[index][j];
 						}
 					}
 				};

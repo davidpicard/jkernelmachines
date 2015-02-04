@@ -77,9 +77,10 @@ public class ThreadedKernel<T> extends Kernel<T> {
 				{
 					T xi = l.get(index).sample;
 
-					for(int j = 0 ; j < matrix[index].length ; j++)
+					for(int j = index ; j < matrix[index].length ; j++)
 					{
 						matrix[index][j] = k.valueOf(xi, l.get(j).sample);
+						matrix[j][index] = matrix[index][j];
 					}
 				}
 			};

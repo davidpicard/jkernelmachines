@@ -51,7 +51,7 @@ public final class SimpleCacheKernel<T> extends Kernel<T> {
 	 */
 	public SimpleCacheKernel(Kernel<T> k, List<TrainingSample<T>> l) {
 		kernel = k;
-		matrix = k.getKernelMatrix(l);
+		matrix = new ThreadedKernel<>(k).getKernelMatrix(l);
 	}
 
 	@Override

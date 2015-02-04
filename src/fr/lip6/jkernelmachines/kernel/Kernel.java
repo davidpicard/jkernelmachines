@@ -92,8 +92,10 @@ public abstract class Kernel<T> implements Serializable {
 				for(int index = from ; index < to ; index++)
 				{
 					T s1 = l.get(index).sample;
-					for(int j = 0 ; j < matrix.length ; j++)
+					for(int j = index ; j < matrix.length ; j++) {
 						matrix[index][j] = valueOf(s1, l.get(j).sample);
+						matrix[j][index] = matrix[index][j];
+					}
 				}
 			}
 		};
