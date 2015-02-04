@@ -129,7 +129,7 @@ public class VectorOperations {
 		// packed operations
 		for(l = 0 ; l < packed ; l += 2) {
 			C[l] = A[l]*B[l];
-			C[l+1] = A[l+1]*B[l];
+			C[l+1] = A[l+1]*B[l+1];
 		}
 		// remaining operations
 		for(; l < A.length ; l++) {
