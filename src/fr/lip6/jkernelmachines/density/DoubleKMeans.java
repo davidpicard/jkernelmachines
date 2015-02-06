@@ -169,7 +169,7 @@ public class DoubleKMeans implements DensityFunction<double[]> {
 					mu[imin] = Arrays.copyOf(mu[imax], dim);
 					mu[imin][comp] += 1e-4;
 					mu[imax][comp] -= 1e-4;
-					debug.println(2, "shiting done");
+					debug.println(2, "shifting done");
 				} else {
 					break;
 				}
