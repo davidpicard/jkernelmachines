@@ -19,13 +19,7 @@
  */
 package fr.lip6.jkernelmachines.util.algebra;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
-
-import fr.lip6.jkernelmachines.threading.ThreadPoolServer;
+import fr.lip6.jkernelmachines.threading.ThreadedMatrixOperator;
 
 /**
  * This class provides multithreaded operations between matrices and vectors
@@ -35,7 +29,7 @@ import fr.lip6.jkernelmachines.threading.ThreadPoolServer;
  */
 public class ThreadedMatrixVectorOperations {
 
-	public static int granularity = 8;
+	public static int granularity = 1024;
 	
 	/**
 	 * Performs a matrix*vector multiplication
@@ -48,40 +42,14 @@ public class ThreadedMatrixVectorOperations {
 	 */
 	public static double[] rMul(final double[][] A, final double[] x) {
 		int n = x.length;
-		int m = A.length;
 		if (A[0].length != n) {
 			throw new ArithmeticException("Matrix Dimension must agree : "
 					+ A[0].length + ", " + n);
 		}
 
-		final double[] o = new double[n];
-
-		ThreadPoolExecutor exec = ThreadPoolServer.getThreadPoolExecutor();
-		List<Future<Object>> futures = new ArrayList<Future<Object>>();
-
-		for (int ii = 0; ii < m; ii++) {
-			final int i = ii;
-			futures.add(exec.submit(new Callable<Object>() {
-
-				@Override
-				public Object call() throws Exception {
-					o[i] = VectorOperations.dot(A[i], x);
-					return null;
-				}
-			}));
-
-		}
-
-		for (Future<Object> f : futures) {
-			try {
-				f.get();
-			} catch (Exception e) {
-				throw new ArithmeticException(
-						"Threaded algebraic operations unavailable");
-			}
-		}
-
-		return o;
+		double[] o = new double[A.length];
+		
+		return rMuli(o, A, x);
 	}
 
 	/**
@@ -106,33 +74,21 @@ public class ThreadedMatrixVectorOperations {
 					+ C.length + ", " + m);
 		}
 		
-		ThreadPoolExecutor exec = ThreadPoolServer.getThreadPoolExecutor();
-		List<Future<Object>> futures = new ArrayList<Future<Object>>();
 		final double[] o = C;
-		
-		for (int ii = 0; ii < m; ii++) {
-			final int i = ii;
-			futures.add(exec.submit(new Callable<Object>() {
-
-				@Override
-				public Object call() throws Exception {
-					o[i] = VectorOperations.dot(A[i], x);
-					return null;
+		ThreadedMatrixOperator tmo = new ThreadedMatrixOperator() {
+			
+			@Override
+			public void doLines(double[][] matrix, int from, int to) {
+				for(int i = from ; i < to ; i++) {
+					o[i] = VectorOperations.dot(matrix[i], x);
 				}
-			}));
-
-		}
-
-		for (Future<Object> f : futures) {
-			try {
-				f.get();
-			} catch (Exception e) {
-				throw new ArithmeticException(
-						"Threaded algebraic operations unavailable");
 			}
-		}
+		};
+		
+		tmo.getMatrix(A);
 
-		return C;
+
+		return o;
 	}
 
 }

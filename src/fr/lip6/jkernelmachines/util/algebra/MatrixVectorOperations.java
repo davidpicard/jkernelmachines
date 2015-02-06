@@ -39,18 +39,9 @@ public class MatrixVectorOperations {
 		if(A[0].length != n) {
 			throw new ArithmeticException("Matrix Dimension must agree : "+A[0].length+", "+n);
 		}
-		
-		if(m > ThreadedMatrixVectorOperations.granularity && n > ThreadedMatrixVectorOperations.granularity) {
-			return ThreadedMatrixVectorOperations.rMul(A, x);
-		}
-		
 		double[] o = new double[m];
 		
-		for(int i = 0 ; i < m ; i++) {
-			o[i] = VectorOperations.dot(A[i], x);
-		}
-		
-		return o;
+		return rMuli(o, A, x);
 	}
 	
 	/**
@@ -69,7 +60,7 @@ public class MatrixVectorOperations {
 			throw new ArithmeticException("Matrix Dimension must agree : "+C.length+", "+m);
 		}
 
-		if(m > ThreadedMatrixVectorOperations.granularity && n > ThreadedMatrixVectorOperations.granularity) {
+		if(n > ThreadedMatrixVectorOperations.granularity) {
 			return ThreadedMatrixVectorOperations.rMuli(C, A, x);
 		}
 		
