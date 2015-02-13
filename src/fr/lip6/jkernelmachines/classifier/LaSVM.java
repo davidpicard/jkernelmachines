@@ -97,7 +97,9 @@ public final class LaSVM<T> implements KernelSVM<T>, Serializable {
 			init();
 		}
 		else {
-			tlist.add(t);
+			if(!tlist.contains(t)) {
+				tlist.add(t);
+			}
 			//compute kernel
 			kmatrix = kernel.getKernelMatrix(tlist);
 			
