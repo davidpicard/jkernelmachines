@@ -44,7 +44,7 @@ public class ThreadPoolServer {
 	public static ThreadPoolExecutor getThreadPoolExecutor() {
 		ThreadPoolExecutor executor;
 		int nbcpu = Runtime.getRuntime().availableProcessors();
-		executor = new ThreadPoolExecutor(nbcpu, nbcpu, 1,
+		executor = new ThreadPoolExecutor(nbcpu, nbcpu+2, 1,
 				TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 		executor.prestartAllCoreThreads();
 		executor.allowCoreThreadTimeOut(true);
@@ -62,7 +62,7 @@ public class ThreadPoolServer {
 					executor.awaitTermination(100, TimeUnit.MILLISECONDS);
 				}
 			} catch (InterruptedException e) {
-				debug.println(1, "Failed to awxait termination");
+				debug.println(1, "Failed to await termination");
 				e.printStackTrace();
 			}
 		}
