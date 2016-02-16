@@ -20,10 +20,13 @@
 package fr.lip6.jkernelmachines.evaluation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import fr.lip6.jkernelmachines.classifier.Classifier;
 import fr.lip6.jkernelmachines.type.TrainingSample;
+import fr.lip6.jkernelmachines.util.ArraysUtils;
 import fr.lip6.jkernelmachines.util.DebugPrinter;
 
 /**
@@ -39,15 +42,15 @@ import fr.lip6.jkernelmachines.util.DebugPrinter;
  * @author picard
  *
  */
-public class NFoldCrossValidation<T> implements CrossValidation, BalancedCrossValidation {
+public class NFoldCrossValidation<T> implements CrossValidation, BalancedCrossValidation, MultipleEvaluatorCrossValidation<T> {
 	
 	boolean balanced = true;
 	int N = 5;
 	Classifier<T> classifier;
 	List<TrainingSample<T>> list;
-	Evaluator<T> evaluator;
+	Map<String, Evaluator<T>> evaluators = new HashMap<String, Evaluator<T>>();
 	
-	double[] results;
+	Map<String, double[]> results = new HashMap<String, double[]>();
 	
 	DebugPrinter debug = new DebugPrinter();
 	
@@ -62,7 +65,7 @@ public class NFoldCrossValidation<T> implements CrossValidation, BalancedCrossVa
 	public NFoldCrossValidation(int n, Classifier<T> cls, List<TrainingSample<T>> l, Evaluator<T> eval) {
 		N = Math.max(n, 2); // avoid 1 fold or less cv ;)
 		classifier = cls;
-		evaluator = eval;
+		evaluators.put("default", eval);
 		list = new ArrayList<TrainingSample<T>>();
 		list.addAll(l);
 	}
@@ -73,7 +76,9 @@ public class NFoldCrossValidation<T> implements CrossValidation, BalancedCrossVa
 	 */
 	@Override
 	public void run() {
-		results = new double[N];
+		for(String name : evaluators.keySet()) {
+			results.put(name, new double[N]);
+		}
 		
 		List<TrainingSample<T>> pos = new ArrayList<TrainingSample<T>>();
 		List<TrainingSample<T>> neg = new ArrayList<TrainingSample<T>>();
@@ -110,16 +115,21 @@ public class NFoldCrossValidation<T> implements CrossValidation, BalancedCrossVa
 			debug.println(4, "train size: "+train.size());
 			debug.println(4, "test size: "+test.size());
 			
+			// train
+			classifier.train(train);
+			
 			//setting evaluator
-			evaluator.setClassifier(classifier);
-			evaluator.setTrainingSet(train);
-			evaluator.setTestingSet(test);
-			
-			//train and compute results
-			evaluator.evaluate();
-			
-			//get score
-			results[n] = evaluator.getScore();			
+			for(String name : evaluators.keySet()) {
+				Evaluator<T> e = evaluators.get(name);
+				e.setClassifier(classifier);
+				e.setTrainingSet(null);
+				e.setTestingSet(test);
+
+				//compute results
+				e.evaluate();
+				
+				results.get(name)[n] = e.getScore();
+			}
 		}
 		
 
@@ -130,15 +140,11 @@ public class NFoldCrossValidation<T> implements CrossValidation, BalancedCrossVa
 	 */
 	@Override
 	public double getAverageScore() {
-		if(results == null)
+		double[] res = results.get("default");
+		if(res == null)
 			return Double.NaN;
 		
-		double ave = 0;
-		
-		for(double d : results)
-			ave += d;
-		
-		return ave/results.length;
+		return ArraysUtils.mean(res);
 	}
 
 	/* (non-Javadoc)
@@ -146,16 +152,11 @@ public class NFoldCrossValidation<T> implements CrossValidation, BalancedCrossVa
 	 */
 	@Override
 	public double getStdDevScore() {
-		if(results == null)
+		double[] res = results.get("default");
+		if(res == null)
 			return Double.NaN;
 		
-		double std = 0;
-		double ave = getAverageScore();
-		
-		for(double d : results)
-			std += (d-ave)*(d-ave);
-		
-		return Math.sqrt(std/results.length);
+		return ArraysUtils.stddev(res);
 	}
 
 	/* (non-Javadoc)
@@ -163,7 +164,7 @@ public class NFoldCrossValidation<T> implements CrossValidation, BalancedCrossVa
 	 */
 	@Override
 	public double[] getScores() {
-		return results;
+		return results.get("default");
 	}
 
 
@@ -182,6 +183,61 @@ public class NFoldCrossValidation<T> implements CrossValidation, BalancedCrossVa
 	 */
 	public void setBalanced(boolean balanced) {
 		this.balanced = balanced;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see fr.lip6.jkernelmachines.evaluation.MultipleEvaluatorCorssValidation#addEvaluator(java.lang.String, fr.lip6.jkernelmachines.evaluation.Evaluator)
+	 */
+	@Override
+	public void addEvaluator(String name, Evaluator<T> e) {
+		evaluators.put(name, e);
+	}
+
+
+	/* (non-Javadoc)
+	 * @see fr.lip6.jkernelmachines.evaluation.MultipleEvaluatorCorssValidation#removeEvaluator(java.lang.String)
+	 */
+	@Override
+	public void removeEvaluator(String name) {
+		if(evaluators.containsKey(name)) {
+			evaluators.remove(name);
+		}
+	}
+
+
+	/* (non-Javadoc)
+	 * @see fr.lip6.jkernelmachines.evaluation.MultipleEvaluatorCorssValidation#getAverageScore(java.lang.String)
+	 */
+	@Override
+	public double getAverageScore(String name) {
+		double[] res = results.get(name);
+		if(res == null) {
+			return Double.NaN;
+		}
+		return ArraysUtils.mean(res);
+	}
+
+
+	/* (non-Javadoc)
+	 * @see fr.lip6.jkernelmachines.evaluation.MultipleEvaluatorCorssValidation#getStdDevScore(java.lang.String)
+	 */
+	@Override
+	public double getStdDevScore(String name) {
+		double[] res = results.get(name);
+		if(res == null) {
+			return Double.NaN;
+		}
+		return ArraysUtils.stddev(res);
+	}
+
+
+	/* (non-Javadoc)
+	 * @see fr.lip6.jkernelmachines.evaluation.MultipleEvaluatorCorssValidation#getScores(java.lang.String)
+	 */
+	@Override
+	public double[] getScores(String name) {
+		return results.get(name);
 	}
 
 }
