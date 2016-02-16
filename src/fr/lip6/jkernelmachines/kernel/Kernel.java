@@ -125,6 +125,22 @@ public abstract class Kernel<T> implements Serializable {
 		return matrix;
 	}	
 	
+
+	/**
+	 * returns a vector containing the similarity values of a given sample to a list of samples (i.e. a line of a kernel matrix if said sample is in the list)
+	 * @param x sample
+	 * @param l list of sample
+	 * @return [k(x, l[i])]_i 
+	 */
+	public double[] getKernelMatrixLine(T x,
+			List<TrainingSample<T>> l) {
+		double[] ki = new double[l.size()];
+		for(int i = 0 ; i < l.size(); i++) {
+			ki[i] = valueOf(x, l.get(i).sample);
+		}
+		return ki;
+	}
+	
 	/**
 	 * Set the name of this kernel
 	 * @param n
@@ -142,4 +158,5 @@ public abstract class Kernel<T> implements Serializable {
 	{
 		return name;
 	}
+
 }
