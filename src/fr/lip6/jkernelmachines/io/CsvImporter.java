@@ -56,7 +56,7 @@ public class CsvImporter {
 		// parse all lines
 		while ((l = line.readLine()) != null) {
 
-			String[] tok = l.split(",");
+			String[] tok = l.split(sep);
 			double[] d = new double[tok.length - 1];
 			int y = 0;
 
