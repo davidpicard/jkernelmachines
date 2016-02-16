@@ -24,6 +24,7 @@ import java.util.List;
 
 import fr.lip6.jkernelmachines.kernel.Kernel;
 import fr.lip6.jkernelmachines.type.TrainingSample;
+import fr.lip6.jkernelmachines.util.algebra.VectorOperations;
 
 /**
  * Major kernel computed as a weighted sum of minor kernels : 
@@ -157,6 +158,15 @@ public class WeightedSumKernel<T> extends Kernel<T> {
 		}
 		
 		return matrix;
+	}
+
+	@Override
+	public double[] getKernelMatrixLine(T x, List<TrainingSample<T>> l) {
+		double[] line = new double[l.size()];
+		for(Kernel<T> k : kernels.keySet()) {
+			VectorOperations.addi(line, line, kernels.get(k), k.getKernelMatrixLine(x, l));
+		}
+		return line;
 	}
 	
 	
