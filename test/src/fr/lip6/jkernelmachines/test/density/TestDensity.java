@@ -29,7 +29,6 @@ import fr.lip6.jkernelmachines.density.SMODensity;
 import fr.lip6.jkernelmachines.density.SimpleMKLDensity;
 import fr.lip6.jkernelmachines.kernel.typed.DoubleGaussL2;
 import fr.lip6.jkernelmachines.kernel.typed.index.IndexDoubleGaussL2;
-import fr.lip6.jkernelmachines.util.DebugPrinter;
 
 /**
  * Test cases of density estimators using generated data.
