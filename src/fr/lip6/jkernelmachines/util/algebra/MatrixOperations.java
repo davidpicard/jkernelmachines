@@ -345,8 +345,15 @@ public class MatrixOperations {
 		// apply givens rotation
 		matrix[i][i] = c*c*Sii + s*s*Sjj - 2*c*s*Sij;
 		matrix[j][j] = s*s*Sii + c*c*Sjj + 2*c*s*Sij;
-		matrix[i][j] = (c*c-s*s)*Sij + s*c*(Sii - Sjj);
-		matrix[j][i] = matrix[i][j];
+		double ij = (c*c-s*s)*Sij + s*c*(Sii - Sjj);
+		if(abs(ij)>1e-15) {
+			matrix[i][j] = ij; 
+			matrix[j][i] = ij;
+		}
+		else {
+			matrix[i][j] = 0;
+			matrix[j][i] = 0;
+		}
 		G[i][i] = c*Gii - s*Gji;
 		G[i][j] = c*Gij - s*Gjj;
 		G[j][i] = s*Gii + c*Gji;
@@ -611,14 +618,8 @@ public class MatrixOperations {
 		
 		// init eigenvectors
 		double[][] G;
-		
-		// check if need precond
-		boolean diag = true;
-		for(int i = 1 ; i < n ; i++)
-			if(m[0][i] > m[0][0]/n)
-				diag = false;
-		
-		if(!prec || diag)  {
+				
+		if(!prec)  {
 			matrix = new double[n][n];
 			for(int i = 0 ; i < n ; i++)
 				for(int j = 0 ; j < n ; j++)
@@ -856,6 +857,11 @@ public class MatrixOperations {
 	}
 	
 	public static double[][][] tri_lancsos(final double[][] m) {
+		double[][][] QT = lancsos_iteration(m);
+		return QT;
+	}
+	
+	public static double[][][] lancsos_iteration(final double[][] m) {
 		int n = m.length;
 		double[] alpha = new double[n];
 		double[] beta = new double[n];
@@ -1021,6 +1027,37 @@ public class MatrixOperations {
 				matrix[j][i] = 0;
 			}
 		return new double[][][] {transi(G), matrix};
+	}
+	
+
+	/**
+	 * outputs the matrix on System.out
+	 * @param A
+	 */
+	public static void print(double[][] A) {
+		for(int i = 0 ; i < A.length ; i++) {
+			System.out.println(Arrays.toString(A[i]));
+		}
+		System.out.println();
+	}
+	
+	public static boolean is_tri(double[][] A) {
+		int n = A.length;
+		for(int i = 0 ; i < n ; i++) {
+			for(int j = 0 ; j < i-1 ; j++){
+				if(abs(A[i][j])> 1e-14) {
+					System.out.println(i+", "+j+" : "+A[i][j]);
+					return false;
+				}
+			}
+			for(int j = i+2 ; j < n ; j++) {
+				if(abs(A[i][j])> 1e-14) {
+					System.out.println(i+", "+j+" : "+A[i][j]);
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 }
