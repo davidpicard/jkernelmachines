@@ -592,13 +592,22 @@ public class MatrixOperations {
 	 */
 	public static double[][][] eig(double[][] A) {
 		// try ejml first if present
-		if(A.length > 65 && ejml_eig != null)
+		if(A.length > 65 && ejml_eig != null) {
 			try {
 				return (double[][][]) ejml_eig.invoke(null, new Object[]{A});
 			} catch (Exception e) {
 				if(DebugPrinter.DEBUG_LEVEL > 3)
 					e.printStackTrace();
 			}
+		}
+		else if(A.length == 1) {
+			if(abs(A[0][0]) > 0) {
+				return new double[][][]{ {{1}}, {{1./A[0][0] }} };
+			}
+			else {
+				return new double[][][]{ {{1}}, {{ Double.NaN }} };
+			}
+		}
 		// fallback to our implementation
 		if(DebugPrinter.DEBUG_LEVEL > 3)
 			System.err.println("fallback to eig_jacobi");
