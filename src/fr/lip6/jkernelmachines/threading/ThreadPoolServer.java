@@ -36,6 +36,8 @@ public class ThreadPoolServer {
 	// private static ThreadPoolExecutor executor;
 	private static DebugPrinter debug = new DebugPrinter();
 
+	static int nbcpu = Runtime.getRuntime().availableProcessors();
+
 	/**
 	 * Tells the system wide ThreadPoolServer (Singleton pattern)
 	 * 
@@ -43,7 +45,6 @@ public class ThreadPoolServer {
 	 */
 	public static ThreadPoolExecutor getThreadPoolExecutor() {
 		ThreadPoolExecutor executor;
-		int nbcpu = Runtime.getRuntime().availableProcessors();
 		executor = new ThreadPoolExecutor(nbcpu, nbcpu+2, 1,
 				TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 		executor.prestartAllCoreThreads();
