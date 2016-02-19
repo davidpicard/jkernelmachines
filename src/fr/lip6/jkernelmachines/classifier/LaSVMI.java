@@ -74,12 +74,11 @@ public class LaSVMI<T> implements KernelSVM<T> {
 		kernel = k;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see fr.lip6.classifier.Classifier#train(fr.lip6.type.TrainingSample)
+	/**
+	 * Incremental train adding a single sample
+	 * (performs a full retrain on the whole list a samples)
+	 * @param t
 	 */
-	@Override
 	public void train(TrainingSample<T> t) {
 		if (train == null)
 			train = new ArrayList<TrainingSample<T>>();

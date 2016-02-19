@@ -53,6 +53,21 @@ public class DoubleSGDTest {
 	}
 
 	/**
+	 * Test method for {@link fr.lip6.jkernelmachines.classifier.DoubleSGD#train(fr.lip6.jkernelmachines.TrainingSample)}.
+	 */
+	@Test
+	public final void testTrainOfTrainingSampleOfdouble() {
+		svm = new DoubleSGD();
+		for(TrainingSample<double[]> t : train) {
+			svm.train(t);
+		}
+		for(TrainingSample<double[]> t : train) {
+			double v = t.label * svm.valueOf(t.sample);
+			assertTrue(v > 0);
+		}
+	}
+	
+	/**
 	 * Test method for {@link fr.lip6.jkernelmachines.classifier.DoubleSGD#train(java.util.List)}.
 	 */
 	@Test

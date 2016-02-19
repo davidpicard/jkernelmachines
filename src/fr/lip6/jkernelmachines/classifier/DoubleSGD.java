@@ -24,6 +24,7 @@ import java.util.List;
 
 import fr.lip6.jkernelmachines.kernel.typed.DoubleLinear;
 import fr.lip6.jkernelmachines.type.TrainingSample;
+import fr.lip6.jkernelmachines.type.TrainingSampleStream;
 
 /**
  * <p>
@@ -39,7 +40,7 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
  * @author picard
  *
  */
-public class DoubleSGD implements Classifier<double[]> {
+public class DoubleSGD implements Classifier<double[]>, OnlineClassifier<double[]> {
 
 	// Available losses
 	/** Type of loss function using hinge */
@@ -69,11 +70,6 @@ public class DoubleSGD implements Classifier<double[]> {
 	
 	//linear kernel
 	DoubleLinear linear = new DoubleLinear();
-	
-	@Override
-	public void train(TrainingSample<double[]> t) {
-		throw new UnsupportedOperationException("Not applicable");
-	}
 
 	@Override
 	public void train(List<TrainingSample<double[]>> l) {
@@ -98,6 +94,65 @@ public class DoubleSGD implements Classifier<double[]> {
 			trainOnce(l);
 		}
 
+	}
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fr.lip6.jkernelmachines.classifier.Classifier#train(fr.lip6.jkernelmachines
+	 * .type.TrainingSample)
+	 */
+	@Override
+	public void train(TrainingSample<double[]> sample) {
+		if(w == null) {
+			//new w
+			w = new double[sample.sample.length];
+			
+			//init
+			wscale = 1; bias = 0;
+			// Shift t in order to have a
+			// reasonable initial learning rate.
+			// This assumes |x| \approx 1.
+			double maxw = 1.0 / Math.sqrt(lambda);
+			double typw = Math.sqrt(maxw);
+			double eta0 = typw / Math.max(1.0, dloss(-typw));
+			t = (long) (1 / (eta0 * lambda));
+		}
+		
+		double eta = 1.0 / (lambda * t);
+		double s = 1 - eta * lambda;
+		wscale *= s;
+		if (wscale < 1e-9) {
+			for (int d = 0; d < w.length; d++)
+				w[d] *= wscale;
+			wscale = 1;
+		}
+		double[] x = sample.sample;
+		double y = sample.label;
+		double wx = linear.valueOf(w, x) * wscale;
+		double z = y * (wx + bias);
+
+		if (z < 1 && loss < LOGLOSS) {
+			double etd = eta * dloss(z);
+			for (int d = 0; d < w.length; d++)
+				w[d] += x[d] * etd * y / wscale;
+			// Slower rate on the bias because
+			// it learns at each iteration.
+			if(hasBias)
+				bias += etd * y * 0.01;
+		}
+		t += 1;
+	} 
+	
+	/* (non-Javadoc)
+	 * @see fr.lip6.jkernelmachines.classifier.OnlineClassifier#onlineTrain(fr.lip6.jkernelmachines.type.TrainingSampleStream)
+	 */
+	@Override
+	public void onlineTrain(TrainingSampleStream<double[]> stream) {
+		TrainingSample<double[]> t;
+		while((t = stream.nextSample()) != null) {
+			train(t);
+		}
 	}
 	
 	/**

@@ -69,14 +69,6 @@ public class GradMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T> {
 		listOfKernelWeights.add(1.0);
 	}
 	
-	@Override
-	public void train(TrainingSample<T> t) {
-		if(listOfExamples == null) {
-			listOfExamples = new ArrayList<TrainingSample<T>>();
-		}
-		listOfExamples.add(t);
-		train(listOfExamples);
-	}
 
 	@Override
 	public void train(List<TrainingSample<T>> l) {

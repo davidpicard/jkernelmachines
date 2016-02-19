@@ -23,11 +23,13 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import fr.lip6.jkernelmachines.kernel.Kernel;
 import fr.lip6.jkernelmachines.type.TrainingSample;
+import fr.lip6.jkernelmachines.type.TrainingSampleStream;
 import fr.lip6.jkernelmachines.util.algebra.VectorOperations;
 
 /**
@@ -44,7 +46,7 @@ import fr.lip6.jkernelmachines.util.algebra.VectorOperations;
  * @author picard
  * 
  */
-public class SDCA<T> implements KernelSVM<T> {
+public class SDCA<T> implements KernelSVM<T>, OnlineClassifier<T> {
 
 	Kernel<T> kernel;
 	T[] samples;
@@ -59,6 +61,7 @@ public class SDCA<T> implements KernelSVM<T> {
 	// tmp variables
 	private int n;
 	private double[][] km;
+	private boolean cacheKernel = true;
 
 	/**
 	 * @param kernel
@@ -77,7 +80,7 @@ public class SDCA<T> implements KernelSVM<T> {
 	 */
 	@Override
 	public void train(TrainingSample<T> t) {
-		if(train == null) {
+		if (train == null) {
 			train = new ArrayList<TrainingSample<T>>();
 		}
 		train.add(t);
@@ -96,7 +99,9 @@ public class SDCA<T> implements KernelSVM<T> {
 		train = new ArrayList<TrainingSample<T>>(n);
 		train.addAll(l);
 
-		km = kernel.getKernelMatrix(train);
+		if (cacheKernel && l.size()*l.size()*8 < Runtime.getRuntime().freeMemory()) {
+			km = kernel.getKernelMatrix(train);
+		}
 
 		samples = (T[]) new Object[n];
 		labels = new int[n];
@@ -114,12 +119,57 @@ public class SDCA<T> implements KernelSVM<T> {
 			indices.add(i);
 		}
 
-		for (int e = 0; e < E; e++) {
-			Collections.shuffle(indices);
-			for (int i = 0; i < n; i++) {
-				update(indices.get(i));
+		if (cacheKernel) {
+			for (int e = 0; e < E; e++) {
+				Collections.shuffle(indices);
+				for (int i = 0; i < n; i++) {
+					update(indices.get(i));
+				}
+			}
+		} else {
+			for (int e = 0; e < E; e++) {
+				Collections.shuffle(indices);
+				for (int i = 0; i < n; i++) {
+					updateNoCache(indices.get(i));
+				}
 			}
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fr.lip6.jkernelmachines.classifier.OnlineClassifier#onlineTrain(fr.lip6
+	 * .jkernelmachines.type.TrainingSampleStream)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public void onlineTrain(TrainingSampleStream<T> stream) {
+		if(train == null || alphas == null) {
+			train = new ArrayList<>();
+			alphas = new double[0];
+			samples = (T[])new Object[0];
+		}
+		// remove caching Gram matrix
+		cacheKernel = false;
+		TrainingSample<T> t;
+		int i = 0;
+		while((t = stream.nextSample()) != null) {
+			i++;
+			if(train.contains(t)) {
+				updateNoCache(train.indexOf(t));
+			}
+			else {
+				train.add(t);
+				alphas = Arrays.copyOf(alphas, alphas.length+1);
+				samples = Arrays.copyOf(samples, samples.length+1);
+				samples[samples.length-1] = t.sample;
+				updateNoCache(train.size()-1);
+			}
+			System.out.print("\r"+i);
+		}
+		System.out.println("\r");
 	}
 
 	/**
@@ -132,6 +182,21 @@ public class SDCA<T> implements KernelSVM<T> {
 		double y = labels[i];
 		double z = (VectorOperations.dot(alphas, km[i]));
 		double da = (1 - y * z) / km[i][i] + y * alphas[i];
+		alphas[i] = y * max(0, min(C, da));
+
+	}
+
+	/**
+	 * dual variable update
+	 * 
+	 * @param i
+	 *            index f the dual variable
+	 */
+	private final void updateNoCache(int i) {
+		TrainingSample<T> sam = train.get(i);
+		double y = sam.label;
+		double z = valueOf(sam.sample);
+		double da = (1 - y * z) / kernel.valueOf(sam.sample, sam.sample) + y * alphas[i];
 		alphas[i] = y * max(0, min(C, da));
 
 	}
@@ -241,8 +306,9 @@ public class SDCA<T> implements KernelSVM<T> {
 		return obj / (double) n;
 	}
 
-        @Override
-        public Kernel<T> getKernel() {
-            return kernel;
-        }
+	@Override
+	public Kernel<T> getKernel() {
+		return kernel;
+	}
+
 }

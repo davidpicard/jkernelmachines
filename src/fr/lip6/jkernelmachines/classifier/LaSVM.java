@@ -31,6 +31,7 @@ import java.util.List;
 import fr.lip6.jkernelmachines.kernel.Kernel;
 import fr.lip6.jkernelmachines.threading.ThreadedMatrixOperator;
 import fr.lip6.jkernelmachines.type.TrainingSample;
+import fr.lip6.jkernelmachines.type.TrainingSampleStream;
 import fr.lip6.jkernelmachines.util.DebugPrinter;
 
 /**
@@ -45,7 +46,7 @@ import fr.lip6.jkernelmachines.util.DebugPrinter;
  * @author picard
  *
  */
-public final class LaSVM<T> implements KernelSVM<T>, Serializable {
+public final class LaSVM<T> implements KernelSVM<T>, Serializable, OnlineClassifier<T> {
 
 	private static final long serialVersionUID = -831288193185967121L;
 
@@ -90,6 +91,7 @@ public final class LaSVM<T> implements KernelSVM<T>, Serializable {
 	 * @see fr.lip6.classifier.Classifier#train(fr.lip6.type.TrainingSample)
 	 */
 	@Override
+	@Deprecated
 	public void train(TrainingSample<T> t) {
 		if(tlist == null) {
 			tlist = new ArrayList<TrainingSample<T>>();
@@ -176,6 +178,17 @@ public final class LaSVM<T> implements KernelSVM<T>, Serializable {
 		init();
 		
 		train();
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.lip6.jkernelmachines.classifier.OnlineClassifier#onlineTrain(fr.lip6.jkernelmachines.type.TrainingSampleStream)
+	 */
+	@Override
+	public void onlineTrain(TrainingSampleStream<T> stream) {
+		TrainingSample<T> t;
+		while( (t = stream.nextSample()) != null) {
+			train(t);
+		}
 	}
 	
 	

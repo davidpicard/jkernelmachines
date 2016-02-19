@@ -21,7 +21,7 @@ package fr.lip6.jkernelmachines.active;
 
 import java.util.List;
 
-import fr.lip6.jkernelmachines.classifier.Classifier;
+import fr.lip6.jkernelmachines.classifier.OnlineClassifier;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 
 /**
@@ -38,7 +38,7 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
  */
 public abstract class ActiveLearner<T> {
 		
-	protected Classifier<T> classifier;
+	protected OnlineClassifier<T> classifier;
 	protected List<TrainingSample<T>> train;
 	
 	/**
@@ -57,7 +57,7 @@ public abstract class ActiveLearner<T> {
 	 * Setter for the classifier
 	 * @param cls
 	 */
-	public void setClassifier(Classifier<T> cls) {
+	public void setClassifier(OnlineClassifier<T> cls) {
 		this.classifier = cls;
 	}
 	
@@ -65,7 +65,7 @@ public abstract class ActiveLearner<T> {
 	 * Getter for the classifier
 	 * @return the classifier
 	 */
-	public Classifier<T> getClassifier() {
+	public OnlineClassifier<T> getClassifier() {
 		return this.classifier;
 	}
 

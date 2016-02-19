@@ -14,39 +14,37 @@
     You should have received a copy of the GNU General Public License
     along with JkernelMachines.  If not, see <http://www.gnu.org/licenses/>.
 
-    Copyright David Picard - 2010
+    Copyright David Picard - 2014
 
-*/
+ */
 package fr.lip6.jkernelmachines.classifier;
 
-import java.util.List;
-
 import fr.lip6.jkernelmachines.type.TrainingSample;
+import fr.lip6.jkernelmachines.type.TrainingSampleStream;
 
 /**
- * Classifier interface that provides training and evaluation methods.
- * @author dpicard
+ * Interface for classifier that are trainable from a stream of samples
+ * 
+ * @author picard
  *
- * @param <T>
  */
-public interface Classifier<T> extends Cloneable {
-	
+public interface OnlineClassifier<T> extends Classifier<T> {
+
 	/**
-	 * Replace the current training list and train the classifier
-	 * @param l list of training samples
+	 * Add a single example to the current training set and train the classifier
+	 * 
+	 * @param t
+	 *            the training sample
 	 */
-	public void train(List<TrainingSample<T>> l);
-	
+	public void train(TrainingSample<T> t);
+
 	/**
-	 * Computes the category of the provided example
-	 * @param e example
-	 * @return >0. if e belongs to the category, <0. if not.
+	 * Train the classifier using a stream of TrainingSample sampled from the
+	 * TrainingSampleStream until no sample can be drawn.
+	 * 
+	 * @param stream
+	 *            the TrainingSampleStream from which the samples are drawn.
 	 */
-	public double valueOf(T e);
-	
-	/**
-	 * Creates and returns a copy of this object.
-	 * @see java.lang.Object#clone()
-	 */
-	public Classifier<T> copy() throws CloneNotSupportedException;
+	public void onlineTrain(TrainingSampleStream<T> stream);
+
 }

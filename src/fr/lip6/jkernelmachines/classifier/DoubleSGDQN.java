@@ -90,17 +90,6 @@ public class DoubleSGDQN implements Classifier<double[]> {
 	
 
 	@Override
-	public void train(TrainingSample<double[]> t) {
-		if(tlist == null)
-			tlist = new Vector<TrainingSample<double[]>>();
-		
-		tlist.add(t);
-		
-		train(tlist);
-		
-	}
-
-	@Override
 	public void train(List<TrainingSample<double[]>> l) {
 		
 		//0. copy samples

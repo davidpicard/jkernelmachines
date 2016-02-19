@@ -28,6 +28,7 @@ import java.util.List;
 
 import fr.lip6.jkernelmachines.kernel.typed.DoubleLinear;
 import fr.lip6.jkernelmachines.type.TrainingSample;
+import fr.lip6.jkernelmachines.type.TrainingSampleStream;
 import fr.lip6.jkernelmachines.util.DebugPrinter;
 
 /**
@@ -42,7 +43,7 @@ import fr.lip6.jkernelmachines.util.DebugPrinter;
  * @author picard
  *
  */
-public class DoublePegasosSVM implements Classifier<double[]>, Serializable{
+public class DoublePegasosSVM implements OnlineClassifier<double[]>, Serializable{
 
 	/**
 	 * 
@@ -65,7 +66,50 @@ public class DoublePegasosSVM implements Classifier<double[]>, Serializable{
 	boolean hasC = false;
 	
 	DebugPrinter debug = new DebugPrinter();
-	
+	private int i = 0;
+
+
+
+	/* (non-Javadoc)
+	 * @see fr.lip6.jkernelmachines.classifier.OnlineClassifier#train(fr.lip6.jkernelmachines.type.TrainingSample)
+	 */
+	@Override
+	public void train(TrainingSample<double[]> t) {
+		if(w == null) {
+			w = new double[t.sample.length];
+			b = 0;
+		}
+		if(tList == null) {
+			tList = new ArrayList<TrainingSample<double[]>>();
+		}
+		tList.add(t);
+		__train();
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see fr.lip6.jkernelmachines.classifier.OnlineClassifier#onlineTrain(fr.lip6.jkernelmachines.type.TrainingSampleStream)
+	 */
+	@Override
+	public void onlineTrain(TrainingSampleStream<double[]> stream) {
+		TrainingSample<double[]> t = stream.nextSample();
+		if(t != null) { 
+
+			//reset w
+			w = new double[t.sample.length];
+			Arrays.fill(w, 0.);
+			
+			//reset bias
+			b = 0;
+			
+			train(t);
+			
+			while((t = stream.nextSample()) != null) {
+				train(t);
+			}
+		}
+	}
 	
 	/* (non-Javadoc)
 	 * @see fr.lip6.classifier.Classifier#train(java.util.ArrayList)
@@ -98,6 +142,8 @@ public class DoublePegasosSVM implements Classifier<double[]>, Serializable{
 			intList.add(in);
 		for(int i = 0; i< T; i++)
 		{
+			__train();
+			/*
 			//sub sample selection
 			Collections.shuffle(intList);
 			ArrayList<Integer> subSampleIndices = new ArrayList<Integer>();
@@ -170,6 +216,7 @@ public class DoublePegasosSVM implements Classifier<double[]>, Serializable{
 			debug.println(4, "w : "+Arrays.toString(w)+" b : "+b);
 			if(T>20 && i%(T/20) == 0)
 				debug.print(2, ".");
+			*/
 			
 		}
 		debug.println(2, "");
@@ -179,18 +226,85 @@ public class DoublePegasosSVM implements Classifier<double[]>, Serializable{
 		debug.println(3, "w : "+Arrays.toString(w)+" b : "+b);
 	}
 
-	/* (non-Javadoc)
-	 * @see fr.lip6.classifier.Classifier#train(fr.lip6.type.TrainingSample)
-	 */
-	@Override
-	public void train(TrainingSample<double[]> t) {
-		if(tList == null)
-			tList = new ArrayList<TrainingSample<double[]>>();
+
+	private void __train() {
+		int taille = tList.get(0).sample.length; 
+		List<Integer> intList = new ArrayList<Integer>();
+		long tLsize = tList.size();
+		for(int in = 0 ; in < tLsize ; in++)
+			intList.add(in);
+		//sub sample selection
+		Collections.shuffle(intList);
+		ArrayList<Integer> subSampleIndices = new ArrayList<Integer>();
+		subSampleIndices.addAll(intList.subList(0, Math.min(k, intList.size())));
 		
-		tList.add(t);
+		//remove y(<w,x>-b) >= 1
+		for(Iterator<Integer> iter = subSampleIndices.iterator(); iter.hasNext(); )
+		{
+			Integer index = iter.next();
+			double[] d = tList.get(index).sample;
+			int y = tList.get(index).label;
+			if((kernel.valueOf(w, d) - b)*y > 1)
+				iter.remove();
+		}
 		
-		train(tList);
+		//choosing step
+		double eta = 1/(double)(lambda*(i+t0));
 		
+		//calculate half step coefficient;
+		double[] w_halfstep = new double[w.length]; 
+		double omel = (1-eta*lambda);
+		for(int m = 0 ; m < taille; m++)
+		{
+			w_halfstep[m] = omel*w[m];
+		}
+		double dir = 0;
+		for(Iterator<Integer> iter =  subSampleIndices.iterator(); iter.hasNext(); )
+		{
+			Integer index = iter.next();
+			TrainingSample<double[]> t = tList.get(index);
+			for(int m = 0 ; m < taille; m++)
+			{
+				if(t.sample[m] != 0)
+				{
+					dir = t.label*t.sample[m];
+					w_halfstep[m] += eta/(double)(k)*dir;
+				}
+			}
+
+		}
+		
+		//b
+		double b_new = 0;
+		if(bias)
+			for(int index : subSampleIndices)
+			{
+				b_new += tList.get(index).label;
+
+			}
+		
+		//final step
+		
+		double norm = Math.sqrt(kernel.valueOf(w_halfstep, w_halfstep));
+		double min = 1/Math.sqrt(lambda)/norm;
+		if(min > 1)
+			min = 1;
+		
+		double[] w_fullstep = w_halfstep.clone();
+		for(int m = 0 ; m < taille; m++)
+			w_fullstep[m] = w_halfstep[m] * min;
+		
+
+		
+		w = w_fullstep;
+		if(bias)
+			b = min*( (1-eta*lambda)*b - eta/(double)k*b_new);
+		else
+			b = 0;
+
+		debug.println(4, "w : "+Arrays.toString(w)+" b : "+b);
+		if(T>20 && i%(T/20) == 0)
+			debug.print(2, ".");
 	}
 
 	/* (non-Javadoc)
@@ -352,4 +466,5 @@ public class DoublePegasosSVM implements Classifier<double[]>, Serializable{
 			return C;
 		return 0.;
 	}
+
 }

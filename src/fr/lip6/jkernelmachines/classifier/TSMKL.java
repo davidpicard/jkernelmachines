@@ -60,19 +60,6 @@ public class TSMKL<T> implements KernelSVM<T>, MKL<T> {
 	
 
 	/* (non-Javadoc)
-	 * @see fr.lip6.classifier.Classifier#train(fr.lip6.type.TrainingSample)
-	 */
-	@Override
-	public void train(TrainingSample<T> t) {
-		if(tlist == null) {
-			tlist = new ArrayList<TrainingSample<T>>();
-		}
-		tlist.add(t);
-		
-		train(tlist);
-	}
-
-	/* (non-Javadoc)
 	 * @see fr.lip6.classifier.Classifier#train(java.util.List)
 	 */
 	@Override

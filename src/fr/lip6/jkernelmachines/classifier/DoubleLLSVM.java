@@ -59,13 +59,6 @@ public class DoubleLLSVM implements Classifier<double[]> {
 	
 	DebugPrinter debug = new DebugPrinter();
 
-	/* (non-Javadoc)
-	 * @see fr.lip6.jkernelmachines.classifier.Classifier#train(fr.lip6.jkernelmachines.type.TrainingSample)
-	 */
-	@Override
-	public void train(TrainingSample<double[]> t) {
-		throw new UnsupportedOperationException("Training on a single sample not supported at the moment");
-	}
 
 	/* (non-Javadoc)
 	 * @see fr.lip6.jkernelmachines.classifier.Classifier#train(java.util.List)

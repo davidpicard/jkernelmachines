@@ -102,15 +102,6 @@ public class SimpleMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T>, Serial
 	}
 	
 	@Override
-	public void train(TrainingSample<T> t) {
-		if(list == null) {
-			list = new ArrayList<TrainingSample<T>>();
-		}
-		list.add(t);
-		train(list);		
-	}
-
-	@Override
 	public void train(List<TrainingSample<T>> l) {
 		
 		list = new ArrayList<TrainingSample<T>>(l.size());

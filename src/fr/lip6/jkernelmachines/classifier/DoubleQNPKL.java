@@ -91,14 +91,6 @@ public class DoubleQNPKL implements KernelSVM<double[]>, Serializable {
 		listOfExampleWeights = new ArrayList<Double>();
 	}
 	
-	@Override
-	public void train(TrainingSample<double[]> t) {
-		if(listOfExamples == null)
-			listOfExamples = new ArrayList<TrainingSample<double[]>>();
-		if(!listOfExamples.contains(t))
-			listOfExamples.add(t);
-		train(listOfExamples);
-	}
 
 	@Override
 	public void train(List<TrainingSample<double[]>> l) {

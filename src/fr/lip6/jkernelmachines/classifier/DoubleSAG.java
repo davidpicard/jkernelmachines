@@ -73,18 +73,6 @@ public class DoubleSAG implements Classifier<double[]>, Serializable {
 	private int dim;
 	private int n;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * fr.lip6.jkernelmachines.classifier.Classifier#train(fr.lip6.jkernelmachines
-	 * .type.TrainingSample)
-	 */
-	@Override
-	public void train(TrainingSample<double[]> t) {
-		throw new UnsupportedOperationException("Not applicable");
-
-	}
 
 	/*
 	 * (non-Javadoc)

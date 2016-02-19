@@ -28,6 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import fr.lip6.jkernelmachines.classifier.DoublePegasosSVM;
+import fr.lip6.jkernelmachines.type.ListSampleStream;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 import fr.lip6.jkernelmachines.util.generators.GaussianGenerator;
 
@@ -51,6 +52,35 @@ public class DoublePegasosSVMTest {
 		train = g.generateList(10);
 		
 		svm = new DoublePegasosSVM();
+	}
+	
+
+	/**
+	 * Test method for {@link fr.lip6.jkernelmachines.classifier.DoublePegasosSVM#train(fr.lip6.jkernelmachines.TrainingSample)}.
+	 */
+	@Test
+	public final void testTrainOfTrainingSampleOfdouble() {
+		svm = new DoublePegasosSVM();
+		for(TrainingSample<double[]> t : train) {
+			svm.train(t);
+		}
+		for(TrainingSample<double[]> t : train) {
+			double v = t.label * svm.valueOf(t.sample);
+			assertTrue(v > 0);
+		}
+	}
+	
+	/**
+	 * Test method for {@link fr.lip6.jkernelmachines.classifier.DoublePegasosSVM#train(java.util.List)}.
+	 */
+	@Test
+	public final void testOnlineTrainTrainingSampleStreamOfdouble() {
+		svm.onlineTrain(new ListSampleStream<double[]>(train));
+		
+		for(TrainingSample<double[]> t : train) {
+			double v = t.label * svm.valueOf(t.sample);
+			assertTrue(v > 0);
+		}
 	}
 
 	/**

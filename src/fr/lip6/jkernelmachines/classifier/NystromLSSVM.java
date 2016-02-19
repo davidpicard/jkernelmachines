@@ -25,6 +25,7 @@ import java.util.List;
 import fr.lip6.jkernelmachines.kernel.Kernel;
 import fr.lip6.jkernelmachines.kernel.extra.NystromKernel;
 import fr.lip6.jkernelmachines.type.TrainingSample;
+import fr.lip6.jkernelmachines.type.TrainingSampleStream;
 import fr.lip6.jkernelmachines.util.DebugPrinter;
 
 /**
@@ -35,7 +36,7 @@ import fr.lip6.jkernelmachines.util.DebugPrinter;
  * @author picard
  * 
  */
-public class NystromLSSVM<T> implements Classifier<T> {
+public class NystromLSSVM<T> implements Classifier<T>, OnlineClassifier<T> {
 
 	List<TrainingSample<T>> list;
 	NystromKernel<T> kernel;
@@ -87,6 +88,15 @@ public class NystromLSSVM<T> implements Classifier<T> {
 		svm = new DoubleSAG();
 		svm.setLambda(1. / (C * n));
 		svm.train(dl);
+	}
+	
+	/* (non-Javadoc)
+	 * @see fr.lip6.jkernelmachines.classifier.OnlineClassifier#onlineTrain(fr.lip6.jkernelmachines.type.TrainingSampleStream)
+	 */
+	@Override
+	public void onlineTrain(TrainingSampleStream<T> stream) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	/*

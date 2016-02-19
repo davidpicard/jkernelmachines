@@ -24,7 +24,7 @@ import static java.lang.Math.abs;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.lip6.jkernelmachines.classifier.Classifier;
+import fr.lip6.jkernelmachines.classifier.OnlineClassifier;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 
 /**
@@ -38,7 +38,7 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
  */
 public class BestAL<T> extends ActiveLearner<T> {
 
-	public BestAL(Classifier<T> c, List<TrainingSample<T>> l) {
+	public BestAL(OnlineClassifier<T> c, List<TrainingSample<T>> l) {
 		classifier = c;
 		train = new ArrayList<TrainingSample<T>>(l.size());
 		train.addAll(l);

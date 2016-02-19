@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import fr.lip6.jkernelmachines.classifier.Classifier;
+import fr.lip6.jkernelmachines.classifier.OnlineClassifier;
 import fr.lip6.jkernelmachines.classifier.multiclass.MulticlassClassifier;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 
@@ -47,8 +47,12 @@ public class MulticlassSimpleAL<T> extends ActiveLearner<T> {
 	List<Integer> classes;
 	boolean classeBalanced = true;
 	
+	@SuppressWarnings("unchecked")
 	public MulticlassSimpleAL(MulticlassClassifier<T> c, List<TrainingSample<T>> l) {
-		classifier = c;
+		if(c instanceof OnlineClassifier<?>) {
+			classifier = (OnlineClassifier<T>)c;
+		}
+		
 		train = new ArrayList<TrainingSample<T>>(l.size());
 		train.addAll(l);
 		used = new ArrayList<TrainingSample<T>>();
@@ -65,6 +69,7 @@ public class MulticlassSimpleAL<T> extends ActiveLearner<T> {
 	/* (non-Javadoc)
 	 * @see fr.lip6.jkernelmachines.active.ActiveLearner#getActiveSample(java.util.List)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public TrainingSample<T> getActiveSample(List<TrainingSample<T>> l) {
 		if(classifier == null) {
@@ -139,7 +144,7 @@ public class MulticlassSimpleAL<T> extends ActiveLearner<T> {
 	}
 
 	@Override
-	public void setClassifier(Classifier<T> cls) {
+	public void setClassifier(OnlineClassifier<T> cls) {
 		if(!(cls instanceof MulticlassClassifier)) {
 			throw new UnsupportedOperationException("Argument must be a MulticlassClassifier");
 		}

@@ -72,19 +72,6 @@ public class OneAgainstAll<T> implements MulticlassClassifier<T> {
 		baseClassifier = c;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see fr.lip6.classifier.Classifier#train(fr.lip6.type.TrainingSample)
-	 */
-	@Override
-	public void train(TrainingSample<T> t) {
-		if (tlist == null)
-			tlist = new ArrayList<TrainingSample<T>>();
-
-		tlist.add(t);
-		train();
-	}
 
 	/*
 	 * (non-Javadoc)

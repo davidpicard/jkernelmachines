@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import fr.lip6.jkernelmachines.classifier.Classifier;
+import fr.lip6.jkernelmachines.classifier.OnlineClassifier;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 
 /**
@@ -38,7 +38,7 @@ public class RandomAL<T> extends ActiveLearner<T> {
 
 	Random rand;
 
-	public RandomAL(Classifier<T> c, List<TrainingSample<T>> l) {
+	public RandomAL(OnlineClassifier<T> c, List<TrainingSample<T>> l) {
 		classifier = c;
 		train = new ArrayList<TrainingSample<T>>(l.size());
 		train.addAll(l);

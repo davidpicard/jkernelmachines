@@ -72,22 +72,6 @@ public class MulticlassSDCA<T> implements MulticlassClassifier<T>, KernelSVM<T> 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * fr.lip6.jkernelmachines.classifier.Classifier#train(fr.lip6.jkernelmachines
-	 * .type.TrainingSample)
-	 */
-	@Override
-	public void train(TrainingSample<T> t) {
-		if (tlist == null) {
-			tlist = new ArrayList<>();
-		}
-		tlist.add(t);
-		train(tlist);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see fr.lip6.jkernelmachines.classifier.Classifier#train(java.util.List)
 	 */
 	@Override
