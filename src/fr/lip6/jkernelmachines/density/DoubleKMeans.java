@@ -40,7 +40,7 @@ public class DoubleKMeans implements DensityFunction<double[]> {
 	int K;
 	double[][] means;
 
-	double shiftRatio = 5;
+	double shiftRatio = 20;
 
 	DebugPrinter debug = new DebugPrinter();
 
@@ -167,8 +167,11 @@ public class DoubleKMeans implements DensityFunction<double[]> {
 					// shift
 					int comp = rand.nextInt(dim);
 					mu[imin] = Arrays.copyOf(mu[imax], dim);
-					mu[imin][comp] += 1e-4;
-					mu[imax][comp] -= 1e-4;
+					double no = VectorOperations.n2(mu[imax]);
+//					for(int comp = 0 ; comp < dim ; comp++) {
+						mu[imin][comp] += 1e-6*no;
+						mu[imax][comp] -= 1e-6*no;
+//					}
 					debug.println(2, "shifting done");
 				} else {
 					break;
