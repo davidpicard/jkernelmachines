@@ -19,6 +19,7 @@
 */
 package fr.lip6.jkernelmachines.classifier;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,8 +41,10 @@ import fr.lip6.jkernelmachines.type.TrainingSampleStream;
  * @author picard
  *
  */
-public class DoubleSGD implements Classifier<double[]>, OnlineClassifier<double[]> {
+public class DoubleSGD implements Classifier<double[]>, OnlineClassifier<double[]>, Serializable {
 
+	private static final long serialVersionUID = 3245177176254451010L;
+	
 	// Available losses
 	/** Type of loss function using hinge */
 	public static final int HINGELOSS = 1;
