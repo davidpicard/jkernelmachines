@@ -78,13 +78,24 @@ public class SDCA<T> implements KernelSVM<T>, OnlineClassifier<T> {
 	 * fr.lip6.jkernelmachines.classifier.Classifier#train(fr.lip6.jkernelmachines
 	 * .type.TrainingSample)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void train(TrainingSample<T> t) {
 		if (train == null) {
 			train = new ArrayList<TrainingSample<T>>();
+			alphas = new double[0];
+			samples = (T[]) new Object[0];
 		}
-		train.add(t);
-		train(train);
+		if(train.contains(t)) {
+			updateNoCache(train.indexOf(t));
+		}
+		else {
+			train.add(t);
+			alphas = Arrays.copyOf(alphas, alphas.length+1);
+			samples = Arrays.copyOf(samples, samples.length+1);
+			samples[samples.length-1] = t.sample;
+			updateNoCache(train.size()-1);
+		}
 	}
 
 	/*
@@ -309,6 +320,14 @@ public class SDCA<T> implements KernelSVM<T>, OnlineClassifier<T> {
 	@Override
 	public Kernel<T> getKernel() {
 		return kernel;
+	}
+
+	public boolean isCacheKernel() {
+		return cacheKernel;
+	}
+
+	public void setCacheKernel(boolean cacheKernel) {
+		this.cacheKernel = cacheKernel;
 	}
 
 }
