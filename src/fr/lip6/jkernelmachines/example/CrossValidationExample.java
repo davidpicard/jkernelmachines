@@ -21,6 +21,7 @@ package fr.lip6.jkernelmachines.example;
 
 import java.util.List;
 
+import fr.lip6.jkernelmachines.classifier.BudgetSDCA;
 import fr.lip6.jkernelmachines.classifier.Classifier;
 import fr.lip6.jkernelmachines.classifier.LaSVM;
 import fr.lip6.jkernelmachines.classifier.LaSVMI;
@@ -112,7 +113,11 @@ public class CrossValidationExample {
 						svm = new LaSVMI<double[]>(kernel);
 					} else if (args[i].equalsIgnoreCase("sdca")) {
 						svm = new SDCA<double[]>(kernel);
-					} else if (args[i].equalsIgnoreCase("smo")) {
+					} else if (args[i].equalsIgnoreCase("bsdca")) {
+						BudgetSDCA<double[]> bsdca = new BudgetSDCA<double[]>(kernel);
+						bsdca.setBudget(128);
+						svm = bsdca;
+					}  else if (args[i].equalsIgnoreCase("smo")) {
 						svm = new SMOSVM<double[]>(kernel);
 					} else if (args[i].equalsIgnoreCase("nlssvm")) {
 						NystromLSSVM<double[]> nlssvm = new NystromLSSVM<double[]>(kernel);
@@ -192,11 +197,13 @@ public class CrossValidationExample {
 		cv.setTrainPercent(percent);
 
 		// do cv
+		long tim = System.currentTimeMillis();
 		cv.run();
+		tim = System.currentTimeMillis() - tim;
 
 		// print result
 		System.out.println("Accuracy: " + cv.getAverageScore() + " +/- "
-				+ cv.getStdDevScore());
+				+ cv.getStdDevScore()+" in "+tim/nbtest+"ms");
 	}
 
 	private static void printHelp() {
