@@ -31,7 +31,6 @@ import static java.lang.Math.signum;
 import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import fr.lip6.jkernelmachines.util.DebugPrinter;
@@ -52,28 +51,6 @@ public class MatrixOperations {
 	public static void useBackend(AlgebraBackend backend) {
 		MatrixOperations.backend = backend;
 	}
-	
-	/* try to load ejml wrapper if present, to accelerate matrix eig */
-	static Method ejml_eig = null;
-	static Method ejml_inv = null;
-	static {
-		try {
-			Class.forName("org.ejml.data.DenseMatrix64F"); // check if ejml is there
-			Class<?> emjl_ops = Class.forName("fr.lip6.jkernelmachines.util.algebra.ejml.EJMLMatrixOperations");
-			ejml_eig = emjl_ops.getDeclaredMethod("eig", double[][].class);
-			ejml_inv = emjl_ops.getDeclaredMethod("inv", double[][].class);
-		} catch (Exception e) {
-			ejml_eig = null;
-			ejml_inv = null;
-			if(DebugPrinter.DEBUG_LEVEL > 1) {
-				System.err.println("Warning ejml not present, some operations will be slow");
-			}
-			if(DebugPrinter.DEBUG_LEVEL > 3) {
-				e.printStackTrace();
-			}
-		}
-	}
-	
 	
 	/**
 	 * Tests if a matrix is square
@@ -560,9 +537,9 @@ public class MatrixOperations {
 	 */
 	public static double[][] inv(final double[][] A) {
 		int n = A.length;
-		if( n > 65 && ejml_inv != null) {
+		if( n > 65 && backend != null) {
 			try {
-				return (double[][]) ejml_inv.invoke(null,  new Object[]{A});
+				return backend.inv(A);
 			}
 			catch (Exception e) {
 				if(DebugPrinter.DEBUG_LEVEL > 3)
@@ -598,9 +575,9 @@ public class MatrixOperations {
 	 */
 	public static double[][][] eig(double[][] A) {
 		// try ejml first if present
-		if(A.length > 65 && ejml_eig != null) {
+		if(A.length > 65 && backend != null) {
 			try {
-				return (double[][][]) ejml_eig.invoke(null, new Object[]{A});
+				return backend.eig(A);
 			} catch (Exception e) {
 				if(DebugPrinter.DEBUG_LEVEL > 3)
 					e.printStackTrace();
