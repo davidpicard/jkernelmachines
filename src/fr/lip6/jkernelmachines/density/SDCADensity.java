@@ -23,6 +23,7 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -64,12 +65,34 @@ public class SDCADensity<T> implements DensityFunction<T> {
 	 * @see
 	 * fr.lip6.jkernelmachines.density.DensityFunction#train(java.lang.Object)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void train(T e) {
-		if (train == null)
+		if (train == null) {
 			train = new ArrayList<T>();
-		train.add(e);
-		train(train);
+			train.add(e);
+			train(train);
+		}
+		else {
+			train.add(e);
+			int n = train.size();
+			samples = (T[]) new Object[n];
+			if(CACHED_KERNEL) {
+				ArrayList<TrainingSample<T>> t_list = new ArrayList<TrainingSample<T>>();
+				for (T t : train) {
+					t_list.add(new TrainingSample<T>(t, 1));
+				}
+				km = kernel.getKernelMatrix(t_list);
+			}
+			else {
+				km = null;
+			}
+			train.toArray(samples);
+			double[] a2 = Arrays.copyOf(alphas, n);
+			a2[n-1] = 0;
+			alphas = a2;
+			update(n-1);
+		}
 
 	}
 
@@ -122,7 +145,7 @@ public class SDCADensity<T> implements DensityFunction<T> {
 	 */
 	private final void update(int i) {
 		double[] kmi;
-		if (CACHED_KERNEL) {
+		if (km!= null && CACHED_KERNEL) {
 			kmi = km[i];
 		} else {
 			kmi = new double[samples.length];
@@ -135,11 +158,11 @@ public class SDCADensity<T> implements DensityFunction<T> {
 			kmii = kernel.valueOf(samples[i], samples[i]);
 		else
 			kmii = km[i][i];
-		double suma = 0;
-		for(int d = 0 ; d < alphas.length ; d++)
-			suma += alphas[d];
-		double da = (1. - z) / kmii + alphas[i] - C/samples.length*(suma - 1);
-		alphas[i] = max(0, min(C/samples.length, da));
+//		double suma = 0;
+//		for(int d = 0 ; d < alphas.length ; d++)
+//			suma += alphas[d];
+		double da = (1. - z) / kmii + alphas[i];// - C/samples.length*(suma - 1);
+		alphas[i] = max(0, min(C, da));
 
 	}
 
@@ -154,7 +177,7 @@ public class SDCADensity<T> implements DensityFunction<T> {
 		double sum = 0;
 		for (int i = 0; i < samples.length; i++)
 			sum += alphas[i] * kernel.valueOf(samples[i], e);
-		return sum ;
+		return max(0, min(1, sum)) ;
 	}
 
 	public Kernel<T> getKernel() {
