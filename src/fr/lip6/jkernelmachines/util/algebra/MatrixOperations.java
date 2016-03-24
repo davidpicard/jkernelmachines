@@ -47,6 +47,12 @@ public class MatrixOperations {
 	
 	public final static double num_prec = 1e-14;
 	
+	private static AlgebraBackend backend = null;
+	
+	public static void useBackend(AlgebraBackend backend) {
+		MatrixOperations.backend = backend;
+	}
+	
 	/* try to load ejml wrapper if present, to accelerate matrix eig */
 	static Method ejml_eig = null;
 	static Method ejml_inv = null;
