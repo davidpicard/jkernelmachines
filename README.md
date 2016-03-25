@@ -32,7 +32,7 @@ picard@ensea.fr
 * Toys generator for artificial data
 * Basic linear algebra package (optionally based on [EJML](http://code.google.com/p/efficient-java-matrix-library/))
 * Evaluation and Cross Validation packages
-* Stand alone (requires only a working jdk 1.7 and ant for easy compiling)
+* Stand alone (requires only a working jdk 1.7 and maven for easy compiling)
 * Simple GUI
 
 ## HowTo
@@ -52,7 +52,7 @@ picard@ensea.fr
 * [Standalone programs](https://github.com/davidpicard/jkernelmachines/wiki/Standalone-programs)
 
 ## Javadoc
-Available with the `ant doc` command, or [here](http://davidpicard.github.io/jkernelmachines/doc/)
+Available with maven, or [here](http://davidpicard.github.io/jkernelmachines/doc/)
 
 
 ## FAQ
