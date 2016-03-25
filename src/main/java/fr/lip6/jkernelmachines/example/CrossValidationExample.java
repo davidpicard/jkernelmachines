@@ -47,8 +47,8 @@ import fr.lip6.jkernelmachines.util.DebugPrinter;
  * <p>
  * It reads data from an input file in the libsvm format, and performs a cross-validation evaluation.
  * Optional parameters include the number of test to perform, the percentage of data to keep from training, the type of kernel, and the svm algorithm.
- * Launch without argument to get the following help:<br/>
- * <br />
+ * Launch without argument to get the following help:
+ * </p>
  * CrossValidationExample -f file [-p percent] [-n nbtests] [-k kernel] [-a algorithm] [-pca type] [-vvv]
  * <ul>
  *	<li>-f file: the data file in libsvm format</li>
@@ -59,7 +59,6 @@ import fr.lip6.jkernelmachines.util.DebugPrinter;
  *  <li>-pca type: perform a PCA as preprocessing (no, yes, white, default no)</li>
  *	<li>-v: verbose (v few, vv lot, vvv insane, default none)</li>
  * </ul>
- * </p>
  * 
  * @author David Picard
  * 

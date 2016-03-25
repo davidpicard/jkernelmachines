@@ -32,7 +32,7 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
 /**
  * <p>
  * Extension to multiclass of the Simple active learning strategy as presented in:
- * <br/>
+ * 
  * Support vector machine active learning with applications to text classification. 
  * S. Tong and D. Koller.
  * Journal of Machine Learning Research, 2:45–66, 2001.

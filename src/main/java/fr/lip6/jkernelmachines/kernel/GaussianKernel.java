@@ -64,7 +64,7 @@ public abstract class GaussianKernel<T> extends Kernel<T> {
 	public abstract double distanceValueOf(T t1, T t2);
 	
 	/**
-	 * Tells the distance matrix for a specified list of samples.<br />
+	 * Tells the distance matrix for a specified list of samples.
 	 * This is a threaded operation.
 	 * @param l the list of samples
 	 * @return the distance matrix

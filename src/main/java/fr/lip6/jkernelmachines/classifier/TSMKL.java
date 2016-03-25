@@ -30,13 +30,13 @@ import fr.lip6.jkernelmachines.kernel.typed.DoubleLinear;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 
 /**
- * <p>Implementation of the Two-Stages MKL solver by Abhishek Kumar et al.<br/>
+ * <p>Implementation of the Two-Stages MKL solver by Abhishek Kumar et al.
  * This is a original implementation using the tools available in JKernelMachines, 
  * and not a Java conversion of the original matlab code.
  * </p>
  * 
- * <p>A Binary Classification Framework for Two-Stage Multiple Kernel Learning<br/>
- * Abhishek Kumar, Alexandru Niculescu-Mizil, Koray Kavukcoglu, Hal Daumé, <br/> 
+ * <p>A Binary Classification Framework for Two-Stage Multiple Kernel Learning
+ * Abhishek Kumar, Alexandru Niculescu-Mizil, Koray Kavukcoglu, Hal Daumé,
  * ICML 2012. 
  * </p>
  * 

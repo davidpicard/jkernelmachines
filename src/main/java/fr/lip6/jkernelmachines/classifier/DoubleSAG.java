@@ -29,10 +29,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Linear SVM using the SAG algorithm:<br/>
+ * Linear SVM using the SAG algorithm:
  * 
  * "A Stochastic Gradient Method with an Exponential Convergence Rate for
- * Strongly-Convex Optimization with Finite Training Sets", <br>
+ * Strongly-Convex Optimization with Finite Training Sets",
  * Nicolas Le Roux, Mark Schmidt and Francis Bach.
  * 
  * @author picard

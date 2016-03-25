@@ -28,7 +28,7 @@ import fr.lip6.jkernelmachines.util.algebra.VectorOperations;
 
 /**
  * Major kernel computed as a weighted sum of minor kernels : 
- * K = w_i * k_i<br />
+ * K = w_i * k_i
  * Non-threaded version
  * @author dpicard
  *

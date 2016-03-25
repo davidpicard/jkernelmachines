@@ -44,8 +44,8 @@ import fr.lip6.jkernelmachines.util.DebugPrinter;
  * </p>
  * <p>
  * Stochastic Dual Coordinate Ascent Methods for Regularized Loss Minimization,
- * <br/>
- * Shai Shalev-Shwartz, Tong Zhang<br/>
+ * 
+ * Shai Shalev-Shwartz, Tong Zhang
  * JMLR, 2013.
  * </p>
  * 

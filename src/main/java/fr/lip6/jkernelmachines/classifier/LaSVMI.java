@@ -33,8 +33,8 @@ import fr.lip6.jkernelmachines.util.DebugPrinter;
  * </p>
  * 
  * <p>
- * <b>Nonconvex Online Support Vector Machines</b><br />
- * Seyda Ertekin, Leon Bottou and C. Lee Giles<br />
+ * <b>Nonconvex Online Support Vector Machines</b>
+ * Seyda Ertekin, Leon Bottou and C. Lee Giles
  * IEEE Transaction on Pattern Analysis and Machine Intelligence, 33(2):368–381,
  * Feb 2011
  * </p>

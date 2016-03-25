@@ -37,12 +37,12 @@ import fr.lip6.jkernelmachines.util.algebra.ThreadedMatrixOperations;
  * This kernel provides a fast approximation of a given kernel using the Nystrom
  * approximation.
  * <p>
- * A fast active learning algorithm analog to that used in:<br/>
+ * A fast active learning algorithm analog to that used in:
  * <strong>Fast Approximation of Distance Between Elastic Curves using
- * Kernels</strong><br />
- * Hedi Tabia; David Picard; Hamid Laga; Philippe-Henri Gosselin<br/>
+ * Kernels</strong>
+ * Hedi Tabia; David Picard; Hamid Laga; Philippe-Henri Gosselin
  * British Machine Vision Conference, Sep 2013, United Kingdom. British Machine
- * Vision Conference<br />
+ * Vision Conference
  * </p>
  * 
  * @author picard

@@ -32,7 +32,7 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
 import fr.lip6.jkernelmachines.util.DataPreProcessing;
 
 /**
- * Train a SVM using LaSVM algorithm on data in the csv format<br/>
+ * Train a SVM using LaSVM algorithm on data in the csv format
  * 
  * usage: TestCsvImporter trainfile testfile
  * @author picard

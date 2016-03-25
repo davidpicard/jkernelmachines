@@ -26,7 +26,7 @@ import fr.lip6.jkernelmachines.threading.ThreadedMatrixOperator;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 
 /**
- * Gaussian Kernel on double[] that uses a generalized L2 distance.<br/>
+ * Gaussian Kernel on double[] that uses a generalized L2 distance.
  * K(x, y) = exp( - sum_i{ gamma_i (x[i]-y[i])^2 })
  * @author dpicard
  *

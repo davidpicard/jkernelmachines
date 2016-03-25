@@ -32,8 +32,8 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
  * Linear SVM classifier using SGDQN algorithm.
  * </p>
  * <p>
- * <b>Careful Quasi-Newton Stochastic Gradient Descent</b><br />
- * Antoine Bordes, Léon Bottou, and Patrick Gallinari<br />
+ * <b>Careful Quasi-Newton Stochastic Gradient Descent</b>
+ * Antoine Bordes, Léon Bottou, and Patrick Gallinari
  * <i>J. Mach. Learn. Res. 10 (December 2009), 1737-1754.</i>
  * </p>
  * 

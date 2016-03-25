@@ -38,8 +38,8 @@ import fr.lip6.jkernelmachines.util.DebugPrinter;
  * </p>
  * 
  * <p>
- * <b>Making large-Scale SVM Learning Practical</b><br />
- * T. Joachims<br/>
+ * <b>Making large-Scale SVM Learning Practical</b>
+ * T. Joachims
  * <i>Advances in Kernel Methods - Support Vector Learning, B. Schölkopf and C. Burges and A. Smola (ed.), MIT-Press, 1999</i>
  * </p>
  * 

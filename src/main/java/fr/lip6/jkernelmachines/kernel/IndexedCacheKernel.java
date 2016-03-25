@@ -27,10 +27,10 @@ import fr.lip6.jkernelmachines.threading.ThreadedMatrixOperator;
 
 /**
  * <p>
- * Simple method of pair <Key,Value> for caching a kernel function.
+ * Simple method of pair &lt; Key,Value &gt; for caching a kernel function.
  * </p>
  * <p>
- * A unique Key is assigned to each sample, and similarities between two samples are cached in Hashmaps using the keys.<br />
+ * A unique Key is assigned to each sample, and similarities between two samples are cached in Hashmaps using the keys.
  * Warning: Safety granted by assertion. Disable assertion for a faster but riskier execution.
  * </p>
  * @author picard
@@ -51,7 +51,7 @@ public final class IndexedCacheKernel<S,T> extends Kernel<S> {
 	final private transient Kernel<T> kernel;
 	
 	/**
-	 * Constructor using an underlying kernel and a map of <Key, Sample>
+	 * Constructor using an underlying kernel and a map of &lt; Key, Sample &gt;
 	 * @param k the underlying kernel
 	 * @param signatures the map giving the key associated with each sample
 	 */

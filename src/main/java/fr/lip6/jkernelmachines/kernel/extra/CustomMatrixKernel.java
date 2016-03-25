@@ -27,7 +27,7 @@ import fr.lip6.jkernelmachines.kernel.Kernel;
  * </p>
  * <p>
  * The datatype of input space is integer relative to row/column indices. Therefore, the similarity
- * between elements i and j is matrix[i][j]. <br />
+ * between elements i and j is matrix[i][j].
  * If i or j is not in the range of the matrix, 0 is returned.
  * </p>
  * @author dpicard

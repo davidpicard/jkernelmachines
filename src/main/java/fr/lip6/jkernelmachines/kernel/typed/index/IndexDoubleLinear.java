@@ -22,7 +22,7 @@ package fr.lip6.jkernelmachines.kernel.typed.index;
 import fr.lip6.jkernelmachines.kernel.Kernel;
 
 /**
- * Kernel on double[] that performs the product of a specified component j:<br />
+ * Kernel on double[] that performs the product of a specified component j:
  * k(x,y) = x[j]*y[j]
  * @author dpicard
  *

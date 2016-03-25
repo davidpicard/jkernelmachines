@@ -36,7 +36,7 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
  * Toys are sampled from as many Gaussian distributions as the number of
  * classes, in a space with the dimension of the number of classes. Each
  * Gaussian has a mean of 1 on the component of the class and 0 otherwise. Thee
- * spacing p and the standard deviation of the Gaussian can be adjusted. <br />
+ * spacing p and the standard deviation of the Gaussian can be adjusted.
  * Generated lists are shuffled.
  * </p>
  * 

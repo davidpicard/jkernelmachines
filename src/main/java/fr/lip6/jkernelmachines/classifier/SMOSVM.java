@@ -35,8 +35,8 @@ import fr.lip6.jkernelmachines.util.DebugPrinter;
  * SVM classifier using SMO algorithm
  * </p>
  * <p>
- * <b>Sequential Minimal Optimization: A Fast Algorithm for Training Support Vector Machines</b><br />
- * John Platt<br/>
+ * <b>Sequential Minimal Optimization: A Fast Algorithm for Training Support Vector Machines</b>
+ * John Platt
  * <i>no. MSR-TR-98-14, April 1998</i>
  * </p>
  * 

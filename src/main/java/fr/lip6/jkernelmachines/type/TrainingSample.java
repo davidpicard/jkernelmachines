@@ -22,7 +22,7 @@ package fr.lip6.jkernelmachines.type;
 import java.io.Serializable;
 
 /**
- * Simple class of training sample that contains the generic <T> of sample and the associated label.
+ * Simple class of training sample that contains the generic &lt; T &gt;  of sample and the associated label.
  * @author dpicard
  *
  * @param <T> data type of input space

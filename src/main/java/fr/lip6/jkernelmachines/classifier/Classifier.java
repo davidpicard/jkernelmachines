@@ -40,7 +40,7 @@ public interface Classifier<T> extends Cloneable {
 	/**
 	 * Computes the category of the provided example
 	 * @param e example
-	 * @return >0. if e belongs to the category, <0. if not.
+	 * @return &gt; 0. if e belongs to the category,  &lt; 0. if not.
 	 */
 	public double valueOf(T e);
 	

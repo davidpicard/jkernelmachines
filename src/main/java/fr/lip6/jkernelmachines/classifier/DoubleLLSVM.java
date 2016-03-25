@@ -35,9 +35,9 @@ import fr.lip6.jkernelmachines.util.algebra.VectorOperations;
 
 /**
  * <p>
- * Locally Linear SVM, as described in: <br />
- * Locally Linear Support Vector Machines<br />
- * L'ubor Ladicky, Philip H.S. Torr<br/>
+ * Locally Linear SVM, as described in:
+ * Locally Linear Support Vector Machines
+ * L'ubor Ladicky, Philip H.S. Torr
  * Procedings of the 28th ICML, Bellevue, WA, USA, 2011.
  * </p>
  * 

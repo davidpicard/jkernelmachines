@@ -30,7 +30,7 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
 
 /**
  * Major kernel computed as a weighted product of minor kernels : 
- * K = k_i^{w_i}<br />
+ * K = k_i^{w_i}
  * Computation of the kernel matrix is done by running a thread on sub matrices.
  * The number of threads is chosen as function of the number of available cpus.
  * @author dpicard

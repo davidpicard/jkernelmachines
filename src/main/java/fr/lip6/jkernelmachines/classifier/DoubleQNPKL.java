@@ -40,13 +40,13 @@ import fr.lip6.jkernelmachines.util.DebugPrinter;
 
 /**
  * <p>
- * Implementation of the QNPKL solver.<br/>
+ * Implementation of the QNPKL solver.
  * Original java code
  * </p>
  * 
  * <p>
- * <b>Learning geometric combinations of Gaussian kernels with alternating Quasi-Newton algorithm </b><br/>
- * Picard, D. and Thome, N. and Cord, M and Rakotomamonjy, A. <br/>
+ * <b>Learning geometric combinations of Gaussian kernels with alternating Quasi-Newton algorithm </b>
+ * Picard, D. and Thome, N. and Cord, M and Rakotomamonjy, A.
  * <i>Proceedings of the 20th ESANN conference, 2012, Bruges, 79-84</i> 
  * </p>
  * @author dpicard

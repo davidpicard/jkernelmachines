@@ -39,8 +39,8 @@ import fr.lip6.jkernelmachines.util.DebugPrinter;
  * Kernel SVM classifier implementing the LaSVM algorithm
  * </p>
  * <p>
- * <b>Fast Kernel Classifiers with Online and Active Learning</b><br />
- * Antoine Bordes, Seyda Ertekin, Jason Weston and Léon Bottou<br />
+ * <b>Fast Kernel Classifiers with Online and Active Learning</b>
+ * Antoine Bordes, Seyda Ertekin, Jason Weston and Léon Bottou
  * <i>Journal of Machine Learning Research, 6:1579-1619, September 2005. </i>
  * </p>
  * @author picard

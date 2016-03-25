@@ -22,7 +22,7 @@ package fr.lip6.jkernelmachines.kernel.typed.index;
 import fr.lip6.jkernelmachines.kernel.GaussianKernel;
 
 /**
- * Kernel on double[] that computes the L2 distance of a specified component j:<br />
+ * Kernel on double[] that computes the L2 distance of a specified component j:
  * k(x, y) = (x[j]-y[j])*(x[j]-y[j])
  * @author dpicard
  *

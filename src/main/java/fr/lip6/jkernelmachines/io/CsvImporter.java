@@ -28,7 +28,7 @@ import java.util.List;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 
 /**
- * Simple class to import data in csv format, with one sample per line:<br/>
+ * Simple class to import data in csv format, with one sample per line:
  * attr1, attr2, ... , class
  * 
  * position of the class label can be arbitrary

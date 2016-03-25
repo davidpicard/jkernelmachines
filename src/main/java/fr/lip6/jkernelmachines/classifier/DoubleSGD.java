@@ -33,8 +33,8 @@ import fr.lip6.jkernelmachines.type.TrainingSampleStream;
  * </p>
  * 
  * <p>
- * <b>Large-Scale Machine Learning with Stochastic Gradient Descent</b><br />
- * Léon Bottou<br />
+ * <b>Large-Scale Machine Learning with Stochastic Gradient Descent</b>
+ * Léon Bottou
  * <i>Proceedings of the 19th International Conference on Computational Statistics (COMPSTAT'2010)</i>
  * </p>
  * 

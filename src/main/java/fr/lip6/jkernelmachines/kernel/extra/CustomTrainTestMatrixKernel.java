@@ -27,16 +27,16 @@ import fr.lip6.jkernelmachines.kernel.Kernel;
  * </p>
  * <p>
  * The datatype of input space is integer relative to row/column indices.
- * Therefore, the similarity between elements i and j is matrix[i][j]. <br />
+ * Therefore, the similarity between elements i and j is matrix[i][j].
  * Two matrices have to be provided: the first is train[nb_train][nb_train], and the second
- * is test[nb_train][nb_test].<br />
+ * is test[nb_train][nb_test].
  * </p>
  * <p>
  * We suppose the train indices start at 0, and the test indices start at
  * nb_train (the number of rows in the train matrix). For example, if you have 5
  * training samples and 10 testing samples, the train matrix is 5x5 and the test
  * matrix is 5x10. This means that valid training indices are {0, 1, 2, 3, 4}
- * and valid testing indices are {5, 6, 7, 8, 9, 10, 11, 12, 13, 14}. <br />
+ * and valid testing indices are {5, 6, 7, 8, 9, 10, 11, 12, 13, 14}. 
  * To get the similarity between the first training sample and the first testing
  * sample, you thus have to call valueOf(0, 5+0). The kernel automatically
  * translates the second index for the test matrix and returns test[0][0].

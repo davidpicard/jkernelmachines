@@ -33,11 +33,11 @@ import fr.lip6.jkernelmachines.util.DebugPrinter;
 
 /**
  * <p>
- * Linear SVM classifier on arrays of double using the PEGASOS algorithm.<br />
+ * Linear SVM classifier on arrays of double using the PEGASOS algorithm.
  * </p>
  * <p>
- * <b>Pegasos: Primal Estimated sub-GrAdient SOlver for SVM</b><br/>
- * Shai S. Shwartz, Yoram Singer, Nathan Srebro<br/>
+ * <b>Pegasos: Primal Estimated sub-GrAdient SOlver for SVM</b>
+ * Shai S. Shwartz, Yoram Singer, Nathan Srebro
  * <i>In Proceedings of the 24th international conference on Machine learning (2007), pp. 807-814.</i>
  * </p>
  * @author picard

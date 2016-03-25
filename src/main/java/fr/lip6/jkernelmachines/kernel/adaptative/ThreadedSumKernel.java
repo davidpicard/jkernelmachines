@@ -36,7 +36,7 @@ import fr.lip6.jkernelmachines.util.DebugPrinter;
 import fr.lip6.jkernelmachines.util.algebra.VectorOperations;
 
 /**
- * Major kernel computed as a weighted sum of minor kernels : K = w_i * k_i<br />
+ * Major kernel computed as a weighted sum of minor kernels : K = w_i * k_i
  * Computation of the kernel matrix is done by running a thread on sub matrices.
  * The number of threads is chosen as function of the number of available cpus.
  * 

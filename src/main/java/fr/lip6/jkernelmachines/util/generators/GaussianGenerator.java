@@ -37,7 +37,7 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
  * the other for the negtive samples). The positive samples have a mean of p on
  * each component, while the negative samples have a mean of -p on each
  * component. The number of dimension, the spacing p and the standard deviation
- * of the Gaussian can be adjusted. <br />
+ * of the Gaussian can be adjusted.
  * Generated lists are shuffled.
  * </p>
  * 

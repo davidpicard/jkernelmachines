@@ -22,7 +22,7 @@ package fr.lip6.jkernelmachines.kernel;
 import java.util.Map;
 
 /**
- * Not so useful <key,value> based caching method for Gaussian kernels
+ * Not so useful &lt; key,value &gt; based caching method for Gaussian kernels
  * @author picard
  *
  * @param <S>

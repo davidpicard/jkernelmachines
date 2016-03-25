@@ -25,8 +25,8 @@ import java.util.List;
 import fr.lip6.jkernelmachines.kernel.Kernel;
 
 /**
- * Kernel on bags of same length.<br/> 
- * Let B1 and B2 be bags of elements b1[i] and b2[i], let k(b1[i],b2[i]) be the minor kernel, then K(B1, B2) = sum_{i=n}^{N} k(b1[i],b2[i])<br/>
+ * Kernel on bags of same length. 
+ * Let B1 and B2 be bags of elements b1[i] and b2[i], let k(b1[i],b2[i]) be the minor kernel, then K(B1, B2) = sum_{i=n}^{N} k(b1[i],b2[i])
  * With n and N being the bounds of the sum.
  * @author dpicard
  *

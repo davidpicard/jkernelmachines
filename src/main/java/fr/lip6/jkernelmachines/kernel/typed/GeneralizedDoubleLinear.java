@@ -22,7 +22,7 @@ package fr.lip6.jkernelmachines.kernel.typed;
 import fr.lip6.jkernelmachines.kernel.Kernel;
 
 /**
- * Generalized  linear kernel on double[]. Provided a proper inner product matrix M, this kernel returns :<br />
+ * Generalized  linear kernel on double[]. Provided a proper inner product matrix M, this kernel returns :
  * k(x, y) = x'*M*y
  * @author dpicard
  *

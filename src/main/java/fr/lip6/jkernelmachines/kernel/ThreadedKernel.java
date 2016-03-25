@@ -26,7 +26,7 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
 
 /**
  * Simple multithreaded implementation over a given Kernel. The multithreading comes only when
- * computing the Gram matrix.<br />
+ * computing the Gram matrix.
  * Number of Threads is function of available processors.
  * @author dpicard
  *

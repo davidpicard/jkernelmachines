@@ -23,7 +23,7 @@ import static java.lang.Math.pow;
 import fr.lip6.jkernelmachines.kernel.Kernel;
 
 /**
- * Kernel on double[] that performs the product of a specified component j to the power d:<br />
+ * Kernel on double[] that performs the product of a specified component j to the power d:
  * k(x,y) = (0.5 + 0.5*x[j]*y[j])^d
  * @author dpicard
  *

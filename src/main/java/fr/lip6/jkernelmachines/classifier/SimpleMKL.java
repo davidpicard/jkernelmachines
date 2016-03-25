@@ -39,13 +39,13 @@ import fr.lip6.jkernelmachines.util.DebugPrinter;
 
 /**
  * <p>
- * Implementation of the SimpleMKL solver.<br/>
+ * Implementation of the SimpleMKL solver.
  * Java conversion of the original matlab code.
  * </p>
  * 
  * <p>
- * <b>SimpleMKL</b><br/>
- * Alain Rakotomamonjy, Francis Bach, Stephane Canu, Yves Grandvalet<br/>
+ * <b>SimpleMKL</b>
+ * Alain Rakotomamonjy, Francis Bach, Stephane Canu, Yves Grandvalet
  * <i>Journal of Machine Learning Research 9 (2008) 2491-2521</i> 
  * </p>
  * @author dpicard
@@ -771,7 +771,7 @@ public class SimpleMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T>, Serial
 
 	/**
 	 * associative table of kernels and their corresponding weights
-	 * @return a Map indexing pairs of <Kernel, Weight>
+	 * @return a Map indexing pairs of &lt; Kernel, Weight &gt;
 	 * @deprecated
 	 */
 	public Map<Kernel<T>, Double> getWeights() {
