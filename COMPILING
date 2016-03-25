@@ -1,34 +1,5 @@
-to compile the library, just use the default ant task. Type ant in a terminal:
+JKernelMachines is built using maven. To produce all the relevant jar files, just run:
 
-$ ant
+$ mvn package
 
-This should produce the jkernelmachines.jar archive.
-
-
-To compile documentation, use the doc task:
-
-$ ant doc
-
-Documentation should be in the doc/ directory.
-You can generate a jar with documentation files with the docjar target:
-
-$ ant docjar
-
-You can also generate a jar with source files using the sourcejar task:
-
-$ ant sourcejar
-
-A very simple and naive unit testing procedure is available with the test target:
-
-$ ant junit
-
-It should not output any warning. If it does and you didn't touch the code at all,
-please report it. 
-
-To generate all jars, the full task is available:
-
-$ ant full
-
-It should issue all previous tasks.
-
-
+They should appear in the target directory.
