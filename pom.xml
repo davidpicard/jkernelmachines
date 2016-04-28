@@ -8,7 +8,16 @@
     <packaging>jar</packaging>
 
     <name>jkms</name>
-    <url>http://maven.apache.org</url>
+	<description>JKernelMachines is a java library for learning with kernels. It is primary 
+designed to deal with custom kernels that are not easily found in standard 
+libraries, such as kernels on structured data.</description>
+	<url>http://www.jkernelmachines.net</url>
+	<licenses>
+    <license>
+      <name>BSD 3-Clause</name>
+      <url>https://opensource.org/licenses/BSD-3-Clause</url>
+    </license>
+	</licenses>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

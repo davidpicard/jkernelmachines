@@ -1,5 +1,21 @@
-JKernelMachines is built using maven. To produce all the relevant jar files, just run:
+JKernelMachines is built using maven. 
+
+The easiest way to use JkernelMachines is to add it as a dependency of your maven projects. You can either use the central repository:
+
+<dependency>
+  <groupId>net.jkernelmachines</groupId>
+  <artifactId>jkernelmachines</artifactId>
+  <version>3.0-SNAPSHOT</version>
+</dependency>
+
+Or build the package yourself and add it to your local repository:
+
+$ mnv install
+
+
+To produce all the relevant jar files, just run:
 
 $ mvn package
 
 They should appear in the target directory.
+
