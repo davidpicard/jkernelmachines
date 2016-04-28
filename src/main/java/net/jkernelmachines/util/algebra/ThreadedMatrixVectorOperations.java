@@ -40,7 +40,7 @@ import net.jkernelmachines.threading.ThreadedMatrixOperator;
 public class ThreadedMatrixVectorOperations {
 
 	public static int granularity = 1024;
-	
+
 	/**
 	 * Performs a matrix*vector multiplication
 	 * 
@@ -58,7 +58,7 @@ public class ThreadedMatrixVectorOperations {
 		}
 
 		double[] o = new double[A.length];
-		
+
 		return rMuli(o, A, x);
 	}
 
@@ -69,6 +69,8 @@ public class ThreadedMatrixVectorOperations {
 	 *            input matrix of size m*n
 	 * @param x
 	 *            input vector of dimension n
+	 * @param C
+	 *            output vector
 	 * @return A*x of dimension n
 	 */
 	public static double[] rMuli(double[] C, final double[][] A,
@@ -83,20 +85,19 @@ public class ThreadedMatrixVectorOperations {
 			throw new ArithmeticException("Matrix Dimension must agree : "
 					+ C.length + ", " + m);
 		}
-		
+
 		final double[] o = C;
 		ThreadedMatrixOperator tmo = new ThreadedMatrixOperator() {
-			
+
 			@Override
 			public void doLines(double[][] matrix, int from, int to) {
-				for(int i = from ; i < to ; i++) {
+				for (int i = from; i < to; i++) {
 					o[i] = VectorOperations.dot(matrix[i], x);
 				}
 			}
 		};
-		
-		tmo.getMatrix(A);
 
+		tmo.getMatrix(A);
 
 		return o;
 	}

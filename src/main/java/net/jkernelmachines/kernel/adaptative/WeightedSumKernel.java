@@ -42,7 +42,7 @@ import net.jkernelmachines.util.algebra.VectorOperations;
  * Non-threaded version
  * @author dpicard
  *
- * @param <T>
+ * @param <T> input space datatype
  */
 public class WeightedSumKernel<T> extends Kernel<T> {
 
@@ -61,7 +61,7 @@ public class WeightedSumKernel<T> extends Kernel<T> {
 	
 	/**
 	 * Sets the weights to h. Beware! It does not make a copy of h!
-	 * @param h
+	 * @param h weights map
 	 */
 	public WeightedSumKernel(Hashtable<Kernel<T>, Double> h)
 	{
@@ -70,7 +70,7 @@ public class WeightedSumKernel<T> extends Kernel<T> {
 	
 	/**
 	 * adds a kernel to the sum with weight 1.0
-	 * @param k
+	 * @param k kernel
 	 */
 	public void addKernel(Kernel<T> k)
 	{
@@ -79,8 +79,8 @@ public class WeightedSumKernel<T> extends Kernel<T> {
 	
 	/**
 	 * adds a kernel to the sum with weight d
-	 * @param k
-	 * @param d
+	 * @param k kernel
+	 * @param d weight
 	 */
 	public void addKernel(Kernel<T> k , double d)
 	{
@@ -89,7 +89,7 @@ public class WeightedSumKernel<T> extends Kernel<T> {
 	
 	/**
 	 * removes kernel k from the sum
-	 * @param k
+	 * @param k kernel
 	 */
 	public void removeKernel(Kernel<T> k)
 	{
@@ -98,7 +98,7 @@ public class WeightedSumKernel<T> extends Kernel<T> {
 	
 	/**
 	 * gets the weights of kernel k
-	 * @param k
+	 * @param k kernel
 	 * @return the weight associated with k
 	 */
 	public double getWeight(Kernel<T> k)
@@ -111,8 +111,8 @@ public class WeightedSumKernel<T> extends Kernel<T> {
 	
 	/**
 	 * Sets the weight of kernel k
-	 * @param k
-	 * @param d
+	 * @param k kernel
+	 * @param d weight
 	 */
 	public void setWeight(Kernel<T> k, Double d)
 	{

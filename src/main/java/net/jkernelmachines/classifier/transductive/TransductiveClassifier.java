@@ -43,8 +43,8 @@ public interface TransductiveClassifier<T> {
 	
 	/**
 	 * Train the classifier on trainList, with the help of testList in a transductive way.
-	 * @param trainList
-	 * @param testList
+	 * @param trainList train list
+	 * @param testList test list
 	 */
 	public void train(List<TrainingSample<T>> trainList, List<TrainingSample<T>> testList);
 	

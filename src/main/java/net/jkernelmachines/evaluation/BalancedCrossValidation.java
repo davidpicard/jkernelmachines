@@ -41,7 +41,7 @@ public interface BalancedCrossValidation {
 
 	/**
 	 * Returns true if the splits are balanced between positive and negative
-	 * @return
+	 * @return true if balanced
 	 */
 	public boolean isBalanced();
 

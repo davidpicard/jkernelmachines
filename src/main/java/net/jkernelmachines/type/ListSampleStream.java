@@ -45,6 +45,7 @@ public class ListSampleStream<T> implements TrainingSampleStream<T> {
 	
 	/**
 	 * Constructor specifying the list from which the stream is created 
+	 * @param l list
 	 */
 	public ListSampleStream(List<TrainingSample<T>> l) {
 		this.list = l;
@@ -81,7 +82,7 @@ public class ListSampleStream<T> implements TrainingSampleStream<T> {
 
 	/**
 	 * Sets the number of times the list is passed through (number of epochs)
-	 * @param e
+	 * @param e epochs
 	 */
 	public void setE(int e) {
 		E = e;

@@ -58,6 +58,7 @@ public class MatrixVectorOperations {
 	 * Performs a matrix*vector multiplication in place
 	 * @param A input matrix of size m*n
 	 * @param x input vector of dimension n
+	 * @param C output
 	 * @return A*x of dimension n
 	 */
 	public static double[] rMuli(double[] C, final double[][] A, final double[] x) {

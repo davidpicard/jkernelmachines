@@ -56,9 +56,9 @@ public class ArffImporter {
 	 * The component corresponding to the nominal value is then set to 1, and the others to 0.
 	 * The class attribute has to be called "Class", case insensitive.
 	 * </p>
-	 * @param filename
+	 * @param filename filename
 	 * @return list of training samples
-	 * @throws IOException
+	 * @throws IOException if file cannot be opened
 	 */
 	public static List<TrainingSample<double[]>> importFromFile(String filename) throws IOException {
 		LineNumberReader lin = new LineNumberReader(new FileReader(filename));

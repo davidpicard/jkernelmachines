@@ -76,8 +76,8 @@ public class WeightedProductKernel<T> extends Kernel<T> {
 	}
 	
 	/**
-	 * adds a kernel to to product
-	 * @param k
+	 * adds a kernel to product with weight 1
+	 * @param k kernel
 	 */
 	public void addKernel(Kernel<T> k)
 	{
@@ -85,6 +85,11 @@ public class WeightedProductKernel<T> extends Kernel<T> {
 		weights.add(1.0);
 	}
 	
+	/**
+	 * adds a new kernel to product with specific weight
+	 * @param k kernel
+	 * @param w weight
+	 */
 	public void addKernel(Kernel<T> k, double w)
 	{
 		kernels.add(k);
@@ -93,7 +98,7 @@ public class WeightedProductKernel<T> extends Kernel<T> {
 	
 	/**
 	 * removes a kernel from the product
-	 * @param k
+	 * @param k kernel
 	 */
 	public void removeKernel(Kernel<T> k)
 	{

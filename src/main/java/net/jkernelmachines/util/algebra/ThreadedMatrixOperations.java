@@ -144,7 +144,7 @@ public class ThreadedMatrixOperations {
 	 * @param A first matrix
 	 * @param B second matrix
 	 * @return a newly allocated matrix C
-	 * @throws ArithmeticException
+	 * @throws ArithmeticException if dimensions not compatible
 	 */
 	public static double[][] mul(final double[][] A, final double[][] B) throws ArithmeticException {
 		
@@ -205,7 +205,7 @@ public class ThreadedMatrixOperations {
 	 * @param B second matrix
 	 * @param C the result matrix
 	 * @return matrix C
-	 * @throws ArithmeticException
+	 * @throws ArithmeticException if dimensions not compatible
 	 */
 	public static double[][] muli(double[][]C, final double[][] A, final double[][] B) throws ArithmeticException {
 		
@@ -325,6 +325,7 @@ public class ThreadedMatrixOperations {
 	 * C = A' * B
 	 * @param A first matrix
 	 * @param B second matrix
+	 * @param C output matrix
 	 * @return C = A' * B
 	 */
 	public static double[][] transMuli(double[][] C, final double[][] A, final double[][] B) {

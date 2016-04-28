@@ -450,7 +450,7 @@ public class DoublePegasosSVM implements OnlineClassifier<double[]>, Serializabl
 
 	/**
 	 * Sets C hyperparameter (automatically converted in lambda)
-	 * @param c
+	 * @param c C
 	 */
 	public void setC(double c)
 	{

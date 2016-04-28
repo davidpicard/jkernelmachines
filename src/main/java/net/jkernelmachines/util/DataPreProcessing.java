@@ -43,7 +43,7 @@ public class DataPreProcessing {
 	
 	/**
 	 * Normalize a list of training samples of double[] to have l2-norm equal to 1
-	 * @param list
+	 * @param list list
 	 */
 	public static void normalizeList(List<TrainingSample<double[]>> list) {
 		if(list.isEmpty())
@@ -62,7 +62,7 @@ public class DataPreProcessing {
 
 	/**
 	 * Normalize a list of double[] to have l2-norm equal to 1
-	 * @param list
+	 * @param list list
 	 */
 	public static void normalizeDoubleList(List<double[]> list) {
 		if(list.isEmpty())
@@ -79,7 +79,7 @@ public class DataPreProcessing {
 
 	/**
 	 * Process a list of training samples of double[] to have 0 mean
-	 * @param list
+	 * @param list list
 	 */
 	public static void centerList(List<TrainingSample<double[]>> list) {
 		if(list.isEmpty())
@@ -106,7 +106,7 @@ public class DataPreProcessing {
 	
 	/**
 	 * Process a list of samples of double[] to have unit variance
-	 * @param list
+	 * @param list list
 	 */
 	public static void reduceList(List<TrainingSample<double[]>> list) {
 		if(list.isEmpty())

@@ -78,7 +78,7 @@ public class LaSVMI<T> implements KernelSVM<T> {
 	/**
 	 * Default constructor provideing the kernel
 	 * 
-	 * @param k
+	 * @param k kernel
 	 */
 	public LaSVMI(Kernel<T> k) {
 		kernel = k;
@@ -87,7 +87,7 @@ public class LaSVMI<T> implements KernelSVM<T> {
 	/**
 	 * Incremental train adding a single sample
 	 * (performs a full retrain on the whole list a samples)
-	 * @param t
+	 * @param t sample
 	 */
 	public void train(TrainingSample<T> t) {
 		if (train == null)

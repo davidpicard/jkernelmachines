@@ -99,7 +99,7 @@ public class BudgetSDCA<T> implements KernelSVM<T>, OnlineClassifier<T> {
 	DebugPrinter debug = new DebugPrinter();
 
 	/**
-	 * @param kernel
+	 * @param kernel kernel
 	 */
 	public BudgetSDCA(Kernel<T> kernel) {
 		super();

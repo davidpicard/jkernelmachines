@@ -35,8 +35,8 @@ import java.util.Map;
  * Not so useful &lt; key,value &gt; based caching method for Gaussian kernels
  * @author picard
  *
- * @param <S>
- * @param <T>
+ * @param <S> keys
+ * @param <T> values
  */
 public class GaussianICKernel<S, T> extends GaussianKernel<S> {
 

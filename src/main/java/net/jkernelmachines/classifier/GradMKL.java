@@ -46,7 +46,7 @@ import net.jkernelmachines.util.DebugPrinter;
  * MKL algorithm using a naive gradient descent.
  * @author picard
  *
- * @param <T>
+ * @param <T> inputspace datatype
  */
 public class GradMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T> {
 
@@ -339,7 +339,7 @@ public class GradMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T> {
 	
 	/**
 	 * Sets stopping criterion threshold
-	 * @param w
+	 * @param w threshold
 	 */
 	public void setStopGap(double w)
 	{

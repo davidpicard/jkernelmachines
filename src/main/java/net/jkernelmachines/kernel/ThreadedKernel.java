@@ -40,7 +40,7 @@ import net.jkernelmachines.type.TrainingSample;
  * Number of Threads is function of available processors.
  * @author dpicard
  *
- * @param <T>
+ * @param <T> samples datatype
  */
 public class ThreadedKernel<T> extends Kernel<T> {
 
@@ -54,7 +54,7 @@ public class ThreadedKernel<T> extends Kernel<T> {
 
 	/**
 	 * MultiThread the given kernel
-	 * @param kernel
+	 * @param kernel underlying kernel
 	 */
 	public ThreadedKernel(Kernel<T> kernel)
 	{

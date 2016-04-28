@@ -76,7 +76,7 @@ import net.jkernelmachines.util.DebugPrinter;
 public class CrossValidationExample {
 
 	/**
-	 * @param args
+	 * @param args main arguments
 	 */
 	public static void main(String[] args) {
 

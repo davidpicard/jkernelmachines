@@ -64,6 +64,7 @@ public class ThreadPoolServer {
 
 	/**
 	 * Stops the server.
+	 * @param executor the executor to stop
 	 */
 	public static void shutdownNow(ThreadPoolExecutor executor) {
 		if (executor != null) {

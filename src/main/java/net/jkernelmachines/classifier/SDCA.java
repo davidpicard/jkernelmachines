@@ -74,7 +74,7 @@ public class SDCA<T> implements KernelSVM<T>, OnlineClassifier<T> {
 	private boolean cacheKernel = true;
 
 	/**
-	 * @param kernel
+	 * @param kernel kernel
 	 */
 	public SDCA(Kernel<T> kernel) {
 		super();

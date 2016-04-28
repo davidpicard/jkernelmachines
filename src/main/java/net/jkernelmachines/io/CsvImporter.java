@@ -53,7 +53,7 @@ public class CsvImporter {
 	 * @param sep the token which separates the values
 	 * @param labelPosition the position of the class label
 	 * @return the full list of TrainingSample
-	 * @throws IOException
+	 * @throws IOException if file cannot be opened
 	 */
 	public static List<TrainingSample<double[]>> importFromFile(
 			String filename, String sep, int labelPosition) throws IOException {
@@ -98,10 +98,10 @@ public class CsvImporter {
 
 	/**
 	 * CSV import routine with delimiter set to ","
-	 * @param filename
-	 * @param labelPosition
+	 * @param filename filename
+	 * @param labelPosition position
 	 * @return The list of training samples
-	 * @throws IOException
+	 * @throws IOException if file cannot be opened
 	 */
 	public static List<TrainingSample<double[]>> importFromFile(
 			String filename, int labelPosition) throws IOException {
@@ -110,10 +110,10 @@ public class CsvImporter {
 
 	/**
 	 * CSV import routine with label position set to the last value
-	 * @param filename
-	 * @param sep
+	 * @param filename filename
+	 * @param sep separator
 	 * @return The list of training samples
-	 * @throws IOException
+	 * @throws IOException if file cannot be opened
 	 */
 	public static List<TrainingSample<double[]>> importFromFile(
 			String filename, String sep) throws IOException {
@@ -124,7 +124,7 @@ public class CsvImporter {
 	 * CSV import routine with default parameters (separator is "," and the label is the last value)
 	 * @param filename the file containing the values
 	 * @return The list of training samples
-	 * @throws IOException
+	 * @throws IOException if file cannot be opened
 	 */
 	public static List<TrainingSample<double[]>> importFromFile(String filename)
 			throws IOException {

@@ -39,7 +39,7 @@ import net.jkernelmachines.type.TrainingSample;
  * 
  * @author picard
  * 
- * @param <T>
+ * @param <T> samples data type
  */
 public final class SimpleCacheKernel<T> extends Kernel<T> {
 

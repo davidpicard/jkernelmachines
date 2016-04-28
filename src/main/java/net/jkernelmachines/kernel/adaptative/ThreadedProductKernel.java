@@ -45,7 +45,7 @@ import net.jkernelmachines.type.TrainingSample;
  * The number of threads is chosen as function of the number of available cpus.
  * @author dpicard
  *
- * @param <T>
+ * @param <T> samples datatype
  */
 public class ThreadedProductKernel<T> extends Kernel<T> {
 
@@ -65,7 +65,7 @@ public class ThreadedProductKernel<T> extends Kernel<T> {
 
 	/**
 	 * Sets the weights to h.
-	 * @param h
+	 * @param h weights map
 	 */
 	public ThreadedProductKernel(Map<Kernel<T>, Double> h)
 	{
@@ -75,7 +75,7 @@ public class ThreadedProductKernel<T> extends Kernel<T> {
 	
 	/**
 	 * adds a kernel to the sum with weight 1.0
-	 * @param k
+	 * @param k kernel
 	 */
 	public void addKernel(Kernel<T> k)
 	{
@@ -87,8 +87,8 @@ public class ThreadedProductKernel<T> extends Kernel<T> {
 	
 	/**
 	 * adds a kernel to the sum with weight d
-	 * @param k
-	 * @param d
+	 * @param k kernel
+	 * @param d weight
 	 */
 	public void addKernel(Kernel<T> k , double d)
 	{
@@ -100,7 +100,7 @@ public class ThreadedProductKernel<T> extends Kernel<T> {
 	
 	/**
 	 * removes kernel k from the sum
-	 * @param k
+	 * @param k kernel
 	 */
 	public void removeKernel(Kernel<T> k)
 	{
@@ -112,7 +112,7 @@ public class ThreadedProductKernel<T> extends Kernel<T> {
 	
 	/**
 	 * gets the weights of kernel k
-	 * @param k
+	 * @param k kernel
 	 * @return the weight associated with k
 	 */
 	public double getWeight(Kernel<T> k)
@@ -128,8 +128,8 @@ public class ThreadedProductKernel<T> extends Kernel<T> {
 	
 	/**
 	 * Sets the weight of kernel k
-	 * @param k
-	 * @param d
+	 * @param k kernel
+	 * @param d weight
 	 */
 	public void setWeight(Kernel<T> k, Double d)
 	{

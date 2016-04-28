@@ -88,7 +88,7 @@ public class SimpleMKL<T> implements Classifier<T>, KernelSVM<T>, MKL<T>, Serial
 	
 	/**
 	 * adds a kernel to the MKL problem
-	 * @param k
+	 * @param k kernel
 	 */
 	public void addKernel(Kernel<T> k)
 	{

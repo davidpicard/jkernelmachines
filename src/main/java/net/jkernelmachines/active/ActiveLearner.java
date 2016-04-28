@@ -53,19 +53,20 @@ public abstract class ActiveLearner<T> {
 	
 	/**
 	 * Method returning the best training sample in the list with respect to the active strategy
+	 * @param l list
 	 * @return the best sample
 	 */
 	public abstract TrainingSample<T> getActiveSample(List<TrainingSample<T>> l);
 	
 	/**
 	 * perform nbSample updates of the classifier using the active strategy
-	 * @param nbSamples
+	 * @param nbSamples number of samples
 	 */
 	public abstract void updateClassifier(int nbSamples);
 	
 	/**
 	 * Setter for the classifier
-	 * @param cls
+	 * @param cls classifier
 	 */
 	public void setClassifier(OnlineClassifier<T> cls) {
 		this.classifier = cls;

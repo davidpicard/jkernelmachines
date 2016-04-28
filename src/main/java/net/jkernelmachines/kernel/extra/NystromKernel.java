@@ -183,7 +183,7 @@ public class NystromKernel<T> extends Kernel<T> {
 	/**
 	 * Project a sample to the space induced by the Nystrom approx
 	 * 
-	 * @param sample
+	 * @param sample sample
 	 * @return projection of the sample
 	 */
 	public double[] projectSample(T sample) {

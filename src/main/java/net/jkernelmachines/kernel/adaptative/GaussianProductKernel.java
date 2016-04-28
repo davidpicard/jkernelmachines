@@ -46,7 +46,7 @@ import net.jkernelmachines.type.TrainingSample;
  * The number of threads is chosen as function of the number of available cpus.
  * @author dpicard
  *
- * @param <T>
+ * @param <T> samples datatype
  */
 public class GaussianProductKernel<T> extends Kernel<T> {
 
@@ -66,7 +66,7 @@ public class GaussianProductKernel<T> extends Kernel<T> {
 
 	/**
 	 * Sets the weights to h. Beware! It does not make a copy of h!
-	 * @param h
+	 * @param h weights
 	 */
 	public GaussianProductKernel(Map<GaussianKernel<T>, Double> h)
 	{
@@ -76,7 +76,7 @@ public class GaussianProductKernel<T> extends Kernel<T> {
 	
 	/**
 	 * adds a kernel to the sum with weight 1.0
-	 * @param k
+	 * @param k underlying kernel
 	 */
 	public void addKernel(GaussianKernel<T> k)
 	{
@@ -88,8 +88,8 @@ public class GaussianProductKernel<T> extends Kernel<T> {
 	
 	/**
 	 * adds a kernel to the product with weight d
-	 * @param k
-	 * @param d
+	 * @param k kernel
+	 * @param d corresponding weight
 	 */
 	public void addKernel(GaussianKernel<T> k , double d)
 	{
@@ -101,7 +101,7 @@ public class GaussianProductKernel<T> extends Kernel<T> {
 	
 	/**
 	 * removes kernel k from the product
-	 * @param k
+	 * @param k kernel
 	 */
 	public void removeKernel(GaussianKernel<T> k)
 	{
@@ -113,7 +113,7 @@ public class GaussianProductKernel<T> extends Kernel<T> {
 	
 	/**
 	 * gets the weights of kernel k
-	 * @param k
+	 * @param k kernel
 	 * @return the weight associated with k
 	 */
 	public double getWeight(GaussianKernel<T> k)
@@ -129,8 +129,8 @@ public class GaussianProductKernel<T> extends Kernel<T> {
 	
 	/**
 	 * Sets the weight of kernel k
-	 * @param k
-	 * @param d
+	 * @param k kernel
+	 * @param d weight
 	 */
 	public void setWeight(GaussianKernel<T> k, Double d)
 	{

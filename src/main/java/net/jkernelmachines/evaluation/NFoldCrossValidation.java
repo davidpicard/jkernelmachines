@@ -180,7 +180,7 @@ public class NFoldCrossValidation<T> implements CrossValidation, BalancedCrossVa
 
 	/**
 	 * Returns true if the splits are balanced between positive and negative
-	 * @return
+	 * @return true if balanced
 	 */
 	public boolean isBalanced() {
 		return balanced;

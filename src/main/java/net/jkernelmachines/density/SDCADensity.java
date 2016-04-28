@@ -63,7 +63,8 @@ public class SDCADensity<T> implements DensityFunction<T> {
 	List<T> train;
 
 	/**
-	 * @param k
+	 * default constructor
+	 * @param k kernel
 	 */
 	public SDCADensity(Kernel<T> k) {
 		kernel = k;

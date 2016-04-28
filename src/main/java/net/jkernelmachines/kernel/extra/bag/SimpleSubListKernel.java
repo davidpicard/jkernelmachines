@@ -40,8 +40,8 @@ import net.jkernelmachines.kernel.Kernel;
  * With n and N being the bounds of the sum.
  * @author dpicard
  *
- * @param <S>
- * @param <T>
+ * @param <S> list type
+ * @param <T> input space data type
  */
 public class SimpleSubListKernel<S,T extends List<S>> extends Kernel<T> implements Serializable {
 

@@ -51,7 +51,7 @@ import net.jkernelmachines.type.TrainingSample;
 public class SVMExample {
 
 	/**
-	 * @param args
+	 * @param args main arguments
 	 */
 	public static void main(String[] args) {
 		

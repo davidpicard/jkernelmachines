@@ -59,7 +59,7 @@ public class VectorOperations {
 	 * @param A first vector
 	 * @param lambda weight of the second vector
 	 * @param B second vector
-	 * @return C
+	 * @return C vector
 	 */
 	public static double[] addi(double[] C, final double[] A, final double lambda, final double[] B) {	
 		int packed = 2 * (A.length / 2);
@@ -96,6 +96,7 @@ public class VectorOperations {
 	 * C = lambda * A
 	 * @param A the input array
 	 * @param lambda the constant
+	 * @param C output
 	 * @return a new array containing the result
 	 */
 	public static double[] muli(double[] C, final double[] A, final double lambda) {

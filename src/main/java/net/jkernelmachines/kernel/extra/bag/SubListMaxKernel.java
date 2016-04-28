@@ -38,8 +38,8 @@ import net.jkernelmachines.kernel.Kernel;
  * max value of kernel between two bags
  * @author dpicard
  *
- * @param <S>
- * @param <T>
+ * @param <S> list type
+ * @param <T> inputspace data type
  */
 public class SubListMaxKernel<S,T extends List<S>> extends Kernel<T> implements Serializable {
 
@@ -57,9 +57,10 @@ public class SubListMaxKernel<S,T extends List<S>> extends Kernel<T> implements 
 	
 
 	/**
-	 * @param from
-	 * @param to
-	 * @param kernel
+	 * constructor with begin and end markers
+	 * @param from begin index
+	 * @param to end index
+	 * @param kernel kernel
 	 */
 	public SubListMaxKernel(int from, int to, Kernel<S> kernel) {
 		this.from = from;

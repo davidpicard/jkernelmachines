@@ -55,7 +55,7 @@ import net.jkernelmachines.util.DebugPrinter;
  * 
  * @author picard
  *
- * @param <T>
+ * @param <T> input space datatype
  */
 public class S3VMLight<T> implements TransductiveClassifier<T> {
 
@@ -296,7 +296,7 @@ public class S3VMLight<T> implements TransductiveClassifier<T> {
 
 	/**
 	 * Sets the number of positive samples (used for transductive label estimation)
-	 * @param numplus
+	 * @param numplus number of positives samples
 	 */
 	public void setNumplus(int numplus) {
 		this.numplus = numplus;

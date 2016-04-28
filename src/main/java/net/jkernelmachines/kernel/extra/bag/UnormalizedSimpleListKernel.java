@@ -39,7 +39,7 @@ import net.jkernelmachines.kernel.Kernel;
  * Default kernel on bags : sum all kernel values involving an element from B1 and an element from B2 between specified bounds.
  * @author dpicard
  *
- * @param <S>
+ * @param <S> list type
  * @param <T> type of element in the bag
  */
 public class UnormalizedSimpleListKernel<S,T extends List<S>> extends Kernel<T> implements Serializable {

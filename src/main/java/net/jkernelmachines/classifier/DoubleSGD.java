@@ -265,7 +265,7 @@ public class DoubleSGD implements Classifier<double[]>, OnlineClassifier<double[
 
 	/**
 	 * Sets the type of loss used by this classifier (default HINGELOSS)
-	 * @param loss
+	 * @param loss loss type
 	 */
 	public void setLoss(int loss) {
 		this.loss = loss;

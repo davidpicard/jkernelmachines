@@ -241,7 +241,7 @@ public class DoubleLLSVM implements Classifier<double[]> {
 	/**
 	 * Returns the hyperparameter C for the hinge loss tradeoff
 	 * 
-	 * @return C
+	 * @return C C
 	 */
 	public double getC() {
 		return C;
@@ -250,7 +250,7 @@ public class DoubleLLSVM implements Classifier<double[]> {
 	/**
 	 * Sets the hyperparameter C for the hinge loss tradeoff
 	 * 
-	 * @param c
+	 * @param c C
 	 */
 	public void setC(double c) {
 		C = c;

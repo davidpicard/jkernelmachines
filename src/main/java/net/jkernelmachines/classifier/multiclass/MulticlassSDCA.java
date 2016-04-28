@@ -310,7 +310,7 @@ public class MulticlassSDCA<T> implements MulticlassClassifier<T>, KernelSVM<T> 
 	/**
 	 * return the number of epochs
 	 * 
-	 * @return
+	 * @return number of epochs
 	 */
 	public double getE() {
 		return E;
@@ -319,7 +319,7 @@ public class MulticlassSDCA<T> implements MulticlassClassifier<T>, KernelSVM<T> 
 	/**
 	 * Sets the number of epochs
 	 * 
-	 * @param e
+	 * @param e epochs
 	 */
 	public void setE(double e) {
 		E = e;
@@ -333,7 +333,7 @@ public class MulticlassSDCA<T> implements MulticlassClassifier<T>, KernelSVM<T> 
 	/**
 	 * Returns the matrix of dual variables in the order [sample, class]
 	 * 
-	 * @return
+	 * @return matrix of weights
 	 */
 	public double[][] getMulticlassAlphas() {
 		return alpha;

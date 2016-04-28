@@ -60,7 +60,7 @@ public class FvecImporter {
 	 * @param filename
 	 *            to file to read
 	 * @return a list of the samples as double arrays
-	 * @throws IOException
+	 * @throws IOException if file is not a valid fvec file or cannot be opened
 	 */
 	public List<double[]> readFile(String filename) throws IOException {
 
@@ -101,7 +101,7 @@ public class FvecImporter {
 	 * 
 	 * @param i inputstream to read data from
 	 * @return a list of the samples as double arrays
-	 * @throws IOException
+	 * @throws IOException if file is not a valid fvec file or cannot be opened
 	 */
 	public List<double[]> readInputStream(InputStream i) throws IOException {
 		input = new DataInputStream(i);
@@ -141,7 +141,7 @@ public class FvecImporter {
 	 *            the name of the file to be written
 	 * @param list
 	 *            the list of features
-	 * @throws IOException
+	 * @throws IOException if file  cannot be opened
 	 */
 	public void writeFile(String filename, List<double[]> list)
 			throws IOException {

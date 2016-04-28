@@ -85,7 +85,7 @@ public class SimpleMKLDensity<T> implements DensityFunction<T> {
 	/**
 	 * adds a kernel to the MKL problem
 	 * 
-	 * @param k
+	 * @param k kernel
 	 */
 	public void addKernel(Kernel<T> k) {
 		if (!kernels.contains(k)) {

@@ -37,7 +37,7 @@ import net.jkernelmachines.type.TrainingSample;
  * Classifier interface that provides training and evaluation methods.
  * @author dpicard
  *
- * @param <T>
+ * @param <T> inputspace datatype
  */
 public interface Classifier<T> extends Cloneable {
 	
@@ -57,6 +57,8 @@ public interface Classifier<T> extends Cloneable {
 	/**
 	 * Creates and returns a copy of this object.
 	 * @see java.lang.Object#clone()
+	 * @return a copy of this object
+	 * @throws CloneNotSupportedException if class not clonable
 	 */
 	public Classifier<T> copy() throws CloneNotSupportedException;
 }

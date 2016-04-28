@@ -170,7 +170,7 @@ public class MatrixOperations {
 	 * @param A first matrix
 	 * @param B second matrix
 	 * @return a newly allocated matrix C
-	 * @throws ArithmeticException
+	 * @throws ArithmeticException if dimensions not compatible
 	 */
 	public static double[][] mul(final double[][] A, final double[][] B) throws ArithmeticException {
 		
@@ -210,7 +210,7 @@ public class MatrixOperations {
 	 * @param B second matrix
 	 * @param C the result matrix
 	 * @return matrix C
-	 * @throws ArithmeticException
+	 * @throws ArithmeticException if dimensions not compatible
 	 */
 	public static double[][] muli(double[][]C, final double[][] A, final double[][] B) throws ArithmeticException {
 		
@@ -280,6 +280,7 @@ public class MatrixOperations {
 	 * C = A' * B
 	 * @param A first matrix
 	 * @param B second matrix
+	 * @param C output
 	 * @return C = A' * B
 	 */
 	public static double[][] transMuli(double[][] C, final double[][] A, final double[][] B) {
@@ -612,6 +613,7 @@ public class MatrixOperations {
 	 * A = Q * L * Q'
 	 * with Q orthonormal and L diagonal
 	 * @param m input matrix
+	 * @param prec preconditioning
 	 * @return an array of two matrices containing {Q, L}
 	 */
 	public static final double[][][] eig_jacobi(final double[][] m, boolean prec) {
@@ -1034,7 +1036,7 @@ public class MatrixOperations {
 
 	/**
 	 * outputs the matrix on System.out
-	 * @param A
+	 * @param A matrix
 	 */
 	public static void print(double[][] A) {
 		for(int i = 0 ; i < A.length ; i++) {
@@ -1043,6 +1045,11 @@ public class MatrixOperations {
 		System.out.println();
 	}
 	
+	/**
+	 * check if matrix is tri diagonal
+	 * @param A matrix
+	 * @return true if tridiagonal
+	 */
 	public static boolean is_tri(double[][] A) {
 		int n = A.length;
 		for(int i = 0 ; i < n ; i++) {

@@ -41,7 +41,7 @@ import net.jkernelmachines.kernel.Kernel;
  * However, this can be a usefull option to debug or view some precise elements of the sum.
  * @author dpicard
  *
- * @param <S>
+ * @param <S> list type
  * @param <T> type of element in the bag
  */
 public class SubListKernel2<S,T extends List<S>> extends Kernel<T> implements Serializable {
@@ -60,7 +60,7 @@ public class SubListKernel2<S,T extends List<S>> extends Kernel<T> implements Se
 
 
 	/**
-	 * @param kernel
+	 * @param kernel kernel
 	 * @param fr1 beginning bound for left list (inclusive)
 	 * @param to1 end bound for left list (exclusive)
 	 * @param fr2 beginning bound for right list (inclusive)
