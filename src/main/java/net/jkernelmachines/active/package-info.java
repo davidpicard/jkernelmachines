@@ -33,3 +33,7 @@
  * @author picard
  */
 package net.jkernelmachines.active;
+
+/** hack to generate package javadoc */
+class PlaceHolder {
+}

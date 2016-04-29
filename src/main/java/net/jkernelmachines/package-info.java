@@ -32,3 +32,5 @@
  *
  */
 package net.jkernelmachines;
+/** hack to generate package javadoc */
+class PlaceHolder {}
