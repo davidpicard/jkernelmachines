@@ -32,7 +32,10 @@
  */
 package net.jkernelmachines.projection;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -87,6 +90,130 @@ public class StringNGramProjection {
 		}
 
 		return m1;
+	}
+	
+	/**
+	 * Generate the set of all possible n-grams composed of characters taken from the input string
+	 * @param alp the original alphabet
+	 * @param n dimension of the tuples
+	 * @return map of possible n-grams and corresponding indexes
+	 */
+	public static Map<String, Integer> generateNGramAlphabet(String alp, int n) {
+		Map<String, Integer> set = new HashMap<>();
+		
+		if(n <= 1) {
+			for(int i = 0 ; i < alp.length() ; i++) {
+				String s = ""+alp.charAt(i);
+				set.put(s, i);
+			}
+			return set;
+		}
+		else {
+			int index = 0;
+			Map<String, Integer> prev = generateNGramAlphabet(alp, n-1);
+			for(int i = 0 ; i < alp.length() ; i++) {
+				String a = ""+alp.charAt(i);
+				for(String s : prev.keySet()) {
+					set.put(a+s, index++);
+				}
+			}
+			return set;
+		}
+	}
+	
+	/**
+	 * computes the histogram of occurrences of n-grams gien in the alphabet
+	 * @param s string to compute the histoogram
+	 * @param m alphabet of n-grams and corresponding indexes in the output vector
+	 * @return histogram
+	 */
+	public static double[] projectNGramAlphabet(String s, Map<String, Integer> m) {
+		double[] res = new double[m.size()];
+		
+		// assume all n-gram have same size
+		int n = m.keySet().iterator().next().length();
+		
+		for(int i = 0 ; i < s.length()-n ; i++) {
+			String k = s.substring(i, i+n);
+			if(m.containsKey(k)) {
+				res[m.get(k)]++;
+			}
+		}
+		return res;
+	}
+	
+	/**
+	 * Generates the alphabet of n-grams that have a minimal number of occurences in a list of strings
+	 * @param l the list of strings
+	 * @param n n-gram
+	 * @param thresh minimum number of occurences of the n-grams in the list
+	 * @return
+	 */
+	public static Map<String, Integer> generateMinimumNGramAlphabet(List<String> l, int n, int thresh) {
+		
+		Map<String, Double> occ = computeNGram(l.get(0), n);
+		for(int i = 1 ; i < l.size() ; i++) {
+			Map<String, Double> m = computeNGram(l.get(i), n);
+			for(String s : m.keySet()) {
+				if(occ.containsKey(s)) {
+					occ.put(s, occ.get(s)+m.get(s));
+				}
+				else {
+					occ.put(s,  m.get(s));
+				}
+			}
+		}
+		
+		int index = 0;
+		Map<String, Integer> map = new HashMap<>();
+		for(String k : occ.keySet()) {
+			if(occ.get(k) >= thresh) {
+				map.put(k, index++);
+			}
+		}
+		
+		return map;
+	}
+	
+	/**
+	 * Generates the list of the most frequent n-grams in a list of string
+	 * @param l the list
+	 * @param n n-gram
+	 * @param nb number of most frequent n-grams
+	 * @return
+	 */
+	public static Map<String, Integer> generateMostFrequentNGramAlphabet(List<String> l , int n, int nb) {
+		Map<String, Double> occ = computeNGram(l.get(0), n);
+		for(int i = 1 ; i < l.size() ; i++) {
+			Map<String, Double> m = computeNGram(l.get(i), n);
+			for(String s : m.keySet()) {
+				if(occ.containsKey(s)) {
+					occ.put(s, occ.get(s)+m.get(s));
+				}
+				else {
+					occ.put(s,  m.get(s));
+				}
+			}
+		}
+		
+		int thresh = 0;
+		if(occ.size() > nb) {
+			List<Double> sorted = new ArrayList<>(occ.values());
+			Collections.sort(sorted);
+		
+			thresh = (int)sorted.get(sorted.size() - nb).doubleValue();
+		}
+	
+		
+		int index = 0;
+		Map<String, Integer> map = new HashMap<>();
+		for(String k : occ.keySet()) {
+			if(occ.get(k) > thresh) {
+				map.put(k, index++);
+			}
+		}
+		
+		return map;
 	}
 
 }
